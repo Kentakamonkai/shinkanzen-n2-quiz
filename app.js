@@ -479,32 +479,6 @@ function showAnswer(choice,restoring){
   setMascot(didSkip?"thinking":(correct?"happy":"sad"));
   if(!restoring)saveSession();
 }
-function showAnswer(choice,restoring){
-  const question=current(),correct=choice===question.answer,didSkip=choice===-1;
-  document.querySelectorAll(".option-btn").forEach((button,index)=>{
-    button.disabled=true;
-    if(index===question.answer)button.classList.add("correct");
-    else if(index===choice)button.classList.add("incorrect");
-  });
-  const grammar=getGrammar(question.grammar);
-  const sentence=completedSentence(question);
-  let message=didSkip?pickMessage("skip"):pickMessage(correct?"ok":"ng");
-  const detailParts=[];
-  detailParts.push('<strong class="feedback-emotion">'+escapeHtml(message)+'</strong>');
-  detailParts.push('<p class="feedback-answer">'+escapeHtml(t("correctAnswer"))+'：<b>'+escapeHtml(grammar?grammar.name:"")+'</b></p>');
-  detailParts.push('<section class="feedback-explanation"><b>'+escapeHtml(t("completedSentence"))+'</b><p class="feedback-japanese">'+rubyHtml(sentence)+'</p><b>'+escapeHtml(t("explanation"))+'</b><p>'+escapeHtml(localizedGloss(question.grammar))+'</p></section>');
-  if(state.lang==="fr"&&grammar&&grammar.dist){
-    detailParts.push('<p class="feedback-context"><b>À retenir :</b> '+escapeHtml(grammar.dist)+(question.hint?' '+escapeHtml(question.hint):"")+'</p>');
-  }else if(state.lang==="fr"&&question.hint){
-    detailParts.push('<p class="feedback-context">'+escapeHtml(question.hint)+'</p>');
-  }
-  $("feedback").className="feedback"+(correct?"":" wrong");
-  $("feedback").innerHTML=detailParts.join("");
-  $("next-btn").classList.remove("hidden");
-  $("hint-btn").disabled=true;$("fifty-btn").disabled=true;$("dont-know-btn").disabled=true;
-  setMascot(didSkip?"thinking":(correct?"happy":"sad"));
-  if(!restoring)saveSession();
-}
 function applyFifty(){
   const question=current();
   document.querySelectorAll(".option-btn").forEach((button,index)=>{
