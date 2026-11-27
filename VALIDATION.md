@@ -6,7 +6,6 @@ Updated: 2026-11-27
 
 - Target class: N631
 - Target exam date: 2026-12-09
-- Creator credit: 健太
 - Current subject: 文法 N2
 
 ## Grammar scope
@@ -43,7 +42,7 @@ All quiz sentences and answer choices are newly written for practice and are not
 
 ## Feature implementation
 
-- [x] Japanese-only first page with date, class N631, and creator credit 健太.
+- [x] Japanese-only first page with the exam date, class N631, and a small creator credit shown only on the home screen.
 - [x] Language selection followed by a subject-selection screen.
 - [x] Current subject card: 文法 N2.
 - [x] Review accordions for all eight chapters and all 41 grammar forms.
@@ -51,7 +50,6 @@ All quiz sentences and answer choices are newly written for practice and are not
 - [x] Larger pixel-art mascot inside the question frame, speech bubble, and different moods.
 - [x] Direct navigation to any question from 1 to 100.
 - [x] 「わからない」 answer control.
-- [x] Optional furigana using Kuromoji browser-side morphological analysis.
 - [x] Context-specific French hints sourced from each question's hint field; localized grammar glosses shown in other languages.
 - [x] Answer feedback shows the completed Japanese sentence and the selected language's grammar gloss. French feedback also shows a nuance note and contextual clue.
 - [x] Varied encouraging feedback in all nine languages.
@@ -62,7 +60,6 @@ All quiz sentences and answer choices are newly written for practice and are not
 ## Important limits
 
 - Saves are stored in localStorage on the current browser/device. There is no account or cloud synchronization.
-- Furigana readings are automatically estimated by Kuromoji; ambiguous readings and proper nouns may need correction. The first use requires downloading the library and dictionary from jsDelivr.
 - The review examples for lessons 1–5 currently appear in Japanese only. The examples for lessons 6–8 have translations in the nine interface languages.
 - Full translations of every completed quiz sentence into all nine languages have not yet been added. The result feedback is structured around the completed Japanese sentence and the translated grammar explanation.
 - Short translations and explanations are study aids, not certified translations.
@@ -74,7 +71,6 @@ All quiz sentences and answer choices are newly written for practice and are not
 - [ ] Open several chapter accordions and verify the 41 grammar cards are readable.
 - [ ] Test question-number navigation, including directly opening question 62.
 - [ ] Test 「わからない」, hints, and 50/50.
-- [ ] Enable furigana and verify the first-time library/dictionary loading on desktop and mobile.
 - [ ] Complete a session, return home, and confirm its timestamp, score, chapter graph, and review points appear in the save list.
 - [ ] Start a second session and confirm both sessions remain available.
 - [ ] Close and reopen the browser to confirm localStorage resume.
