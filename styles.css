@@ -388,3 +388,12 @@
 }
 .save-completed-score.perfect-score strong{color:#80631b;font-size:38px}
 .save-completed-score.perfect-score span{color:#725c25;font-weight:700}
+
+/* Panda vocabulary readings */
+.mascot-bubble.vocabulary-bubble{
+  white-space:pre-line;
+  text-align:left;
+  line-height:1.65;
+  font-size:12px;
+  overflow-wrap:anywhere;
+}
