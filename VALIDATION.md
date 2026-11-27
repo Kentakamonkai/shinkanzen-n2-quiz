@@ -54,6 +54,7 @@ All quiz sentences and answer choices are newly written for practice and are not
 - [x] Answer feedback shows the completed Japanese sentence and the selected language's grammar gloss. French feedback also shows a nuance note and contextual clue.
 - [x] Varied encouraging feedback in all nine languages.
 - [x] Multiple automatic session saves, timestamped at session creation, with progress and completed-session charts / review points.
+- [x] Saved-session heading, descriptions, dates, progress labels, results, review points, and actions default to Japanese and switch to the selected language across all nine locales.
 - [x] Older single-session local progress can be migrated into the new save list.
 - [x] Hints and 50/50 do not reduce the score; hint usage is counted in the result.
 
