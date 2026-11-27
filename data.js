@@ -106,7 +106,7 @@ window.GRAMMAR_QUIZ_DATA = (() => {
     q(5,"blank","忙しい日に（　　　）、急な仕事が入るものだ。",["限りでは","限りは","に限って","に限り"],2,"ni_kagitte","La mauvaise coïncidence se produit justement ce jour-là."),
     q(5,"continuation","責任者である限りは、",["最後まで対応しなければならない。","最後まで対応した限りでは。","最後まで対応に限り。","最後まで対応をめぐって。"],0,"kagiri_wa","Le rôle entraîne une responsabilité continue."),
     q(5,"blank","このクーポンは今週末（　　　）ご利用いただけます。",["限りでは","に限り","限りは","に限って"],1,"ni_kagiri","Restriction de la validité à un créneau donné."),
-    q(5,"blank","現在分かっている（　　　）、原因はまだ特定されていない。",["限りは","限りでは","に限り","に限って"],1,"kagiri_dewa","Le jugement dépend des connaissances actuelles."),
+    q(5,"blank","今分かっている（　　　）、原因はまだはっきりしていない。",["限りは","限りでは","に限り","に限って"],1,"kagiri_dewa","Le jugement dépend des connaissances actuelles."),
     q(5,"continuation","彼に限って、",["そんな約束を忘れるはずがない。","そんな約束を忘れた限りでは。","そんな約束を忘れるに限り。","そんな約束を忘れる上に。"],0,"ni_kagitte","Le locuteur pense que cette personne est une exception."),
     q(6,"blank","このイベントは学生（　　　）、地域の人も参加できます。",["に限らず","のみならず","ばかりか","はもとより"],0,"ni_kagirazu","Le champ dépasse les seuls étudiants."),
     q(6,"blank","彼は専門知識（　　　）、豊富な実務経験も持っている。",["に限らず","のみならず","上に","ばかりか"],1,"nominarazu","Ajout formel d’un autre élément en plus des connaissances."),
