@@ -78,7 +78,7 @@
 .jump-control label{font-size:10px;color:var(--muted);white-space:nowrap}
 .jump-control input{width:56px;height:31px;padding:4px 6px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:12px;border-radius:2px}
 .jump-control .quiet-btn{background:var(--sage);padding:7px 9px;color:var(--ink);font-weight:700}
-.quiz-furigana{font-size:10px;white-space:nowrap}
+
 .question-card{position:relative;padding-top:125px;overflow:visible}
 .mascot-stage{position:absolute;z-index:5;top:-58px;right:15px;width:235px;height:175px;pointer-events:none}
 .pixel-guide{position:absolute;right:0;top:19px;width:138px;height:153px;image-rendering:pixelated;filter:drop-shadow(3px 4px 0 rgba(32,44,42,.16))}
@@ -135,7 +135,7 @@
   .quiz-top{display:grid;grid-template-columns:1fr;gap:10px}
   .quiz-tools{display:flex;flex-wrap:wrap;flex-direction:row;gap:9px}
   .jump-control{order:0}
-  .quiz-furigana{order:1}
+  
   .quiz-tools>.quiet-btn{order:2}
   .question-card{padding:105px 17px 22px;min-height:0}
   .mascot-stage{top:-48px;right:4px;width:198px;height:144px}
