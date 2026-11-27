@@ -380,3 +380,11 @@
   .pause-copy h1{font-size:34px}
   .pause-stats{max-width:none}
 }
+
+.save-completed-score.perfect-score{
+  background:linear-gradient(135deg,#fff8dc 0%,#f8efc9 100%);
+  border-color:#d9be68;
+  box-shadow:inset 4px 0 0 #c9a63f,0 5px 14px rgba(124,100,40,.08);
+}
+.save-completed-score.perfect-score strong{color:#80631b;font-size:38px}
+.save-completed-score.perfect-score span{color:#725c25;font-weight:700}
