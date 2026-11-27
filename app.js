@@ -490,8 +490,8 @@ function useHint(){
   if(state.hinted[state.index]||Object.prototype.hasOwnProperty.call(state.answers,state.index))return;
   state.hinted[state.index]=true;state.hints++;saveSession();
   $("hint-btn").disabled=true;
-  const question=current(),gloss=localizedGloss(question.grammar);
-  const hint=state.lang==="fr"&&question.hint?question.hint+" "+(WHY_FR[question.grammar]||""):t("whyContext")+" "+gloss+".";
+  const question=current();
+  const hint=state.lang==="fr"&&question.hint?question.hint+" "+questionExplanation(question):questionExplanation(question);
   $("feedback").className="feedback hint-feedback";
   $("feedback").innerHTML="<strong>"+escapeHtml(t("hint"))+"</strong><p>"+escapeHtml(hint)+"</p>";
   setMascot("thinking");
