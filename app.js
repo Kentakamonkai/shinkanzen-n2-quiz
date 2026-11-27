@@ -103,6 +103,9 @@ const EXTRA_UI = {
   fr:{reviewTitle:"Révision grammaticale · chapitres 1 à 8",reviewIntro:"Retrouve les formes grammaticales et leurs usages dans les huit chapitres avant de commencer.",furigana:"Afficher les furiganas",furiganaLoading:"Chargement des lectures des kanji…",furiganaFailed:"Impossible de charger les furiganas. Vérifie ta connexion Internet.",jumpLabel:"Aller à la question",jump:"Aller",dontKnow:"Je ne sais pas",completedSentence:"Phrase complétée",explanation:"Pourquoi cette forme est-elle utilisée ?",unanswered:"Non répondues",notCounted:"Ne comptent pas comme des erreurs"}
 };
 Object.keys(EXTRA_UI).forEach(lang=>Object.assign(UI[lang],EXTRA_UI[lang]));
+const STEP_THREE={"vi":"BƯỚC 03","zh-CN":"步骤 03","zh-TW":"步驟 03","ko":"단계 03","es":"PASO 03","it":"PASSO 03","ne":"चरण ०३","my":"အဆင့် ၀၃","fr":"ÉTAPE 03"};
+Object.keys(STEP_THREE).forEach(lang=>{UI[lang].step2=STEP_THREE[lang];});
+
 
 let state = {lang:"fr",order:[],index:0,answers:{},hints:0,usedFifty:{},hinted:{},paused:false};
 let furiganaOn = localStorage.getItem(FURIGANA_KEY)==="1";
@@ -237,7 +240,7 @@ function renderSaves(){
     const progress=Math.round(answered/100*100);
     const graph=result&&Array.isArray(result.chapters)?'<div class="save-mini-chart">'+result.chapters.map(row=>'<div class="mini-chart-row"><span>第'+row.ch+'課</span><i><b style="width:'+(row.total?row.correct/row.total*100:0)+'%"></b></i><small>'+row.correct+'/'+row.total+'</small></div>').join("")+'</div>':"";
     const errors=result&&Array.isArray(result.errors)&&result.errors.length?'<p class="save-review-note">復習ポイント：'+result.errors.slice(0,4).map(row=>escapeHtml((getGrammar(row.id)||{}).name||row.id)).join("・")+'</p>':"";
-    return '<details class="saved-session" data-save="'+escapeHtml(session.sessionId)+'"><summary><div class="save-summary-main"><strong>'+dateLabel(session.createdAt)+'</strong><small>'+(completed?'完了 · '+(result?result.score:0)+'/100':'学習中 · '+answered+'/100問に回答')+'</small></div><span class="save-summary-arrow">＋</span></summary><div class="save-session-body">'+
+    return '<details class="saved-session" data-save="'+escapeHtml(session.sessionId)+'"><summary><div class="save-summary-main"><strong>'+dateLabel(session.createdAt)+'</strong><small>'+(completed?'完了 · '+(result?result.answered:answered)+'/100問に回答 · 得点 '+(result?result.score:0)+'/100':'学習中 · '+answered+'/100問に回答')+'</small></div><span class="save-summary-arrow">＋</span></summary><div class="save-session-body">'+
       (completed?'<div class="save-completed-score"><strong>'+(result?result.score:0)+'/100</strong><span>ヒント '+(result?result.hints:session.hints||0)+' 回</span></div>'+graph+errors:'<div class="save-progress"><div><span>回答済み</span><b>'+answered+'/100</b></div><i><b style="width:'+progress+'%"></b></i></div>')+
       '<div class="save-actions">'+(completed?'<button data-action="view" data-id="'+escapeHtml(session.sessionId)+'">結果を見る</button>':'<button data-action="resume" data-id="'+escapeHtml(session.sessionId)+'">学習を再開</button>')+'<button class="delete-save" data-action="delete" data-id="'+escapeHtml(session.sessionId)+'">削除</button></div></div></details>';
   }).join("");
