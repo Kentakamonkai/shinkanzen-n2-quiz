@@ -340,7 +340,7 @@ function renderReview(){
 function startSession(){
   if(DATA.questions.length!==100){alert("Question bank error: expected 100 questions.");return;}
   const lang=state.lang;
-  state={lang:lang,order:shuffle(DATA.questions.map((item,index)=>index)),index:0,answers:{},hints:0,usedFifty:{},hinted:{},paused:false,completed:false,sessionId:"session-"+Date.now()+"-"+Math.random().toString(36).slice(2,7),createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};
+  state={lang:lang,order:shuffle(DATA.questions.map((item,index)=>index)),index:0,answers:{},fifties:0,usedFifty:{},pandaBags:{},paused:false,completed:false,sessionId:"session-"+Date.now()+"-"+Math.random().toString(36).slice(2,7),createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};
   saveSession();renderQuestion();screen("quiz");setMascot("neutral");
 }
 function current(){return DATA.questions[state.order[state.index]];}
@@ -560,9 +560,9 @@ function jumpToQuestion(){
   state.index=value-1;saveSession();renderQuestion();renderScoreAccess();
 }
 function calculateResults(){
-  const answered=Object.keys(state.answers).length;
+  const answered=Object.keys(state.answers||{}).length;
   let score=0;
-  Object.entries(state.answers).forEach(([position,answerValue])=>{
+  Object.entries(state.answers||{}).forEach(([position,answerValue])=>{
     const question=DATA.questions[state.order[Number(position)]];
     if(question&&answerValue===question.answer)score++;
   });
@@ -571,28 +571,39 @@ function calculateResults(){
   state.order.forEach((questionIndex,position)=>{
     const question=DATA.questions[questionIndex],row=chapters[question.ch-1];
     row.total++;
-    if(Object.prototype.hasOwnProperty.call(state.answers,position)){
+    if(Object.prototype.hasOwnProperty.call(state.answers||{},position)){
       row.answered++;
       if(state.answers[position]===question.answer)row.correct++;
       else errors[question.grammar]=(errors[question.grammar]||0)+1;
     }
   });
-  const missed=state.order.map((questionIndex,position)=>({questionIndex:questionIndex,position:position,question:DATA.questions[questionIndex],answer:state.answers[position]}))
-    .filter(item=>Object.prototype.hasOwnProperty.call(state.answers,item.position)&&item.answer!==item.question.answer)
-    .map(item=>({position:item.position+1,prompt:item.question.prompt,sentence:completedSentence(item.question),wrong:item.answer===-1?null:item.question.choices[item.answer],correct:item.question.choices[item.question.answer],grammar:item.question.grammar,skipped:item.answer===-1,why:questionExplanation(item.question),translation:localizedTranslation(item.question)}));
+  const missed=state.order.map((questionIndex,position)=>({questionIndex:questionIndex,position:position,question:DATA.questions[questionIndex],answer:(state.answers||{})[position]}))
+    .filter(item=>Object.prototype.hasOwnProperty.call(state.answers||{},item.position)&&item.answer!==item.question.answer)
+    .map(item=>({
+      position:item.position+1,prompt:item.question.prompt,sentence:completedSentence(item.question),
+      wrong:item.answer===-1?null:item.question.choices[item.answer],
+      correct:item.question.choices[item.question.answer],grammar:item.question.grammar,
+      skipped:item.answer===-1,why:questionExplanation(item.question),translation:localizedTranslation(item.question)
+    }));
   const ranked=Object.entries(errors).sort((a,b)=>b[1]-a[1]).map(row=>({id:row[0],count:row[1]}));
-  return {score:score,answered:answered,unanswered:100-answered,hints:state.hints||0,chapters:chapters,errors:ranked,missed:missed};
+  const fifties=Number.isFinite(state.fifties)?state.fifties:Object.keys(state.usedFifty||{}).filter(key=>state.usedFifty[key]).length;
+  return {score:score,accuracy:answered?Math.round(score/answered*100):0,answered:answered,unanswered:100-answered,fifties:fifties,chapters:chapters,errors:ranked,missed:missed};
 }
 function renderResult(result){
-  $("final-score").textContent=result.score+"/100";
-  $("hint-total").textContent=result.hints;
+  const partial=!state.completed;
+  $("result-page-eyebrow").textContent=partial?t("progressReviewEyebrow"):t("finished");
+  $("result-page-title").textContent=partial?t("progressReviewTitle"):t("resultTitle");
+  $("final-score").textContent=state.completed?result.score+"/100":result.score+"/"+result.answered;
+  $("fifty-total").textContent=result.fifties||0;
   $("completed-total").textContent=result.answered;
   $("unanswered-total").textContent=result.unanswered;
-  $("score-caption").textContent=result.score+"%";
-  const ring=$("score-ring");if(ring)ring.style.setProperty("--score",result.score);
+  $("score-caption").textContent=(result.accuracy||0)+"%";
+  $("score-progress-fill").style.width=(result.accuracy||0)+"%";
+  $("result-continue").classList.toggle("hidden",!partial);
+  $("result-restart").classList.toggle("hidden",partial);
   $("chapter-stats").innerHTML=result.chapters.map(row=>{
-    const percent=row.total?Math.round(row.correct/row.total*100):0;
-    return '<div class="chapter-row"><div class="chapter-row-head"><strong>'+escapeHtml(t("chapterShort"))+' '+row.ch+'</strong><span>'+row.correct+'/'+row.total+' · '+percent+'%</span></div><div class="chapter-bar"><i style="width:'+percent+'%"></i></div><small>'+escapeHtml(t("chapterAnswered"))+' '+row.answered+'/'+row.total+'</small></div>';
+    const percent=row.answered?Math.round(row.correct/row.answered*100):0;
+    return '<div class="chapter-row"><div class="chapter-row-head"><strong>'+escapeHtml(t("chapterShort"))+' '+row.ch+'</strong><span>'+row.correct+'/'+row.answered+' · '+percent+'%</span></div><div class="chapter-bar"><i style="width:'+percent+'%"></i></div><small>'+escapeHtml(t("chapterAnswered"))+' '+row.answered+'/'+row.total+'</small></div>';
   }).join("");
   $("mistake-summary").innerHTML=result.errors.length?result.errors.slice(0,8).map(row=>{
     const grammar=getGrammar(row.id)||{},detail=questionExplanation({grammar:row.id});
@@ -600,20 +611,42 @@ function renderResult(result){
   }).join(""):'<p class="success-note">'+escapeHtml(t("noMistakes"))+'</p>';
   $("missed-list").innerHTML=result.missed.length?result.missed.map(item=>{
     const grammar=getGrammar(item.grammar)||{};
-    return '<article class="missed-item"><div class="missed-heading"><span>Q'+item.position+'</span><strong>'+escapeHtml(grammar.name||item.grammar)+'</strong></div><p class="missed-japanese">'+rubyHtml(item.sentence||item.prompt)+'</p><div class="missed-answers"><p><b>'+escapeHtml(t("wrongAnswer"))+' :</b> '+(item.skipped?escapeHtml(t("notAnswered")):rubyHtml(item.wrong))+'</p><p><b>'+escapeHtml(t("correctAnswer"))+' :</b> '+rubyHtml(item.correct)+'</p></div><div class="missed-explanation"><b>'+escapeHtml(t("whyTitle"))+'</b><p>'+escapeHtml(item.why||"")+'</p><b>'+escapeHtml(t("translation"))+'</b><p>'+escapeHtml(item.translation||"")+'</p></div></article>';
+    const wrong=item.skipped?t("notAnswered"):(item.wrong==null||String(item.wrong).trim()===""?t("answerUnavailable"):String(item.wrong));
+    const correct=item.correct==null||String(item.correct).trim()===""?t("answerUnavailable"):String(item.correct);
+    const why=item.why||questionExplanation({grammar:item.grammar});
+    const translation=item.translation||localizedTranslation(DATA.questions[state.order[item.position-1]]);
+    return '<article class="missed-item"><div class="missed-heading"><span>Q'+item.position+'</span><strong>'+escapeHtml(grammar.name||item.grammar)+'</strong></div><p class="missed-japanese">'+rubyHtml(item.sentence||item.prompt)+'</p><div class="missed-answers"><p><b>'+escapeHtml(t("wrongAnswer"))+' :</b> '+escapeHtml(wrong)+'</p><p><b>'+escapeHtml(t("correctAnswer"))+' :</b> '+escapeHtml(correct)+'</p></div><div class="missed-explanation"><b>'+escapeHtml(t("whyTitle"))+'</b><p>'+escapeHtml(why)+'</p><b>'+escapeHtml(t("translation"))+'</b><p>'+escapeHtml(translation)+'</p></div></article>';
   }).join(""):'<p class="success-note">'+escapeHtml(t("noMisses"))+'</p>';
 }
 function finish(){
-  const result=calculateResults();
-  state.completed=true;state.paused=false;state.result=result;
+  state.completed=true;state.paused=false;
+  const result=calculateResults();state.result=result;
   saveSession();renderResult(result);screen("result");
+}
+function showProgressResults(){
+  if(Object.keys(state.answers||{}).length<10)return;
+  const result=calculateResults();state.result=result;saveSession();
+  renderResult(result);screen("result");
+}
+function returnToQuiz(){
+  state.paused=false;state.result=null;saveSession();
+  screen("quiz");renderQuestion();
+}
+function viewSessionResults(id){
+  const session=loadSessions().find(item=>item.sessionId===id);
+  if(!session)return;
+  state=session;savesUseJapanese=false;
+  $("language-select").value=state.lang;translateUi();updateHomePandaLine();renderSaves();
+  const result=calculateResults();state.result=result;
+  if(state.completed)saveSession();
+  renderResult(result);screen("result");
 }
 function resumeSession(id){
   const session=loadSessions().find(item=>item.sessionId===id);
   if(!session)return;
   state=session;savesUseJapanese=false;
-  $("language-select").value=state.lang;translateUi();renderSaves();
-  if(state.completed){renderResult(state.result||calculateResults());screen("result");return;}
+  $("language-select").value=state.lang;translateUi();updateHomePandaLine();renderSaves();
+  if(state.completed){const result=calculateResults();state.result=result;saveSession();renderResult(result);screen("result");return;}
   renderQuestion();screen(state.paused?"pause":"quiz");
 }
 $("prepare-btn").addEventListener("click",()=>{
@@ -624,13 +657,14 @@ $("subject-back").addEventListener("click",()=>screen("home"));
 $("back-subject").addEventListener("click",()=>screen("subject"));
 $("start-btn").addEventListener("click",startSession);
 $("next-btn").addEventListener("click",nextQuestion);
-$("hint-btn").addEventListener("click",useHint);
 $("fifty-btn").addEventListener("click",useFifty);
 $("dont-know-btn").addEventListener("click",()=>answer(-1));
 $("jump-btn").addEventListener("click",jumpToQuestion);
 $("jump-input").addEventListener("keydown",event=>{if(event.key==="Enter")jumpToQuestion();});
 $("pause-btn").addEventListener("click",()=>{state.paused=true;saveSession();screen("pause");});
-$("continue-btn").addEventListener("click",()=>{state.paused=false;saveSession();screen("quiz");renderQuestion();});
+$("continue-btn").addEventListener("click",returnToQuiz);
+$("quiz-home-btn").addEventListener("click",()=>{state.paused=true;saveSession();screen("home");});
+$("progress-score-btn").addEventListener("click",showProgressResults);
 function openRestartDialog(){$("restart-dialog").classList.remove("hidden");}
 function closeRestartDialog(){$("restart-dialog").classList.add("hidden");}
 function removeCurrentSession(){
@@ -650,10 +684,11 @@ $("restart-discard").addEventListener("click",()=>{
 $("restart-cancel").addEventListener("click",closeRestartDialog);
 $("restart-dialog").addEventListener("click",event=>{if(event.target===$("restart-dialog"))closeRestartDialog();});
 document.addEventListener("keydown",event=>{if(event.key==="Escape"&&!$("restart-dialog").classList.contains("hidden"))closeRestartDialog();});
-$("pause-home-btn").addEventListener("click",()=>screen("home"));
-$("result-home").addEventListener("click",()=>screen("home"));
+$("pause-home-btn").addEventListener("click",()=>{state.paused=true;saveSession();screen("home");});
+$("result-home").addEventListener("click",()=>{saveSession();screen("home");});
+$("result-continue").addEventListener("click",returnToQuiz);
 $("result-restart").addEventListener("click",startSession);
-$("language-select").addEventListener("change",event=>{state.lang=event.target.value;savesUseJapanese=false;renderSaves();});
+$("language-select").addEventListener("change",event=>{state.lang=event.target.value;savesUseJapanese=false;updateHomePandaLine();renderSaves();});
 $("save-list").addEventListener("click",event=>{
   const button=event.target.closest("button[data-action]");
   if(!button)return;
