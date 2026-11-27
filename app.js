@@ -454,10 +454,17 @@ function pandaLine(mood){
   const bank=PANDA_LINES[state.lang]||PANDA_LINES.fr;
   const list=bank[mood]||bank.neutral;
   state.pandaBags=state.pandaBags||{};
+  state.pandaLast=state.pandaLast||{};
   let bag=state.pandaBags[mood]||[];
-  if(!bag.length)bag=shuffle(list.map((_,i)=>i));
+  if(!bag.length){
+    bag=shuffle(list.map((_,i)=>i));
+    if(list.length>1&&bag[bag.length-1]===state.pandaLast[mood]){
+      const swap=bag[0];bag[0]=bag[bag.length-1];bag[bag.length-1]=swap;
+    }
+  }
   const index=bag.pop();
   state.pandaBags[mood]=bag;
+  state.pandaLast[mood]=index;
   return list[index];
 }
 function pickLocalizedPanda(mood){return pandaLine(mood);}
