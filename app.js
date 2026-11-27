@@ -382,7 +382,10 @@ function matchGrammars(source){
 }
 function renderQuick(question){
   const choices=question.choices||[];
-  const sources=[question.prompt,...choices,...choices.map(choice=>question.prompt+choice)];
+  const completedOptions=choices.map(choice=>question.kind==="blank"
+    ?question.prompt.replace(/（[　\s]*）/,choice)
+    :question.prompt+choice);
+  const sources=[question.prompt,...choices,...completedOptions];
   const ids=[...new Set(sources.flatMap(source=>matchGrammars(source)).map(grammar=>grammar.id))];
   $("quick-reference-panel").classList.toggle("hidden",ids.length===0);
   $("side-card").classList.toggle("hidden",ids.length===0);
