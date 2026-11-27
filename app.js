@@ -120,6 +120,20 @@ const FEATURE_UI={
 };
 Object.keys(FEATURE_UI).forEach(lang=>Object.assign(UI[lang],FEATURE_UI[lang]));
 
+const RESULT_UI={
+  vi:{chapterShort:"Bài",chapterAnswered:"Đã trả lời",scoreHeadline:"Tổng kết của bạn",scoreSubline:"Kết quả chi tiết theo từng bài.",paused:"Đã lưu tiến độ",pauseText:"Tiến độ của bạn đã được lưu trên thiết bị này.",continueQuiz:"Tiếp tục làm bài"},
+  "zh-CN":{chapterShort:"第",chapterAnswered:"已回答",scoreHeadline:"本次学习总结",scoreSubline:"查看每一课的详细表现。",paused:"进度已保存",pauseText:"你的学习进度已保存在这台设备上。",continueQuiz:"继续测验"},
+  "zh-TW":{chapterShort:"第",chapterAnswered:"已作答",scoreHeadline:"本次學習總結",scoreSubline:"查看每一課的詳細表現。",paused:"進度已儲存",pauseText:"你的學習進度已儲存在這台裝置上。",continueQuiz:"繼續測驗"},
+  ko:{chapterShort:"제",chapterAnswered:"답변 완료",scoreHeadline:"학습 결과 요약",scoreSubline:"과별 상세 결과를 확인하세요.",paused:"진행 상황 저장 완료",pauseText:"학습 진행 상황이 이 기기에 저장되었습니다.",continueQuiz:"이어서 풀기"},
+  es:{chapterShort:"Cap.",chapterAnswered:"Respondidas",scoreHeadline:"Resumen de tu sesión",scoreSubline:"Consulta tus resultados por capítulo.",paused:"Progreso guardado",pauseText:"Tu progreso se ha guardado en este dispositivo.",continueQuiz:"Continuar el cuestionario"},
+  it:{chapterShort:"Cap.",chapterAnswered:"Risposte date",scoreHeadline:"Riepilogo della sessione",scoreSubline:"Controlla i risultati per capitolo.",paused:"Progressi salvati",pauseText:"I tuoi progressi sono stati salvati su questo dispositivo.",continueQuiz:"Riprendi il quiz"},
+  ne:{chapterShort:"पाठ",chapterAnswered:"उत्तर दिइएका",scoreHeadline:"तपाईंको अध्ययन नतिजा",scoreSubline:"प्रत्येक पाठको विस्तृत नतिजा हेर्नुहोस्।",paused:"प्रगति सुरक्षित भयो",pauseText:"तपाईंको प्रगति यस उपकरणमा सुरक्षित गरिएको छ।",continueQuiz:"अभ्यास जारी राख्नुहोस्"},
+  my:{chapterShort:"အခန်း",chapterAnswered:"ဖြေဆိုပြီး",scoreHeadline:"လေ့လာမှုအနှစ်ချုပ်",scoreSubline:"အခန်းအလိုက် ရလဒ်အသေးစိတ်ကို ကြည့်ပါ။",paused:"တိုးတက်မှု သိမ်းဆည်းပြီး",pauseText:"သင်၏တိုးတက်မှုကို ဤစက်တွင် သိမ်းဆည်းထားသည်။",continueQuiz:"ဆက်လက်ဖြေဆိုရန်"},
+  fr:{chapterShort:"Chap.",chapterAnswered:"Répondues",scoreHeadline:"Bilan de ta session",scoreSubline:"Tes résultats, chapitre par chapitre.",paused:"Progression sauvegardée",pauseText:"Ta progression est sauvegardée sur cet appareil.",continueQuiz:"Reprendre le quiz"}
+};
+Object.keys(RESULT_UI).forEach(lang=>Object.assign(UI[lang],RESULT_UI[lang]));
+
+
 const PANDA_LINES={
   vi:{
     neutral:["Sẵn sàng thử sức chưa?","Câu này có đúng trình độ của bạn không nhỉ?","Cùng xem bạn xử lý câu này thế nào nhé!","Bình tĩnh nào, đọc kỹ một chút nhé.","Bạn có cảm giác về câu này không?","Thử thách tiếp theo đây!","Mình tin bạn làm được!","Nào, tập trung nào!"],
