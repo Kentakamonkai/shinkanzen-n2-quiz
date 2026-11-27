@@ -1,49 +1,52 @@
-# Shin Kanzen Master N2 — Grammar Quest
+# N631期末テスト対策 — 文法 N2
 
-A static, multilingual JLPT N2 grammar quiz based on the first eight lessons of *新完全マスター文法 日本語能力試験N2*.
+N631クラス向けに、健太が作成した2026年12月9日の期末テスト対策サイトです。現在利用できる科目は「文法 N2」で、『新完全マスター文法 N2』第1課〜第8課の内容を復習できます。
 
-## What is included
+## 内容
 
-- 100 original multiple-choice questions, four options each, in Japanese.
-- A mixed question order, without showing chapter labels during practice.
-- Coverage of 41 grammar forms from chapters 1–8.
-- A multilingual interface and concise grammar glosses in Vietnamese, Simplified Chinese, Traditional Chinese (Taiwan), Korean, Spanish, Italian, Nepali, Burmese, and French.
-- A pre-quiz review sheet for every grammar form in chapters 6–8.
-- Contextual hint and 50/50 buttons. Neither affects the score.
-- Immediate correction, progress saving, pause/resume, restart, chapter-level results, and a summary of recurring grammar errors.
-- Responsive layout for desktop and mobile. No account, backend, or timer is required.
-- A small CSS pixel-art guide character, intentionally used as a temporary placeholder.
+- 日本語で出題するオリジナル四択問題100問。
+- 第1課〜第8課の文法形式41項目を収録。
+- 解説言語：ベトナム語、簡体字中国語、台湾繁体字中国語、韓国語、スペイン語、イタリア語、ネパール語、ミャンマー語、フランス語。
+- クイズ開始前に、第1課〜第8課の文法を課ごとの折りたたみ式メニューで確認。
+- 第6課〜第8課の文法が選択肢に含まれる場合だけ、クイズ画面にクイックリファレンスを表示。
+- 文法ヒント、50/50、わからないボタン。ヒントと50/50による減点はなし。ヒント使用回数は結果に表示。
+- 問題番号を入力して、好きな問題へ直接移動可能。
+- ふりがな表示の切り替え。Kuromojiを使ってブラウザ内で漢字の読みを解析。
+- 問題ごとの正誤フィードバック、章ごとの成績、復習ポイント、間違えた問題を表示。
+- ピクセルアートのキャラクターが、吹き出しと表情で学習を応援。
+- 学習セッションを自動保存し、複数回の結果を端末内に保存・比較。
+- PCとスマートフォンに対応。アカウントやサーバーは不要。
 
-## Run locally
+## 保存データについて
 
-Open `index.html` in a modern browser. The quiz is entirely client-side.
+学習履歴はブラウザの localStorage に保存されます。そのため、同じブラウザ・同じ端末であればページを閉じても再開できますが、別の端末やブラウザとは自動同期されません。ブラウザのサイトデータを消去すると、保存した学習履歴も消える可能性があります。新しいセッションを始めるたびに日付と時刻が記録され、過去のセッションは最大40件まで保持します。
 
-## Publish with GitHub Pages
+## ふりがなについて
 
-1. Open this repository's **Settings → Pages**.
-2. Under **Build and deployment**, choose **Deploy from a branch**.
-3. Select branch `main` and folder `/(root)`, then save.
-4. After GitHub Pages finishes deploying, the site should be available at:
+ふりがな表示を初めて有効にすると、Kuromojiのブラウザ用ライブラリと日本語辞書をjsDelivrから読み込みます。漢字の読みは形態素解析で自動推定するため、人名・固有名詞・文脈によっては読みが正確でない場合があります。初回の読み込みにはインターネット接続が必要です。
 
-   https://kentakamonkai.github.io/shinkanzen-n2-quiz/
+## 実行
 
-GitHub's official guide: https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site
+index.html をモダンブラウザで開くか、GitHub Pagesで公開してください。サイトは静的なHTML/CSS/JavaScriptです。
 
-## Grammar scope and provenance
+公開URL：
+https://kentakamonkai.github.io/shinkanzen-n2-quiz/
 
-The chapter/grammar scope follows the publisher's official contents page for the book:
+## 文法範囲と出典
+
+各課の文法範囲は出版社の公式目次を参考にしています：
 https://www.3anet.co.jp/np/books/3602/
 
-All quiz sentences and answer choices in this project are newly written for practice; the project does not reproduce textbook exercises. The publisher lists 211 grammar forms across the full book. This quiz deliberately covers only the first eight lessons in Part 1.
+問題文・選択肢は練習用に新しく作成したものです。教科書の練習問題を転載していません。
 
-## Files
+## ファイル
 
-- `index.html` — page structure and screens
-- `styles.css` — visual design and responsive layout
-- `data.js` — the 41 grammar entries and 100 questions
-- `app.js` — quiz logic, translations, progress, and results
-- `VALIDATION.md` — scope notes and validation checklist
+- index.html — ページと画面構成
+- styles.css — デザインとレスポンシブ表示
+- data.js — 41項目の文法データと100問
+- app.js — 多言語表示、クイズ、ふりがな、保存、成績
+- VALIDATION.md — 範囲・データ確認・手動テスト項目
 
-## Known limitations
+## 注意事項
 
-This is an initial usable version. The short glosses and interface translations have not been reviewed by professional translators. The grammar explanations are deliberately concise; consult the textbook for full explanations. Cross-browser manual testing and GitHub Pages deployment still need to be completed.
+文法の短い説明とUI翻訳は学習補助です。専門家による翻訳・校閲済みの認定教材ではありません。現時点で、復習ページの第1課〜第5課の例文は日本語のみです（第6課〜第8課の例文には9言語の訳があります）。また、クイズの100問それぞれについて、完成した文の全文訳を9言語すべてに用意した状態ではありません。授業で広く配布する前に、日本語教師などによる問題文・解説・訳文の確認を推奨します。
