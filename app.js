@@ -491,7 +491,7 @@ const PANDA_VOCAB={
 "経験の有無":{reading:"けいけんのうむ",meaning:{"fr":"le fait d'avoir de l'expérience ou non","vi":"có kinh nghiệm hay không","zh-CN":"是否有经验","zh-TW":"是否有經驗","ko":"경험 유무","es":"si se tiene experiencia o no","it":"presenza o meno di esperienza","ne":"अनुभव छ वा छैन","my":"အတွေ့အကြုံရှိ၊ မရှိ"}},
 "専門知識":{reading:"せんもんちしき",meaning:{"fr":"connaissances spécialisées","vi":"kiến thức chuyên môn","zh-CN":"专业知识","zh-TW":"專業知識","ko":"전문 지식","es":"conocimientos especializados","it":"conoscenze specialistiche","ne":"विशेषज्ञ ज्ञान","my":"အထူးပြု အသိပညာ"}},
 "実務経験":{reading:"じつむけいけん",meaning:{"fr":"expérience pratique du travail","vi":"kinh nghiệm làm việc thực tế","zh-CN":"实际工作经验","zh-TW":"實務經驗","ko":"실무 경험","es":"experiencia práctica de trabajo","it":"esperienza pratica di lavoro","ne":"व्यावहारिक कामको अनुभव","my":"လက်တွေ့လုပ်ငန်းအတွေ့အကြုံ"}},
-"消費電力":{reading:"しょうひでんりょく",meaning:{"fr":"quantité d'électricité consommée","vi":"lượng điện tiêu thụ","zh-CN":"耗电量","zh-TW":"耗電量","ko":"전력 소비량","es":"consumo eléctrico","it":"consumo elettrico","ne":"बिजुली खपत","my":"လျှပ်စစ်သုံးစွဲ량"}},
+"消費電力":{reading:"しょうひでんりょく",meaning:{"fr":"quantité d'électricité consommée","vi":"lượng điện tiêu thụ","zh-CN":"耗电量","zh-TW":"耗電量","ko":"전력 소비량","es":"consumo eléctrico","it":"consumo elettrico","ne":"बिजुली खपत","my":"လျှပ်စစ်သုံးစွဲမှု ပမာဏ"}},
 "条例":{reading:"じょうれい",meaning:{"fr":"règlement municipal","vi":"quy định của địa phương","zh-CN":"地方条例","zh-TW":"地方自治條例","ko":"지방 조례","es":"reglamento municipal","it":"regolamento comunale","ne":"स्थानीय नियम","my":"ဒေသဆိုင်ရာ စည်းမျဉ်း"}},
 "交渉":{reading:"こうしょう",meaning:{"fr":"négociation, discussion pour trouver un accord","vi":"đàm phán, thương lượng","zh-CN":"谈判、协商","zh-TW":"談判、協商","ko":"협상","es":"negociación","it":"negoziazione","ne":"वार्ता, सम्झौता गर्ने छलफल","my":"ညှိနှိုင်းဆွေးနွေးမှု"}},
 "主張":{reading:"しゅちょう",meaning:{"fr":"position ou opinion défendue","vi":"ý kiến hoặc lập trường được đưa ra","zh-CN":"主张、观点","zh-TW":"主張、立場","ko":"주장, 입장","es":"postura u opinión defendida","it":"posizione sostenuta","ne":"आफ्नो धारणा वा अडान","my":"တင်ပြသောအမြင်၊ ရပ်တည်ချက်"}},
@@ -518,7 +518,7 @@ function setMascot(mood){
   const vocabulary=pandaVocabulary(typeof current==="function"?current():null);
   const bubble=$("mascot-bubble");
   if(bubble){
-    bubble.textContent=vocabulary.length?vocabulary.join("\\n"):pandaLine(mood);
+    bubble.textContent=vocabulary.length?vocabulary.join(String.fromCharCode(10)):pandaLine(mood);
     bubble.classList.toggle("vocabulary-bubble",vocabulary.length>0);
   }
 }
