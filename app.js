@@ -75,97 +75,413 @@ no_moto:["Chúng tôi đã tiến hành thí nghiệm dưới sự hướng dẫ
 mukeda:["Tài liệu học tập này được biên soạn dành cho người học trình độ trung cấp.","这份教材是为中级学习者编写的。","這份教材是為中級學習者編寫的。","이 교재는 중급 학습자를 대상으로 만들어졌다.","Este material está diseñado para estudiantes de nivel intermedio.","Questo materiale è pensato per studenti di livello intermedio.","यो अध्ययन सामग्री मध्यम तहका विद्यार्थीहरूका लागि बनाइएको हो।","ဤသင်ထောက်ကူကို အလယ်အလတ်အဆင့် သင်ယူသူများအတွက် ပြုလုပ်ထားသည်။","Ce support pédagogique a été conçu pour les apprenants de niveau intermédiaire."]
 };
 
-const $=id=>document.getElementById(id);
-let state={lang:"fr",order:[],index:0,answers:{},hints:0,usedFifty:{},hinted:{},paused:false};
-function t(k){return (UI[state.lang]&&UI[state.lang][k])||UI.fr[k]||k;}
-function save(){try{localStorage.setItem(STORE_KEY,JSON.stringify(state));}catch(e){console.warn("Cannot save progress",e);}}
-function load(){try{const x=JSON.parse(localStorage.getItem(STORE_KEY));return x&&Array.isArray(x.order)&&x.order.length===100?x:null;}catch(e){return null;}}
-function screen(name){document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));$("screen-"+name).classList.add("active");window.scrollTo({top:0,behavior:"smooth"});}
-function translateUi(){document.querySelectorAll("[data-i18n]").forEach(el=>{const key=el.dataset.i18n;if(t(key))el.textContent=t(key);});}
-function shuffle(a){const b=a.slice();for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+
+
+const $ = id => document.getElementById(id);
+const SESSIONS_KEY = "shinkanzen-n2-quiz-sessions-v2";
+const FURIGANA_KEY = "shinkanzen-n2-furigana";
+const PRAISE = {
+  vi:{ok:["Giỏi lắm!","Tuyệt vời!","Chính xác rồi!"],ng:["Suýt đúng rồi!","Cố lên nhé!","Làm tốt vì bạn đã thử!"],skip:["Không sao, cùng xem lời giải nhé!"]},
+  "zh-CN":{ok:["做得好！","太棒了！","答对了！"],ng:["差一点！","再接再厉！","勇敢尝试就很好！"],skip:["没关系，我们一起看看解析吧！"]},
+  "zh-TW":{ok:["做得好！","太棒了！","答對了！"],ng:["差一點！","再接再厲！","願意嘗試就很棒！"],skip:["沒關係，我們一起看看解析吧！"]},
+  ko:{ok:["잘했어요!","정답이에요!","아주 좋아요!"],ng:["아쉽네요!","다음 문제에서 만회해 봐요!","도전한 것만으로도 좋아요!"],skip:["괜찮아요. 함께 답을 확인해 봐요!"]},
+  es:{ok:["¡Muy bien!","¡Excelente!","¡Lo has conseguido!"],ng:["¡Casi!","¡Sigue así!","¡Buen intento!"],skip:["No pasa nada. Veamos la explicación."]},
+  it:{ok:["Ben fatto!","Ottimo!","Esatto!"],ng:["Ci sei quasi!","Continua così!","Bel tentativo!"],skip:["Non preoccuparti: vediamo insieme la spiegazione."]},
+  ne:{ok:["धेरै राम्रो!","एकदम सही!","शानदार!"],ng:["अलि मात्र बाँकी थियो!","अर्को प्रश्नमा अझ राम्रो गरौँ!","प्रयास गर्नु नै राम्रो हो!"],skip:["चिन्ता नगर्नुहोस्, उत्तर सँगै हेरौँ।"]},
+  my:{ok:["အရမ်းကောင်းပါတယ်!","မှန်ပါတယ်!","တော်လိုက်တာ!"],ng:["နည်းနည်းလေးလိုသွားတယ်!","ဆက်ကြိုးစားပါ!","ကြိုးစားဖြေဆိုတာ ကောင်းပါတယ်!"],skip:["စိတ်မပူပါနဲ့၊ အဖြေကိုအတူကြည့်ကြမယ်။"]},
+  fr:{ok:["Bravo !","Bien joué !","Exactement !"],ng:["Dommage !","Bien essayé !","Tu y es presque !"],skip:["Pas de souci, regardons l'explication ensemble."]}
+};
+const EXTRA_UI = {
+  vi:{reviewTitle:"Ôn tập ngữ pháp · Bài 1–8",reviewIntro:"Xem lại tất cả cấu trúc và cách dùng trong tám bài trước khi bắt đầu.",furigana:"Hiển thị furigana",furiganaLoading:"Đang tải cách đọc kanji…",furiganaFailed:"Không thể tải furigana. Hãy kiểm tra kết nối Internet.",jumpLabel:"Đến câu số",jump:"Đi",dontKnow:"Tôi không biết",completedSentence:"Câu hoàn chỉnh",explanation:"Vì sao dùng cấu trúc này?",unanswered:"Chưa trả lời",notCounted:"Không tính là câu sai"},
+  "zh-CN":{reviewTitle:"语法复习 · 第1–8课",reviewIntro:"开始答题前，先复习这八课中的语法形式和用法。",furigana:"显示假名注音",furiganaLoading:"正在加载汉字读音……",furiganaFailed:"无法加载假名注音，请检查网络连接。",jumpLabel:"跳转到题目",jump:"跳转",dontKnow:"我不知道",completedSentence:"完整句子",explanation:"为什么这里使用这个语法？",unanswered:"未作答",notCounted:"不计为答错"},
+  "zh-TW":{reviewTitle:"文法複習 · 第1–8課",reviewIntro:"開始作答前，先複習這八課中的文法形式與用法。",furigana:"顯示假名注音",furiganaLoading:"正在載入漢字讀音……",furiganaFailed:"無法載入假名注音，請檢查網路連線。",jumpLabel:"跳到題目",jump:"前往",dontKnow:"我不知道",completedSentence:"完整句子",explanation:"為什麼這裡使用這個文法？",unanswered:"未作答",notCounted:"不計為答錯"},
+  ko:{reviewTitle:"문법 복습 · 1~8과",reviewIntro:"퀴즈를 시작하기 전에 1~8과의 문형과 용법을 모두 복습하세요.",furigana:"후리가나 표시",furiganaLoading:"한자 읽는 법을 불러오는 중…",furiganaFailed:"후리가나를 불러오지 못했습니다. 인터넷 연결을 확인해 주세요.",jumpLabel:"문제 번호로 이동",jump:"이동",dontKnow:"모르겠어요",completedSentence:"완성된 문장",explanation:"왜 이 문형을 사용할까요?",unanswered:"미응답",notCounted:"오답으로 계산하지 않음"},
+  es:{reviewTitle:"Repaso de gramática · capítulos 1–8",reviewIntro:"Repasa todas las estructuras y sus usos de los ocho capítulos antes de empezar.",furigana:"Mostrar furigana",furiganaLoading:"Cargando las lecturas de los kanji…",furiganaFailed:"No se pudieron cargar los furigana. Comprueba la conexión a Internet.",jumpLabel:"Ir a la pregunta",jump:"Ir",dontKnow:"No lo sé",completedSentence:"Frase completa",explanation:"¿Por qué se usa esta forma?",unanswered:"Sin responder",notCounted:"No cuentan como errores"},
+  it:{reviewTitle:"Ripasso grammaticale · capitoli 1–8",reviewIntro:"Ripassa tutte le strutture e i loro usi negli otto capitoli prima di iniziare.",furigana:"Mostra i furigana",furiganaLoading:"Caricamento delle letture dei kanji…",furiganaFailed:"Impossibile caricare i furigana. Controlla la connessione Internet.",jumpLabel:"Vai alla domanda",jump:"Vai",dontKnow:"Non lo so",completedSentence:"Frase completa",explanation:"Perché si usa questa forma?",unanswered:"Senza risposta",notCounted:"Non contano come errori"},
+  ne:{reviewTitle:"व्याकरण पुनरावृत्ति · पाठ १–८",reviewIntro:"सुरु गर्नुअघि आठै पाठका व्याकरण रूप र प्रयोग पुनरावलोकन गर्नुहोस्।",furigana:"फुरिगाना देखाउनुहोस्",furiganaLoading:"कान्जीको पढाइ लोड हुँदैछ…",furiganaFailed:"फुरिगाना लोड गर्न सकिएन। इन्टरनेट जडान जाँच गर्नुहोस्।",jumpLabel:"प्रश्न नम्बरमा जानुहोस्",jump:"जानुहोस्",dontKnow:"मलाई थाहा छैन",completedSentence:"पूरा वाक्य",explanation:"यो व्याकरण किन प्रयोग गरिएको छ?",unanswered:"उत्तर नदिइएका",notCounted:"गलत उत्तरमा गणना हुँदैन"},
+  my:{reviewTitle:"သဒ္ဒါ ပြန်လည်လေ့လာခြင်း · အခန်း ၁–၈",reviewIntro:"မစတင်မီ အခန်းရှစ်ခန်းရှိ သဒ္ဒါပုံစံနှင့် အသုံးပြုပုံအားလုံးကို ပြန်လည်လေ့လာပါ။",furigana:"ဖူရီဂနာ ပြရန်",furiganaLoading:"ခန်းဂျီးဖတ်ပုံများကို ဖွင့်နေသည်…",furiganaFailed:"ဖူရီဂနာကို ဖွင့်မရပါ။ အင်တာနက်ချိတ်ဆက်မှုကို စစ်ဆေးပါ။",jumpLabel:"မေးခွန်းနံပါတ်သို့ သွားရန်",jump:"သွားရန်",dontKnow:"မသိပါ",completedSentence:"ဝါကျအပြည့်အစုံ",explanation:"ဤသဒ္ဒါပုံစံကို ဘာကြောင့် သုံးသနည်း။",unanswered:"မဖြေဆိုရသေး",notCounted:"မှားသောအဖြေအဖြစ် မတွက်ပါ"},
+  fr:{reviewTitle:"Révision grammaticale · chapitres 1 à 8",reviewIntro:"Retrouve les formes grammaticales et leurs usages dans les huit chapitres avant de commencer.",furigana:"Afficher les furiganas",furiganaLoading:"Chargement des lectures des kanji…",furiganaFailed:"Impossible de charger les furiganas. Vérifie ta connexion Internet.",jumpLabel:"Aller à la question",jump:"Aller",dontKnow:"Je ne sais pas",completedSentence:"Phrase complétée",explanation:"Pourquoi cette forme est-elle utilisée ?",unanswered:"Non répondues",notCounted:"Ne comptent pas comme des erreurs"}
+};
+Object.keys(EXTRA_UI).forEach(lang=>Object.assign(UI[lang],EXTRA_UI[lang]));
+
+let state = {lang:"fr",order:[],index:0,answers:{},hints:0,usedFifty:{},hinted:{},paused:false};
+let furiganaOn = localStorage.getItem(FURIGANA_KEY)==="1";
+let tokenizer = null, tokenizerPromise = null;
+
+function t(key){return (UI[state.lang]&&UI[state.lang][key])||UI.fr[key]||key;}
+function escapeHtml(value){
+  return String(value==null?"":value).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+}
+function toHiragana(value){
+  return String(value||"").replace(/[ァ-ヶ]/g,ch=>String.fromCharCode(ch.charCodeAt(0)-0x60));
+}
+function ensureTokenizer(){
+  if(tokenizer)return Promise.resolve(tokenizer);
+  if(tokenizerPromise)return tokenizerPromise;
+  tokenizerPromise = new Promise((resolve,reject)=>{
+    const build = ()=>{
+      if(!window.kuromoji){reject(new Error("Kuromoji is unavailable"));return;}
+      window.kuromoji.builder({dicPath:"https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/"}).build((err,value)=>{
+        if(err){reject(err);return;}
+        tokenizer=value;resolve(value);
+      });
+    };
+    if(window.kuromoji){build();return;}
+    const script=document.createElement("script");
+    script.src="https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/build/kuromoji.js";
+    script.async=true;
+    script.onload=build;
+    script.onerror=()=>reject(new Error("Could not load the Japanese reading library"));
+    document.head.appendChild(script);
+  });
+  return tokenizerPromise;
+}
+function rubyHtml(value){
+  const text=String(value==null?"":value);
+  if(!furiganaOn||!tokenizer)return escapeHtml(text);
+  try{
+    const tokens=tokenizer.tokenize(text);
+    let cursor=0,html="";
+    tokens.forEach(token=>{
+      const surface=String(token.surface_form||"");
+      if(!surface)return;
+      let start=text.indexOf(surface,cursor);
+      if(start<0)start=Math.max(cursor,Number(token.word_position||1)-1);
+      if(start>text.length)return;
+      html+=escapeHtml(text.slice(cursor,start));
+      const actual=text.slice(start,start+surface.length)||surface;
+      const reading=String(token.reading||"");
+      if(/[一-龯々]/.test(actual)&&reading&&reading!=="*"){
+        html+="<ruby>"+escapeHtml(actual)+"<rt>"+escapeHtml(toHiragana(reading))+"</rt></ruby>";
+      }else html+=escapeHtml(actual);
+      cursor=start+actual.length;
+    });
+    html+=escapeHtml(text.slice(cursor));
+    return html;
+  }catch(error){return escapeHtml(text);}
+}
 function getGrammar(id){return DATA.grammar.find(g=>g.id===id);}
-function localizedGloss(id){const a=GLOSS[id];return a?a[LANGS.indexOf(state.lang)]:"";}
+function localizedGloss(id){
+  const values=GLOSS[id];
+  return values?values[LANGS.indexOf(state.lang)]||"": "";
+}
+function screen(name){
+  document.querySelectorAll(".screen").forEach(el=>el.classList.remove("active"));
+  $("screen-"+name).classList.add("active");
+  window.scrollTo({top:0,behavior:"smooth"});
+  if(name==="home")renderSaves();
+}
+function translateUi(){
+  document.querySelectorAll("[data-i18n]").forEach(el=>{
+    const key=el.dataset.i18n;
+    if(t(key))el.textContent=t(key);
+  });
+  syncFuriganaControls();
+}
+function syncFuriganaControls(){
+  ["furigana-toggle-subject","furigana-toggle-quiz"].forEach(id=>{
+    const el=$(id);if(el)el.checked=furiganaOn;
+  });
+}
+function dateLabel(value){
+  const date=new Date(value);
+  if(Number.isNaN(date.getTime()))return "保存日時不明";
+  return date.toLocaleString(undefined,{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"});
+}
+function loadSessions(){
+  try{const value=JSON.parse(localStorage.getItem(SESSIONS_KEY)||"[]");return Array.isArray(value)?value:[];}catch(error){return [];}
+}
+function saveSession(){
+  if(!state.sessionId)return;
+  state.updatedAt=new Date().toISOString();
+  try{
+    const sessions=loadSessions();
+    const index=sessions.findIndex(item=>item.sessionId===state.sessionId);
+    const copy=JSON.parse(JSON.stringify(state));
+    if(index>=0)sessions[index]=copy;else sessions.unshift(copy);
+    sessions.sort((a,b)=>new Date(b.createdAt||0)-new Date(a.createdAt||0));
+    localStorage.setItem(SESSIONS_KEY,JSON.stringify(sessions.slice(0,40)));
+    renderSaves();
+  }catch(error){console.warn("Could not save the session",error);}
+}
+function renderSaves(){
+  const host=$("save-list");if(!host)return;
+  const sessions=loadSessions();
+  if(!sessions.length){
+    host.innerHTML='<p class="no-saves">まだ学習記録はありません。クイズを始めると、ここに自動で保存されます。</p>';
+    return;
+  }
+  host.innerHTML=sessions.map(session=>{
+    const answered=Object.keys(session.answers||{}).length;
+    const completed=!!session.completed;
+    const result=session.result||null;
+    const progress=Math.round(answered/100*100);
+    const graph=result&&Array.isArray(result.chapters)?'<div class="save-mini-chart">'+result.chapters.map(row=>'<div class="mini-chart-row"><span>第'+row.ch+'課</span><i><b style="width:'+(row.total?row.correct/row.total*100:0)+'%"></b></i><small>'+row.correct+'/'+row.total+'</small></div>').join("")+'</div>':"";
+    const errors=result&&Array.isArray(result.errors)&&result.errors.length?'<p class="save-review-note">復習ポイント：'+result.errors.slice(0,4).map(row=>escapeHtml((getGrammar(row.id)||{}).name||row.id)).join("・")+'</p>':"";
+    return '<details class="saved-session" data-save="'+escapeHtml(session.sessionId)+'"><summary><div class="save-summary-main"><strong>'+dateLabel(session.createdAt)+'</strong><small>'+(completed?'完了 · '+(result?result.score:0)+'/100':'学習中 · '+answered+'/100問に回答')+'</small></div><span class="save-summary-arrow">＋</span></summary><div class="save-session-body">'+
+      (completed?'<div class="save-completed-score"><strong>'+(result?result.score:0)+'/100</strong><span>ヒント '+(result?result.hints:session.hints||0)+' 回</span></div>'+graph+errors:'<div class="save-progress"><div><span>回答済み</span><b>'+answered+'/100</b></div><i><b style="width:'+progress+'%"></b></i></div>')+
+      '<div class="save-actions">'+(completed?'<button data-action="view" data-id="'+escapeHtml(session.sessionId)+'">結果を見る</button>':'<button data-action="resume" data-id="'+escapeHtml(session.sessionId)+'">学習を再開</button>')+'<button class="delete-save" data-action="delete" data-id="'+escapeHtml(session.sessionId)+'">削除</button></div></div></details>';
+  }).join("");
+}
 function renderReview(){
- const list=DATA.grammar.filter(g=>g.ch>=6);
- $("review-list").innerHTML=list.map(g=>'<article class="review-card"><span class="chapter-tag">'+t("reviewTitle").split("·")[0]+' '+g.ch+'</span><h3>'+g.name+'</h3><p class="structure">'+g.form+'</p><p>'+localizedGloss(g.id)+'</p><p class="review-example">'+g.example+'</p><p class="example-translation">'+((EXAMPLES[g.id]||[])[LANGS.indexOf(state.lang)]||"") +'</p></article>').join("");
+  const chapters=Array.from({length:8},(_,i)=>i+1);
+  $("review-list").innerHTML=chapters.map(ch=>{
+    const entries=DATA.grammar.filter(g=>g.ch===ch);
+    const cards=entries.map(g=>{
+      const gloss=localizedGloss(g.id);
+      const extra=state.lang==="fr"&&g.dist?'<p class="grammar-distinction"><b>Nuance :</b> '+escapeHtml(g.dist)+'</p>':"";
+      const translation=(EXAMPLES[g.id]||[])[LANGS.indexOf(state.lang)]||"";
+      return '<article class="grammar-card"><h3>'+rubyHtml(g.name)+'</h3><div class="grammar-form">'+rubyHtml(g.form)+'</div><p class="grammar-meaning">'+escapeHtml(gloss)+'</p>'+extra+'<div class="grammar-example"><p>'+rubyHtml(g.example)+'</p>'+(translation?'<small>'+escapeHtml(translation)+'</small>':"")+'</div></article>';
+    }).join("");
+    return '<details class="chapter-accordion" '+(ch===1?"open":"")+'><summary><span>第'+ch+'課</span><small>'+entries.length+' forms</small></summary><div class="grammar-grid">'+cards+'</div></details>';
+  }).join("");
 }
 function startSession(){
- if(DATA.questions.length!==100){alert("Question bank error: expected 100 questions.");return;}
- state.order=shuffle(DATA.questions.map((x,i)=>i));state.index=0;state.answers={};state.hints=0;state.usedFifty={};state.hinted={};state.paused=false;save();renderQuestion();screen("quiz");
+  if(DATA.questions.length!==100){alert("Question bank error: expected 100 questions.");return;}
+  const lang=state.lang;
+  state={lang:lang,order:shuffle(DATA.questions.map((item,index)=>index)),index:0,answers:{},hints:0,usedFifty:{},hinted:{},paused:false,completed:false,sessionId:"session-"+Date.now()+"-"+Math.random().toString(36).slice(2,7),createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};
+  saveSession();renderQuestion();screen("quiz");setMascot("neutral");
 }
 function current(){return DATA.questions[state.order[state.index]];}
 function matchGrammar(option){
- const s=option.replace(/[～〜]/g,"").replace(/[（）()]/g,"");
- for(const g of DATA.grammar.filter(x=>x.ch>=6)){
-  const variants=g.name.replace(/[～〜]/g,"").split(/[・／]/);
-  if(variants.some(v=>v.length>2&&s.includes(v.replace(/[（）()]/g,""))))return g;
- }
- return null;
+  const source=option.replace(/[～〜]/g,"").replace(/[（）()]/g,"");
+  for(const grammar of DATA.grammar.filter(item=>item.ch>=6)){
+    const variants=grammar.name.replace(/[～〜]/g,"").split(/[・／]/);
+    if(variants.some(variant=>variant.length>2&&source.includes(variant.replace(/[（）()]/g,""))))return grammar;
+  }
+  return null;
 }
-function renderQuick(q){
- const ids=[...new Set(q.choices.map(c=>matchGrammar(c)).filter(Boolean).map(g=>g.id))];
- $("quick-refs").innerHTML=ids.length?ids.map(id=>'<button class="ref-btn" data-ref="'+id+'">'+getGrammar(id).name+'</button>').join(""):'<span class="no-data">—</span>';
- $("quick-detail").classList.add("hidden");$("quick-detail").textContent="";
- document.querySelectorAll(".ref-btn").forEach(btn=>btn.addEventListener("click",()=>{
-  const g=getGrammar(btn.dataset.ref);document.querySelectorAll(".ref-btn").forEach(b=>b.classList.toggle("active",b===btn));
-  $("quick-detail").innerHTML='<strong>'+g.name+'</strong><div>'+g.form+'</div><div>'+localizedGloss(g.id)+'</div><div style="margin-top:7px">'+g.example+'</div>';$("quick-detail").classList.remove("hidden");
- }));
+function renderQuick(question){
+  const ids=[...new Set(question.choices.map(choice=>matchGrammar(choice)).filter(Boolean).map(grammar=>grammar.id))];
+  $("quick-reference-panel").classList.toggle("hidden",ids.length===0);
+  $("side-card").classList.toggle("hidden",ids.length===0);
+  if(!ids.length){$("quick-refs").innerHTML="";$("quick-detail").innerHTML="";return;}
+  $("quick-refs").innerHTML=ids.map(id=>'<button class="ref-btn" data-ref="'+id+'">'+rubyHtml(getGrammar(id).name)+'</button>').join("");
+  $("quick-detail").classList.add("hidden");$("quick-detail").innerHTML="";
+  document.querySelectorAll(".ref-btn").forEach(button=>button.addEventListener("click",()=>{
+    const grammar=getGrammar(button.dataset.ref);
+    document.querySelectorAll(".ref-btn").forEach(item=>item.classList.toggle("active",item===button));
+    $("quick-detail").innerHTML='<strong>'+rubyHtml(grammar.name)+'</strong><div>'+rubyHtml(grammar.form)+'</div><div>'+escapeHtml(localizedGloss(grammar.id))+'</div><div class="quick-example">'+rubyHtml(grammar.example)+'</div>';
+    $("quick-detail").classList.remove("hidden");
+  }));
 }
 function renderQuestion(){
- const q=current(),answered=Object.prototype.hasOwnProperty.call(state.answers,state.index);
- $("question-count").textContent=String(state.index+1).padStart(2,"0")+" / 100";
- $("question-kind").textContent=q.kind==="blank"?"文法形式の判断":"文の組み立て";
- $("progress-fill").style.width=((state.index+1))+"%";$("question-prompt").textContent=q.prompt;
- $("options").innerHTML=q.choices.map((c,i)=>'<button class="option-btn" data-choice="'+i+'" '+(answered?"disabled":"")+'><span class="letter">'+ "ABCD"[i] +'</span><span>'+c+'</span></button>').join("");
- document.querySelectorAll(".option-btn").forEach(btn=>btn.addEventListener("click",()=>answer(Number(btn.dataset.choice))));
- $("feedback").className="feedback hidden";$("feedback").textContent="";$("next-btn").classList.toggle("hidden",!answered);
- $("hint-btn").disabled=!!state.hinted[state.index]||answered;$("fifty-btn").disabled=!!state.usedFifty[state.index]||answered;
- if(state.usedFifty[state.index])applyFifty();
- if(answered)showAnswer(state.answers[state.index]);
- renderQuick(q);save();
+  if(!state.order.length)return;
+  const question=current(),answered=Object.prototype.hasOwnProperty.call(state.answers,state.index);
+  $("question-count").textContent="問題 "+String(state.index+1).padStart(2,"0")+" / 100";
+  $("question-kind").textContent=question.kind==="blank"?"文法形式の判断":"文の組み立て";
+  $("progress-fill").style.width=(state.index+1)+"%";
+  $("question-prompt").innerHTML=rubyHtml(question.prompt);
+  $("options").innerHTML=question.choices.map((choice,index)=>'<button class="option-btn" data-choice="'+index+'" '+(answered?"disabled":"")+'><span class="letter">'+ "ABCD"[index] +'</span><span>'+rubyHtml(choice)+'</span></button>').join("");
+  document.querySelectorAll(".option-btn").forEach(button=>button.addEventListener("click",()=>answer(Number(button.dataset.choice))));
+  $("feedback").className="feedback hidden";$("feedback").innerHTML="";
+  $("next-btn").classList.toggle("hidden",!answered);
+  $("hint-btn").disabled=!!state.hinted[state.index]||answered;
+  $("fifty-btn").disabled=!!state.usedFifty[state.index]||answered;
+  $("dont-know-btn").disabled=answered;
+  $("jump-input").value="";
+  if(state.usedFifty[state.index])applyFifty();
+  if(answered)showAnswer(state.answers[state.index],true);
+  else setMascot("neutral");
+  renderQuick(question);saveSession();
 }
-function answer(choice){if(Object.prototype.hasOwnProperty.call(state.answers,state.index))return;state.answers[state.index]=choice;save();showAnswer(choice);}
-function showAnswer(choice){
- const q=current(),ok=choice===q.answer;
- document.querySelectorAll(".option-btn").forEach((btn,i)=>{btn.disabled=true;if(i===q.answer)btn.classList.add("correct");else if(i===choice)btn.classList.add("incorrect");});
- $("feedback").className="feedback"+(ok?"":" wrong");
- $("feedback").innerHTML="<strong>"+(ok?t("correct"):t("incorrect"))+" · "+t("correctAnswer")+": "+ "ABCD"[q.answer]+"</strong><span>"+t("reason")+(localizedGloss(q.grammar)? " "+localizedGloss(q.grammar):"")+"</span>";
- $("next-btn").classList.remove("hidden");$("hint-btn").disabled=true;$("fifty-btn").disabled=true;
- $("side-mascot").textContent=ok?"正解です！よくできました！":"残念！もう一度確認しましょう。";
+function completedSentence(question){
+  const answer=question.choices[question.answer];
+  return question.kind==="blank"?question.prompt.replace(/（[　\\s]*）/,answer):question.prompt+answer;
 }
-function applyFifty(){const q=current();document.querySelectorAll(".option-btn").forEach((btn,i)=>{if(i!==q.answer&&i!==((q.answer+1)%4))btn.classList.add("eliminated");});}
+function answer(choice){
+  if(Object.prototype.hasOwnProperty.call(state.answers,state.index))return;
+  state.answers[state.index]=choice;saveSession();showAnswer(choice,false);
+}
+function pickMessage(type){
+  const options=(PRAISE[state.lang]||PRAISE.fr)[type]||PRAISE.fr[type];
+  return options[Math.floor(Math.random()*options.length)];
+}
+function setMascot(mood){
+  const stage=$("mascot-stage");if(!stage)return;
+  stage.dataset.mood=mood;
+  const lines={
+    neutral:["準備はいいですか？","一問ずつ、落ち着いていきましょう！"],
+    happy:["正解です！よくできました！","その調子です！","すばらしい！"],
+    sad:["惜しい！次で取り返しましょう！","いい挑戦です！解説を見てみましょう！"],
+    thinking:["ここに注目してみましょう！","文の意味を考えてみましょう！"],
+    focus:["二つにしぼれました！","あと少しです！"]
+  };
+  const list=lines[mood]||lines.neutral;
+  $("mascot-bubble").textContent=list[Math.floor(Math.random()*list.length)];
+}
+function showAnswer(choice,restoring){
+  const question=current(),correct=choice===question.answer,didSkip=choice===-1;
+  document.querySelectorAll(".option-btn").forEach((button,index)=>{
+    button.disabled=true;
+    if(index===question.answer)button.classList.add("correct");
+    else if(index===choice)button.classList.add("incorrect");
+  });
+  const grammar=getGrammar(question.grammar);
+  const sentence=completedSentence(question);
+  let message=didSkip?pickMessage("skip"):pickMessage(correct?"ok":"ng");
+  const detailParts=[];
+  detailParts.push('<strong class="feedback-emotion">'+escapeHtml(message)+'</strong>');
+  detailParts.push('<p class="feedback-answer">'+escapeHtml(t("correctAnswer"))+'：<b>'+escapeHtml(grammar?grammar.name:"")+'</b></p>');
+  detailParts.push('<section class="feedback-explanation"><b>'+escapeHtml(t("completedSentence"))+'</b><p class="feedback-japanese">'+rubyHtml(sentence)+'</p><b>'+escapeHtml(t("explanation"))+'</b><p>'+escapeHtml(localizedGloss(question.grammar))+'</p></section>');
+  if(state.lang==="fr"&&grammar&&grammar.dist){
+    detailParts.push('<p class="feedback-context"><b>À retenir :</b> '+escapeHtml(grammar.dist)+(question.hint?' '+escapeHtml(question.hint):"")+'</p>');
+  }else if(state.lang==="fr"&&question.hint){
+    detailParts.push('<p class="feedback-context">'+escapeHtml(question.hint)+'</p>');
+  }
+  $("feedback").className="feedback"+(correct?"":" wrong");
+  $("feedback").innerHTML=detailParts.join("");
+  $("next-btn").classList.remove("hidden");
+  $("hint-btn").disabled=true;$("fifty-btn").disabled=true;$("dont-know-btn").disabled=true;
+  setMascot(didSkip?"thinking":(correct?"happy":"sad"));
+  if(!restoring)saveSession();
+}
+function applyFifty(){
+  const question=current();
+  document.querySelectorAll(".option-btn").forEach((button,index)=>{
+    if(index!==question.answer&&index!==((question.answer+1)%4))button.classList.add("eliminated");
+  });
+}
 function useHint(){
- if(state.hinted[state.index]||Object.prototype.hasOwnProperty.call(state.answers,state.index))return;
- state.hinted[state.index]=true;state.hints++;save();$("hint-btn").disabled=true;
- $("feedback").className="feedback";$("feedback").innerHTML="<strong>"+t("hint")+"</strong><span>"+t("hintText")+"</span>";
+  if(state.hinted[state.index]||Object.prototype.hasOwnProperty.call(state.answers,state.index))return;
+  state.hinted[state.index]=true;state.hints++;saveSession();
+  $("hint-btn").disabled=true;
+  const question=current(),gloss=localizedGloss(question.grammar);
+  const hint=state.lang==="fr"&&question.hint?question.hint:gloss;
+  $("feedback").className="feedback hint-feedback";
+  $("feedback").innerHTML="<strong>"+escapeHtml(t("hint"))+"</strong><p>"+escapeHtml(hint)+"</p>";
+  setMascot("thinking");
 }
 function useFifty(){
- if(state.usedFifty[state.index]||Object.prototype.hasOwnProperty.call(state.answers,state.index))return;
- state.usedFifty[state.index]=true;save();applyFifty();$("fifty-btn").disabled=true;
- $("feedback").className="feedback";$("feedback").innerHTML="<strong>50/50</strong><span>"+t("fiftyDone")+"</span>";
+  if(state.usedFifty[state.index]||Object.prototype.hasOwnProperty.call(state.answers,state.index))return;
+  state.usedFifty[state.index]=true;saveSession();applyFifty();
+  $("fifty-btn").disabled=true;
+  $("feedback").className="feedback hint-feedback";
+  $("feedback").innerHTML="<strong>50/50</strong><p>"+escapeHtml(t("fiftyDone"))+"</p>";
+  setMascot("focus");
 }
-function nextQuestion(){if(!Object.prototype.hasOwnProperty.call(state.answers,state.index))return;if(state.index===99){finish();return;}state.index++;save();renderQuestion();}
+function nextQuestion(){
+  if(!Object.prototype.hasOwnProperty.call(state.answers,state.index))return;
+  if(state.index===99){finish();return;}
+  state.index++;saveSession();renderQuestion();
+}
+function jumpToQuestion(){
+  const value=Number($("jump-input").value);
+  if(!Number.isInteger(value)||value<1||value>100){
+    $("jump-input").setCustomValidity(state.lang==="fr"?"Entre un numéro entre 1 et 100.":"Enter a number from 1 to 100.");
+    $("jump-input").reportValidity();return;
+  }
+  $("jump-input").setCustomValidity("");
+  state.index=value-1;saveSession();renderQuestion();
+}
+function calculateResults(){
+  const answered=Object.keys(state.answers).length;
+  let score=0;
+  Object.entries(state.answers).forEach(([position,answerValue])=>{
+    const question=DATA.questions[state.order[Number(position)]];
+    if(question&&answerValue===question.answer)score++;
+  });
+  const chapters=Array.from({length:8},(_,index)=>({ch:index+1,total:0,answered:0,correct:0}));
+  const errors={};
+  state.order.forEach((questionIndex,position)=>{
+    const question=DATA.questions[questionIndex],row=chapters[question.ch-1];
+    row.total++;
+    if(Object.prototype.hasOwnProperty.call(state.answers,position)){
+      row.answered++;
+      if(state.answers[position]===question.answer)row.correct++;
+      else errors[question.grammar]=(errors[question.grammar]||0)+1;
+    }
+  });
+  const missed=state.order.map((questionIndex,position)=>({questionIndex:questionIndex,position:position,question:DATA.questions[questionIndex],answer:state.answers[position]}))
+    .filter(item=>Object.prototype.hasOwnProperty.call(state.answers,item.position)&&item.answer!==item.question.answer)
+    .map(item=>({position:item.position+1,prompt:item.question.prompt,correct:item.question.choices[item.question.answer],grammar:item.question.grammar,skipped:item.answer===-1}));
+  const ranked=Object.entries(errors).sort((a,b)=>b[1]-a[1]).map(row=>({id:row[0],count:row[1]}));
+  return {score:score,answered:answered,unanswered:100-answered,hints:state.hints||0,chapters:chapters,errors:ranked,missed:missed};
+}
+function renderResult(result){
+  $("final-score").textContent=result.score+"/100";
+  $("hint-total").textContent=result.hints;
+  $("completed-total").textContent=result.answered;
+  $("unanswered-total").textContent=result.unanswered;
+  $("score-caption").textContent=result.score+"%";
+  $("chapter-stats").innerHTML=result.chapters.map(row=>'<div class="chapter-row"><span>CHAPTER 0'+row.ch+'</span><div class="chapter-bar"><i style="width:'+(row.total?row.correct/row.total*100:0)+'%"></i></div><span class="chapter-score">'+row.correct+'/'+row.total+'</span></div>').join("");
+  $("mistake-summary").innerHTML=result.errors.length?result.errors.slice(0,8).map(row=>'<div class="mistake-row"><span>'+escapeHtml((getGrammar(row.id)||{}).name||row.id)+'</span><strong>'+row.count+'</strong></div>').join(""):'<p class="success-note">'+escapeHtml(t("noMistakes"))+'</p>';
+  $("missed-list").innerHTML=result.missed.length?result.missed.map(item=>'<div class="missed-item"><strong>Q'+item.position+' · '+rubyHtml(item.prompt)+'</strong><p>'+escapeHtml(t("correctAnswer"))+'：'+rubyHtml(item.correct)+' · '+rubyHtml((getGrammar(item.grammar)||{}).name||item.grammar)+(item.skipped?' · '+escapeHtml(t("dontKnow")):"")+'</p></div>').join(""):'<p class="success-note">'+escapeHtml(t("noMisses"))+'</p>';
+}
 function finish(){
- const done=Object.keys(state.answers).length;
- let score=0;Object.entries(state.answers).forEach(([pos,ans])=>{if(DATA.questions[state.order[Number(pos)]].answer===ans)score++;});
- $("final-score").textContent=score+"/100";$("hint-total").textContent=state.hints;$("completed-total").textContent=done;$("score-caption").textContent=score+"%";
- const chapters=Array.from({length:8},(_,i)=>({ch:i+1,total:0,correct:0})),errors={};
- DATA.questions.forEach((q,idx)=>{const pos=state.order.indexOf(idx),row=chapters[q.ch-1];row.total++;if(state.answers[pos]===q.answer)row.correct++;else if(Object.prototype.hasOwnProperty.call(state.answers,pos))errors[q.grammar]=(errors[q.grammar]||0)+1;});
- $("chapter-stats").innerHTML=chapters.map(x=>'<div class="chapter-row"><span>CHAPTER 0'+x.ch+'</span><div class="chapter-bar"><i style="width:'+(x.total?x.correct/x.total*100:0)+'%"></i></div><span class="chapter-score">'+x.correct+'/'+x.total+'</span></div>').join("");
- const ranked=Object.entries(errors).sort((a,b)=>b[1]-a[1]);
- $("mistake-summary").innerHTML=ranked.length?ranked.slice(0,8).map(([id,n])=>'<div class="mistake-row"><span>'+getGrammar(id).name+'</span><strong>'+n+'</strong></div>').join(""):'<p class="success-note">'+t("noMistakes")+'</p>';
- const missed=state.order.map((idx,pos)=>({q:DATA.questions[idx],pos})).filter(x=>Object.prototype.hasOwnProperty.call(state.answers,x.pos)&&state.answers[x.pos]!==x.q.answer);
- $("missed-list").innerHTML=missed.length?missed.map(x=>'<div class="missed-item"><strong>'+x.q.prompt+'</strong><p>'+t("correctAnswer")+': '+x.q.choices[x.q.answer]+' · '+getGrammar(x.q.grammar).name+'</p></div>').join(""):'<p class="success-note">'+t("noMisses")+'</p>';
- screen("result");localStorage.removeItem(STORE_KEY);
+  const result=calculateResults();
+  state.completed=true;state.paused=false;state.result=result;
+  saveSession();renderResult(result);screen("result");
 }
-$("language-select").addEventListener("change",e=>{state.lang=e.target.value;translateUi();renderReview();save();});
-$("prepare-btn").addEventListener("click",()=>{state.lang=$("language-select").value;translateUi();renderReview();screen("review");});
-$("back-home").addEventListener("click",()=>screen("home"));$("start-btn").addEventListener("click",startSession);
-$("next-btn").addEventListener("click",nextQuestion);$("hint-btn").addEventListener("click",useHint);$("fifty-btn").addEventListener("click",useFifty);
-$("pause-btn").addEventListener("click",()=>{state.paused=true;save();screen("pause");});
-$("continue-btn").addEventListener("click",()=>{state.paused=false;screen("quiz");renderQuestion();});
+function resumeSession(id){
+  const session=loadSessions().find(item=>item.sessionId===id);
+  if(!session)return;
+  state=session;furiganaOn=localStorage.getItem(FURIGANA_KEY)==="1";
+  $("language-select").value=state.lang;translateUi();syncFuriganaControls();
+  if(state.completed){renderResult(state.result||calculateResults());screen("result");return;}
+  renderQuestion();screen(state.paused?"pause":"quiz");
+}
+async function setFurigana(enabled){
+  furiganaOn=!!enabled;
+  localStorage.setItem(FURIGANA_KEY,furiganaOn?"1":"0");
+  syncFuriganaControls();
+  const status=$("furigana-status");
+  if(furiganaOn){
+    if(status)status.textContent=t("furiganaLoading");
+    try{
+      await ensureTokenizer();
+      if(status)status.textContent="";
+    }catch(error){
+      furiganaOn=false;localStorage.setItem(FURIGANA_KEY,"0");syncFuriganaControls();
+      if(status)status.textContent=t("furiganaFailed");
+    }
+  }else if(status)status.textContent="";
+  renderReview();
+  if($("screen-quiz").classList.contains("active"))renderQuestion();
+  if($("screen-result").classList.contains("active")&&state.result)renderResult(state.result);
+}
+
+$("prepare-btn").addEventListener("click",()=>{
+  state.lang=$("language-select").value;translateUi();screen("subject");
+});
+$("subject-grammar").addEventListener("click",()=>{renderReview();screen("review");});
+$("subject-back").addEventListener("click",()=>screen("home"));
+$("back-subject").addEventListener("click",()=>screen("subject"));
+$("start-btn").addEventListener("click",startSession);
+$("next-btn").addEventListener("click",nextQuestion);
+$("hint-btn").addEventListener("click",useHint);
+$("fifty-btn").addEventListener("click",useFifty);
+$("dont-know-btn").addEventListener("click",()=>answer(-1));
+$("jump-btn").addEventListener("click",jumpToQuestion);
+$("jump-input").addEventListener("keydown",event=>{if(event.key==="Enter")jumpToQuestion();});
+$("pause-btn").addEventListener("click",()=>{state.paused=true;saveSession();screen("pause");});
+$("continue-btn").addEventListener("click",()=>{state.paused=false;saveSession();screen("quiz");renderQuestion();});
 $("restart-btn").addEventListener("click",()=>{if(confirm(t("restartConfirm")))startSession();});
-$("pause-home-btn").addEventListener("click",()=>screen("home"));$("result-home").addEventListener("click",()=>screen("home"));$("result-restart").addEventListener("click",startSession);
-const saved=load();if(saved){$("resume-banner").classList.remove("hidden");$("resume-btn").addEventListener("click",()=>{state=saved;$("language-select").value=state.lang;translateUi();renderQuestion();screen(state.paused?"pause":"quiz");});}
-translateUi();renderReview();
-console.info("Grammar Quest validation",DATA.questions.length,"questions; chapter counts",Array.from({length:8},(_,i)=>DATA.questions.filter(q=>q.ch===i+1).length));
+$("pause-home-btn").addEventListener("click",()=>screen("home"));
+$("result-home").addEventListener("click",()=>screen("home"));
+$("result-restart").addEventListener("click",startSession);
+$("furigana-toggle-subject").addEventListener("change",event=>setFurigana(event.target.checked));
+$("furigana-toggle-quiz").addEventListener("change",event=>setFurigana(event.target.checked));
+$("language-select").addEventListener("change",event=>{state.lang=event.target.value;});
+$("save-list").addEventListener("click",event=>{
+  const button=event.target.closest("button[data-action]");
+  if(!button)return;
+  const id=button.dataset.id,action=button.dataset.action;
+  if(action==="resume"||action==="view"){resumeSession(id);return;}
+  if(action==="delete"){
+    if(!confirm("この学習記録を削除しますか？"))return;
+    const sessions=loadSessions().filter(item=>item.sessionId!==id);
+    localStorage.setItem(SESSIONS_KEY,JSON.stringify(sessions));renderSaves();
+  }
+});
+
+translateUi();
+syncFuriganaControls();
+renderReview();
+renderSaves();
+if(furiganaOn){
+  ensureTokenizer().then(()=>{renderReview();if($("screen-quiz").classList.contains("active"))renderQuestion();}).catch(()=>{
+    furiganaOn=false;localStorage.setItem(FURIGANA_KEY,"0");syncFuriganaControls();
+  });
+}
+console.info("N631 N2 grammar practice ready",DATA.questions.length,"questions");
