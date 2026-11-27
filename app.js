@@ -356,7 +356,7 @@ function renderQuestion(){
   if(!state.order.length)return;
   const question=current(),answered=Object.prototype.hasOwnProperty.call(state.answers,state.index);
   $("question-count").textContent="問題 "+String(state.index+1).padStart(2,"0")+" / 100";
-  $("question-kind").textContent=question.kind==="blank"?"文法形式の判断":"文の組み立て";
+  $("question-kind").textContent=question.kind==="blank"?t("chooseGrammar"):t("chooseContinuation");
   $("progress-fill").style.width=(state.index+1)+"%";
   $("question-prompt").innerHTML=rubyHtml(question.prompt);
   $("options").innerHTML=question.choices.map((choice,index)=>'<button class="option-btn" data-choice="'+index+'" '+(answered?"disabled":"")+'><span class="letter">'+ "ABCD"[index] +'</span><span>'+rubyHtml(choice)+'</span></button>').join("");
@@ -380,22 +380,90 @@ function answer(choice){
   if(Object.prototype.hasOwnProperty.call(state.answers,state.index))return;
   state.answers[state.index]=choice;saveSession();showAnswer(choice,false);
 }
-function pickMessage(type){
-  const options=(PRAISE[state.lang]||PRAISE.fr)[type]||PRAISE.fr[type];
-  return options[Math.floor(Math.random()*options.length)];
-}
+function pickLocalizedPanda(mood){const bank=PANDA_LINES[state.lang]||PANDA_LINES.fr;const list=bank[mood]||bank.neutral;return list[Math.floor(Math.random()*list.length)];}
 function setMascot(mood){
   const stage=$("mascot-stage");if(!stage)return;
   stage.dataset.mood=mood;
-  const lines={
-    neutral:["準備はいいですか？","一問ずつ、落ち着いていきましょう！"],
-    happy:["正解です！よくできました！","その調子です！","すばらしい！"],
-    sad:["惜しい！次で取り返しましょう！","いい挑戦です！解説を見てみましょう！"],
-    thinking:["ここに注目してみましょう！","文の意味を考えてみましょう！"],
-    focus:["二つにしぼれました！","あと少しです！"]
-  };
-  const list=lines[mood]||lines.neutral;
+  const bank=PANDA_LINES[state.lang]||PANDA_LINES.fr;
+  const list=bank[mood]||bank.neutral;
   $("mascot-bubble").textContent=list[Math.floor(Math.random()*list.length)];
+}
+const WHY_FR={
+  sai:"Le départ, le retour ou l'utilisation sont présentés comme le moment auquel s'applique une consigne : 際に sert précisément à situer une procédure à cette occasion.",
+  ni_sai:"La phrase annonce une action importante qui accompagne le lancement ou le changement d'une étape. に際して／にあたって introduit le moment où cette nouvelle étape commence.",
+  totan:"La seconde action se produit brusquement juste après la première. たとたんに insiste sur cette succession immédiate et inattendue.",
+  ka_to_omou:"La phrase décrit deux événements observés qui se succèdent presque sans intervalle. かと思うと présente ce changement rapide.",
+  ka_nai:"Le deuxième événement commence avant même que le premier soit entièrement achevé. か～ないかのうちに souligne qu'ils se produisent quasiment au même moment.",
+  saichu:"L'appel ou l'alarme survient pendant que l'action est encore en cours. 最中に désigne précisément le milieu de cette activité.",
+  uchini:"On profite d'un état temporaire — la chaleur, le sommeil ou la floraison — avant qu'il ne change. うちに signifie qu'il faut agir pendant que cette occasion existe encore.",
+  bakari_ippou:"La situation évolue continuellement dans la même direction, ici une hausse ou une baisse qui se poursuit. 一方だ met l'accent sur cette tendance qui s'accentue.",
+  you_to:"Le sujet est sur le point d'agir ou s'apprête à le faire, mais l'action n'est pas encore achevée. ようとしている exprime cette imminence ou cette tentative.",
+  tsutsu_aru:"La situation change progressivement au fil du temps. つつある présente une évolution en cours, et non une action simplement en train de se dérouler à cet instant.",
+  tsutsu:"Les deux actions sont menées en parallèle : réfléchir tout en préparant, ou comparer tout en décidant. つつ exprime cette simultanéité dans un registre plutôt écrit.",
+  te_hajimete:"La compréhension apparaît seulement après l'expérience mentionnée. てはじめて marque le moment où l'on découvre ou comprend quelque chose pour la première fois grâce à cette expérience.",
+  ue_de:"La première étape doit être accomplie avant de prendre la décision ou de lancer l'étape suivante. た上で indique que la décision vient après l'examen ou la vérification.",
+  shidai:"La seconde action est prévue dès que l'information ou l'arrivée attendue devient effective. 次第 annonce une action qui suivra immédiatement, souvent dans un contexte professionnel.",
+  te_irai:"La phrase mesure une durée qui se poursuit depuis un événement passé — le diplôme, le début d'une habitude ou l'arrivée au Japon. て以来 fixe ce point de départ.",
+  te_kara:"L'action suivante est impossible tant que la vérification ou l'autorisation préalable n'a pas eu lieu. てからでないと exprime cette condition indispensable.",
+  wo_hajime:"Kyoto ou les grandes villes sont cités comme premier exemple d'un ensemble plus large. をはじめ introduit un représentant typique, puis les autres éléments du groupe.",
+  kara_shite:"Un seul détail observable — les vêtements ou le ton de la voix — suffit à tirer une conclusion plus générale. からして présente ce détail comme un indice révélateur.",
+  ni_watatte:"La construction indique une durée ou une étendue importante : trois ans, huit heures ou une zone entière. にわたって insiste sur cette ampleur.",
+  wo_tsuujite:"La phrase considère toute la période, du début à la fin, sans se limiter à un moment particulier. を通じて signifie ici « pendant toute la durée ».",
+  kagiri:"Le locuteur limite ce qu'il affirme à ce qu'il a personnellement vérifié ou sait. 限り marque la portée de l'information disponible, sans prétendre connaître davantage.",
+  dake:"La phrase évoque la quantité maximale possible : faire autant d'efforts que l'on peut. だけ fixe ici cette limite supérieure.",
+  ni_kagiri:"L'avantage ou la réduction est réservé au groupe ou à la période nommés. に限り sert à limiter explicitement les bénéficiaires ou la validité.",
+  kagiri_wa:"La règle reste valable aussi longtemps que la condition est vraie : habiter dans la ville ou être responsable. 限り（は） lie la responsabilité à cette condition qui continue.",
+  kagiri_dewa:"L'affirmation est limitée aux informations consultées ou à ce que le locuteur a pu observer. 限りでは évite de présenter cette conclusion comme une certitude absolue.",
+  ni_kagitte:"La construction souligne une exception ou une coïncidence particulièrement frappante : justement ce jour-là, ou justement cette personne. Dans 彼に限って, le locuteur estime que cette personne ferait exception et n'oublierait pas la promesse.",
+  ni_kagirazu:"Le premier groupe cité n'est pas le seul concerné : d'autres personnes ou organisations sont également incluses. に限らず élargit donc explicitement le champ.",
+  nominarazu:"La phrase ajoute un deuxième élément au premier dans un registre plutôt formel. のみならず signifie « non seulement…, mais aussi… ».",
+  bakari_ka:"La seconde action renforce ou aggrave la première : ne pas s'excuser, puis rejeter la faute sur l'autre. ばかりか ajoute un élément encore plus marquant.",
+  wa_motoyori:"Le premier élément est présenté comme allant de soi, puis un autre est ajouté. はもとより signifie que le premier n'est même pas à discuter et que le second est également valable.",
+  ue_ni:"Deux caractéristiques de même orientation sont accumulées : deux avantages ou deux défauts. 上に signifie « en plus de cela » et relie ces faits de même signe.",
+  ni_kanshite:"La phrase délimite le sujet précis dont il est question — l'enquête ou les points du contrat. に関して introduit le thème auquel se rapporte l'information.",
+  wo_megutte:"Plusieurs personnes ou groupes ont des avis différents autour d'un même sujet, d'une règle ou d'une négociation. をめぐって présente ce débat ou ce conflit.",
+  ni_kakete:"La phrase évalue une compétence particulièrement élevée dans un domaine précis. にかけては signifie « quand il s'agit de… », avec l'idée que la personne excelle dans ce domaine.",
+  ni_taishite:"La construction désigne la personne ou la chose vers laquelle une réaction est dirigée, ou établit une opposition entre deux personnes. Les mots qui suivent — critique, réponse ou contraste — indiquent cette relation.",
+  ni_kotaete:"Une action est menée pour répondre à une demande, une attente ou un besoin. にこたえて relie la mesure prise à ce qui était attendu ou demandé.",
+  wo_moto:"L'expérience ou le conte sert de matériau de départ pour créer le roman ou le film. をもとに présente donc une source d'inspiration ou de matière, plutôt qu'une règle à suivre.",
+  ni_motozuki:"Les données ou les résultats servent de fondement objectif à une décision ou à une politique. に基づいて indique les éléments concrets sur lesquels la décision s'appuie.",
+  ni_sotte:"L'action doit respecter un plan, un manuel ou des critères déjà établis. に沿って signifie que l'on suit une ligne directrice ou une règle, étape par étape.",
+  no_moto:"L'action se déroule sous l'autorité, la supervision ou dans le cadre d'un accord ou d'un système de contrôle. のもとで indique ce cadre qui encadre l'action.",
+  mukeda:"Le cours ou le guide est conçu pour un public cible précis. 向け indique à qui le produit ou le document est destiné, et non simplement qui l'apprécie."
+};
+function questionExplanation(question){
+  const grammar=getGrammar(question.grammar);
+  if(state.lang==="fr")return WHY_FR[question.grammar]||question.hint||"Le sens de la phrase correspond à cette construction grammaticale.";
+  return t("whyContext")+" "+localizedGloss(question.grammar)+".";
+}
+function localizedTranslation(question){
+  const index=DATA.questions.indexOf(question);
+  const bank=window.N2_QUESTION_TRANSLATIONS||{};
+  const translated=bank[state.lang]&&bank[state.lang][index];
+  if(translated)return translated;
+  return t("translationUnavailable");
+}
+function showAnswer(choice,restoring){
+  const question=current(),correct=choice===question.answer,didSkip=choice===-1;
+  document.querySelectorAll(".option-btn").forEach((button,index)=>{
+    button.disabled=true;
+    if(index===question.answer)button.classList.add("correct");
+    else if(index===choice)button.classList.add("incorrect");
+  });
+  const grammar=getGrammar(question.grammar);
+  const selected=didSkip?t("notAnswered"):question.choices[choice];
+  const right=question.choices[question.answer];
+  const message=didSkip?PANDA_LINES[state.lang].skip[Math.floor(Math.random()*PANDA_LINES[state.lang].skip.length)]:(correct?pickLocalizedPanda("happy"):pickLocalizedPanda("sad"));
+  const detailParts=[];
+  detailParts.push('<strong class="feedback-emotion">'+escapeHtml(message)+'</strong>');
+  detailParts.push('<div class="answer-compare"><div class="answer-chip answer-chip-correct"><small>'+escapeHtml(t("correctAnswer"))+'</small><strong>'+rubyHtml(right)+'</strong></div><div class="answer-chip answer-chip-user"><small>'+escapeHtml(t("yourAnswer"))+'</small><strong>'+rubyHtml(selected)+'</strong></div></div>');
+  detailParts.push('<section class="feedback-explanation"><b>'+escapeHtml(t("translation"))+'</b><p class="feedback-translation">'+escapeHtml(localizedTranslation(question))+'</p><b>'+escapeHtml(t("whyTitle"))+'</b><p>'+escapeHtml(questionExplanation(question))+'</p><small class="feedback-grammar">'+escapeHtml(grammar?grammar.name:"")+'</small></section>');
+  $("feedback").className="feedback"+(correct?"":" wrong");
+  $("feedback").innerHTML=detailParts.join("");
+  $("next-btn").classList.remove("hidden");
+  $("hint-btn").disabled=true;$("fifty-btn").disabled=true;$("dont-know-btn").disabled=true;
+  setMascot(didSkip?"thinking":(correct?"happy":"sad"));
+  if(!restoring)saveSession();
 }
 function showAnswer(choice,restoring){
   const question=current(),correct=choice===question.answer,didSkip=choice===-1;
@@ -434,7 +502,7 @@ function useHint(){
   state.hinted[state.index]=true;state.hints++;saveSession();
   $("hint-btn").disabled=true;
   const question=current(),gloss=localizedGloss(question.grammar);
-  const hint=state.lang==="fr"&&question.hint?question.hint:gloss;
+  const hint=state.lang==="fr"&&question.hint?question.hint+" "+(WHY_FR[question.grammar]||""):t("whyContext")+" "+gloss+".",
   $("feedback").className="feedback hint-feedback";
   $("feedback").innerHTML="<strong>"+escapeHtml(t("hint"))+"</strong><p>"+escapeHtml(hint)+"</p>";
   setMascot("thinking");
@@ -481,7 +549,7 @@ function calculateResults(){
   });
   const missed=state.order.map((questionIndex,position)=>({questionIndex:questionIndex,position:position,question:DATA.questions[questionIndex],answer:state.answers[position]}))
     .filter(item=>Object.prototype.hasOwnProperty.call(state.answers,item.position)&&item.answer!==item.question.answer)
-    .map(item=>({position:item.position+1,prompt:item.question.prompt,correct:item.question.choices[item.question.answer],grammar:item.question.grammar,skipped:item.answer===-1}));
+    .map(item=>({position:item.position+1,prompt:item.question.prompt,sentence:completedSentence(item.question),wrong:item.answer===-1?null:item.question.choices[item.answer],correct:item.question.choices[item.question.answer],grammar:item.question.grammar,skipped:item.answer===-1,why:questionExplanation(item.question),translation:localizedTranslation(item.question)}));
   const ranked=Object.entries(errors).sort((a,b)=>b[1]-a[1]).map(row=>({id:row[0],count:row[1]}));
   return {score:score,answered:answered,unanswered:100-answered,hints:state.hints||0,chapters:chapters,errors:ranked,missed:missed};
 }
@@ -491,9 +559,19 @@ function renderResult(result){
   $("completed-total").textContent=result.answered;
   $("unanswered-total").textContent=result.unanswered;
   $("score-caption").textContent=result.score+"%";
-  $("chapter-stats").innerHTML=result.chapters.map(row=>'<div class="chapter-row"><span>第'+row.ch+'課</span><div class="chapter-bar"><i style="width:'+(row.total?row.correct/row.total*100:0)+'%"></i></div><span class="chapter-score">'+row.correct+'/'+row.total+'</span></div>').join("");
-  $("mistake-summary").innerHTML=result.errors.length?result.errors.slice(0,8).map(row=>'<div class="mistake-row"><span>'+escapeHtml((getGrammar(row.id)||{}).name||row.id)+'</span><strong>'+row.count+'</strong></div>').join(""):'<p class="success-note">'+escapeHtml(t("noMistakes"))+'</p>';
-  $("missed-list").innerHTML=result.missed.length?result.missed.map(item=>'<div class="missed-item"><strong>Q'+item.position+' · '+rubyHtml(item.prompt)+'</strong><p>'+escapeHtml(t("correctAnswer"))+'：'+rubyHtml(item.correct)+' · '+rubyHtml((getGrammar(item.grammar)||{}).name||item.grammar)+(item.skipped?' · '+escapeHtml(t("dontKnow")):"")+'</p></div>').join(""):'<p class="success-note">'+escapeHtml(t("noMisses"))+'</p>';
+  const ring=$("score-ring");if(ring)ring.style.setProperty("--score",result.score);
+  $("chapter-stats").innerHTML=result.chapters.map(row=>{
+    const percent=row.total?Math.round(row.correct/row.total*100):0;
+    return '<div class="chapter-row"><div class="chapter-row-head"><strong>'+escapeHtml(t("chapterShort"))+' '+row.ch+'</strong><span>'+row.correct+'/'+row.total+' · '+percent+'%</span></div><div class="chapter-bar"><i style="width:'+percent+'%"></i></div><small>'+escapeHtml(t("chapterAnswered"))+' '+row.answered+'/'+row.total+'</small></div>';
+  }).join("");
+  $("mistake-summary").innerHTML=result.errors.length?result.errors.slice(0,8).map(row=>{
+    const grammar=getGrammar(row.id)||{},detail=state.lang==="fr"?(WHY_FR[row.id]||grammar.dist||grammar.meaning):localizedGloss(row.id);
+    return '<article class="mistake-row"><div><strong>'+escapeHtml(grammar.name||row.id)+'</strong><p>'+escapeHtml(detail)+'</p></div><span class="mistake-count">'+row.count+'×</span></article>';
+  }).join(""):'<p class="success-note">'+escapeHtml(t("noMistakes"))+'</p>';
+  $("missed-list").innerHTML=result.missed.length?result.missed.map(item=>{
+    const grammar=getGrammar(item.grammar)||{};
+    return '<article class="missed-item"><div class="missed-heading"><span>Q'+item.position+'</span><strong>'+escapeHtml(grammar.name||item.grammar)+'</strong></div><p class="missed-japanese">'+rubyHtml(item.sentence||item.prompt)+'</p><div class="missed-answers"><p><b>'+escapeHtml(t("wrongAnswer"))+' :</b> '+(item.skipped?escapeHtml(t("notAnswered")):rubyHtml(item.wrong))+'</p><p><b>'+escapeHtml(t("correctAnswer"))+' :</b> '+rubyHtml(item.correct)+'</p></div><div class="missed-explanation"><b>'+escapeHtml(t("whyTitle"))+'</b><p>'+escapeHtml(item.why||"")+'</p><b>'+escapeHtml(t("translation"))+'</b><p>'+escapeHtml(item.translation||"")+'</p></div></article>';
+  }).join(""):'<p class="success-note">'+escapeHtml(t("noMisses"))+'</p>';
 }
 function finish(){
   const result=calculateResults();
@@ -523,7 +601,25 @@ $("jump-btn").addEventListener("click",jumpToQuestion);
 $("jump-input").addEventListener("keydown",event=>{if(event.key==="Enter")jumpToQuestion();});
 $("pause-btn").addEventListener("click",()=>{state.paused=true;saveSession();screen("pause");});
 $("continue-btn").addEventListener("click",()=>{state.paused=false;saveSession();screen("quiz");renderQuestion();});
-$("restart-btn").addEventListener("click",()=>{if(confirm(t("restartConfirm")))startSession();});
+function openRestartDialog(){$("restart-dialog").classList.remove("hidden");}
+function closeRestartDialog(){$("restart-dialog").classList.add("hidden");}
+function removeCurrentSession(){
+  const id=state.sessionId;
+  if(!id)return;
+  const sessions=loadSessions().filter(item=>item.sessionId!==id);
+  localStorage.setItem(SESSIONS_KEY,JSON.stringify(sessions));
+  renderSaves();
+}
+$("restart-btn").addEventListener("click",openRestartDialog);
+$("restart-save").addEventListener("click",()=>{
+  state.paused=true;saveSession();closeRestartDialog();startSession();
+});
+$("restart-discard").addEventListener("click",()=>{
+  removeCurrentSession();closeRestartDialog();startSession();
+});
+$("restart-cancel").addEventListener("click",closeRestartDialog);
+$("restart-dialog").addEventListener("click",event=>{if(event.target===$("restart-dialog"))closeRestartDialog();});
+document.addEventListener("keydown",event=>{if(event.key==="Escape"&&!$("restart-dialog").classList.contains("hidden"))closeRestartDialog();});
 $("pause-home-btn").addEventListener("click",()=>screen("home"));
 $("result-home").addEventListener("click",()=>screen("home"));
 $("result-restart").addEventListener("click",startSession);
