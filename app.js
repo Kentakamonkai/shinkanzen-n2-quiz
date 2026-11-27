@@ -446,9 +446,10 @@ const WHY_FR={
   mukeda:"Le cours ou le guide est conçu pour un public cible précis. 向け indique à qui le produit ou le document est destiné, et non simplement qui l'apprécie."
 };
 function questionExplanation(question){
-  const grammar=getGrammar(question.grammar);
-  if(state.lang==="fr")return WHY_FR[question.grammar]||question.hint||"Le sens de la phrase correspond à cette construction grammaticale.";
-  return t("whyContext")+" "+localizedGloss(question.grammar)+".";
+  const id=question.grammar;
+  if(state.lang==="fr")return WHY_FR[id]||question.hint||"Le sens de la phrase correspond à cette construction grammaticale.";
+  const explanations=window.N2_QUESTION_EXPLANATIONS&&window.N2_QUESTION_EXPLANATIONS[state.lang];
+  return (explanations&&explanations[id])||t("whyContext")+" "+localizedGloss(id)+".";
 }
 function localizedTranslation(question){
   const index=DATA.questions.indexOf(question);
@@ -553,7 +554,7 @@ function renderResult(result){
     return '<div class="chapter-row"><div class="chapter-row-head"><strong>'+escapeHtml(t("chapterShort"))+' '+row.ch+'</strong><span>'+row.correct+'/'+row.total+' · '+percent+'%</span></div><div class="chapter-bar"><i style="width:'+percent+'%"></i></div><small>'+escapeHtml(t("chapterAnswered"))+' '+row.answered+'/'+row.total+'</small></div>';
   }).join("");
   $("mistake-summary").innerHTML=result.errors.length?result.errors.slice(0,8).map(row=>{
-    const grammar=getGrammar(row.id)||{},detail=state.lang==="fr"?(WHY_FR[row.id]||grammar.dist||grammar.meaning):localizedGloss(row.id);
+    const grammar=getGrammar(row.id)||{},detail=questionExplanation({grammar:row.id});
     return '<article class="mistake-row"><div><strong>'+escapeHtml(grammar.name||row.id)+'</strong><p>'+escapeHtml(detail)+'</p></div><span class="mistake-count">'+row.count+'×</span></article>';
   }).join(""):'<p class="success-note">'+escapeHtml(t("noMistakes"))+'</p>';
   $("missed-list").innerHTML=result.missed.length?result.missed.map(item=>{
