@@ -481,13 +481,46 @@ function pandaLine(mood){
   state.pandaLast[mood]=index;
   return list[index];
 }
+const PANDA_VOCAB={
+"始業":{reading:"しぎょう",meaning:{"fr":"début des cours ou du travail","vi":"bắt đầu giờ học hoặc làm việc","zh-CN":"开始上课或上班","zh-TW":"開始上課或上班","ko":"수업이나 업무의 시작","es":"inicio de las clases o del trabajo","it":"inizio delle lezioni o del lavoro","ne":"कक्षा वा काम सुरु हुने समय","my":"အတန်း သို့မဟုတ် အလုပ် စတင်ချိန်"}},
+"負担":{reading:"ふたん",meaning:{"fr":"charge, poids à supporter","vi":"gánh nặng, khoản phải chịu","zh-CN":"负担、压力","zh-TW":"負擔、壓力","ko":"부담","es":"carga, peso","it":"peso, onere","ne":"भार, बोझ","my":"ဝန်ထုပ်ဝန်ပိုး"}},
+"商店街":{reading:"しょうてんがい",meaning:{"fr":"rue commerçante","vi":"phố có nhiều cửa hàng","zh-CN":"商业街","zh-TW":"商店街、商業街","ko":"상점가","es":"calle comercial","it":"via commerciale","ne":"पसलहरू भएको व्यापारिक सडक","my":"ဆိုင်များရှိသော စျေးလမ်း"}},
+"衰退":{reading:"すいたい",meaning:{"fr":"déclin, baisse d'activité","vi":"suy thoái, sa sút","zh-CN":"衰退、衰落","zh-TW":"衰退、沒落","ko":"쇠퇴","es":"declive, decadencia","it":"declino","ne":"पतन, ह्रास","my":"ကျဆင်းမှု၊ 쇠퇴"}},
+"責任者":{reading:"せきにんしゃ",meaning:{"fr":"personne responsable","vi":"người chịu trách nhiệm","zh-CN":"负责人","zh-TW":"負責人","ko":"책임자","es":"persona responsable","it":"responsabile","ne":"जिम्मेवार व्यक्ति","my":"တာဝန်ခံသူ"}},
+"応募条件":{reading:"おうぼじょうけん",meaning:{"fr":"conditions pour postuler","vi":"điều kiện ứng tuyển","zh-CN":"应聘条件","zh-TW":"應徵條件","ko":"지원 조건","es":"requisitos para presentar una candidatura","it":"requisiti per candidarsi","ne":"आवेदनका सर्तहरू","my":"လျှောက်ထားရန် သတ်မှတ်ချက်များ"}},
+"経験の有無":{reading:"けいけんのうむ",meaning:{"fr":"le fait d'avoir de l'expérience ou non","vi":"có kinh nghiệm hay không","zh-CN":"是否有经验","zh-TW":"是否有經驗","ko":"경험 유무","es":"si se tiene experiencia o no","it":"presenza o meno di esperienza","ne":"अनुभव छ वा छैन","my":"အတွေ့အကြုံရှိ၊ မရှိ"}},
+"専門知識":{reading:"せんもんちしき",meaning:{"fr":"connaissances spécialisées","vi":"kiến thức chuyên môn","zh-CN":"专业知识","zh-TW":"專業知識","ko":"전문 지식","es":"conocimientos especializados","it":"conoscenze specialistiche","ne":"विशेषज्ञ ज्ञान","my":"အထူးပြု အသိပညာ"}},
+"実務経験":{reading:"じつむけいけん",meaning:{"fr":"expérience pratique du travail","vi":"kinh nghiệm làm việc thực tế","zh-CN":"实际工作经验","zh-TW":"實務經驗","ko":"실무 경험","es":"experiencia práctica de trabajo","it":"esperienza pratica di lavoro","ne":"व्यावहारिक कामको अनुभव","my":"လက်တွေ့လုပ်ငန်းအတွေ့အကြုံ"}},
+"消費電力":{reading:"しょうひでんりょく",meaning:{"fr":"quantité d'électricité consommée","vi":"lượng điện tiêu thụ","zh-CN":"耗电量","zh-TW":"耗電量","ko":"전력 소비량","es":"consumo eléctrico","it":"consumo elettrico","ne":"बिजुली खपत","my":"လျှပ်စစ်သုံးစွဲ량"}},
+"条例":{reading:"じょうれい",meaning:{"fr":"règlement municipal","vi":"quy định của địa phương","zh-CN":"地方条例","zh-TW":"地方自治條例","ko":"지방 조례","es":"reglamento municipal","it":"regolamento comunale","ne":"स्थानीय नियम","my":"ဒေသဆိုင်ရာ စည်းမျဉ်း"}},
+"交渉":{reading:"こうしょう",meaning:{"fr":"négociation, discussion pour trouver un accord","vi":"đàm phán, thương lượng","zh-CN":"谈判、协商","zh-TW":"談判、協商","ko":"협상","es":"negociación","it":"negoziazione","ne":"वार्ता, सम्झौता गर्ने छलफल","my":"ညှိနှိုင်းဆွေးနွေးမှု"}},
+"主張":{reading:"しゅちょう",meaning:{"fr":"position ou opinion défendue","vi":"ý kiến hoặc lập trường được đưa ra","zh-CN":"主张、观点","zh-TW":"主張、立場","ko":"주장, 입장","es":"postura u opinión defendida","it":"posizione sostenuta","ne":"आफ्नो धारणा वा अडान","my":"တင်ပြသောအမြင်၊ ရပ်တည်ချက်"}},
+"審査":{reading:"しんさ",meaning:{"fr":"examen, évaluation","vi":"xét duyệt, đánh giá","zh-CN":"审查、评估","zh-TW":"審查、評估","ko":"심사","es":"evaluación, revisión","it":"valutazione, esame","ne":"मूल्याङ्कन, जाँच","my":"စစ်ဆေးအကဲဖြတ်မှု"}},
+"合意":{reading:"ごうい",meaning:{"fr":"accord, entente","vi":"thỏa thuận, đồng thuận","zh-CN":"协议、共识","zh-TW":"協議、共識","ko":"합의","es":"acuerdo","it":"accordo","ne":"सहमति","my":"သဘောတူညီချက်"}},
+"民話":{reading:"みんわ",meaning:{"fr":"conte populaire traditionnel","vi":"truyện dân gian","zh-CN":"民间故事","zh-TW":"民間故事","ko":"민담","es":"cuento popular","it":"racconto popolare","ne":"लोककथा","my":"ရိုးရာပုံပြင်"}},
+"流暢":{reading:"りゅうちょう",meaning:{"fr":"qui parle couramment, avec aisance","vi":"nói trôi chảy, lưu loát","zh-CN":"流利","zh-TW":"流利","ko":"유창한","es":"que habla con fluidez","it":"che parla con scioltezza","ne":"धाराप्रवाह बोल्ने","my":"ချောမွေ့စွာ ပြောတတ်သော"}},
+"管理体制":{reading:"かんりたいせい",meaning:{"fr":"organisation de la gestion et du contrôle","vi":"hệ thống quản lý và kiểm soát","zh-CN":"管理制度","zh-TW":"管理體制","ko":"관리 체계","es":"sistema de gestión y control","it":"sistema di gestione e controllo","ne":"व्यवस्थापन तथा नियन्त्रण प्रणाली","my":"စီမံခန့်ခွဲမှုနှင့် ထိန်းချုပ်မှုစနစ်"}}
+};
+function pandaVocabulary(question){
+  if(!question)return [];
+  const source=[question.prompt||"",...(question.choices||[])].join(" ");
+  return Object.entries(PANDA_VOCAB)
+    .filter(([word])=>source.includes(word))
+    .slice(0,3)
+    .map(([word,item])=>word+"（"+item.reading+"）＝"+(item.meaning[state.lang]||item.meaning.fr));
+}
 function pickLocalizedPanda(mood){return pandaLine(mood);}
 function setMascot(mood){
   const stage=$("mascot-stage");if(!stage)return;
   stage.dataset.mood=mood;
   const image=$("panda-image");
   if(image)image.src=mood==="happy"?"assets/panda-chibi-happy.svg":mood==="sad"?"assets/panda-chibi-worried.svg":"assets/panda-chibi.svg";
-  $("mascot-bubble").textContent=pandaLine(mood);
+  const vocabulary=pandaVocabulary(typeof current==="function"?current():null);
+  const bubble=$("mascot-bubble");
+  if(bubble){
+    bubble.textContent=vocabulary.length?vocabulary.join("\\n"):pandaLine(mood);
+    bubble.classList.toggle("vocabulary-bubble",vocabulary.length>0);
+  }
 }
 const WHY_FR={
   sai:"Le départ, le retour ou l'utilisation sont présentés comme le moment auquel s'applique une consigne : 際に sert précisément à situer une procédure à cette occasion.",
