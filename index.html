@@ -1,16 +1,198 @@
 <!doctype html>
 <html lang="ja">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#23302d"><meta name="description" content="Multilingual JLPT N2 grammar practice based on Shin Kanzen Master Grammar, chapters 1–8.">
-<title>新完全マスター N2 · Grammar Quest</title><link rel="stylesheet" href="styles.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#23302d">
+<meta name="description" content="N631クラス向け・2026年12月9日期末テスト対策サイト。健太が作成した日本語文法N2の復習サイトです。">
+<title>N631 期末テスト対策 · 文法N2</title>
+<link rel="stylesheet" href="styles.css">
 </head>
-<body><div class="grain"></div><main class="shell">
-<header class="topbar"><a class="brand" href="./"><span class="brand-mark">文</span><span><strong>GRAMMAR QUEST</strong><small>SHIN KANZEN MASTER · N2</small></span></a><span class="edition">CHAPTERS 01—08</span></header>
-<section id="screen-home" class="screen active"><div class="hero"><div class="hero-copy"><p class="eyebrow" data-i18n="eyebrow">文法を、使える力に。</p><h1>N2 Grammar<br><em>Quest</em></h1><p class="hero-lede" data-i18n="subtitle">新完全マスター文法 · 第1課〜第8課</p><div class="hero-meta"><span>100 QUESTIONS</span><span>·</span><span>9 LANGUAGES</span><span>·</span><span>NO TIMER</span></div></div><div class="mascot-card"><div class="pixel-mascot"><div class="px-hair"></div><div class="px-face"></div><div class="px-glasses"></div><div class="px-beard"></div><div class="px-hoodie"></div></div><p class="mascot-line">準備はいいですか？</p><span class="mascot-tag">N2 STUDY PARTNER</span></div></div>
-<section class="language-panel"><div><p class="eyebrow" data-i18n="step1">STEP 01</p><h2 data-i18n="chooseLanguage">Choisis la langue des explications</h2><p class="muted" data-i18n="languageNote">Les questions et propositions restent en japonais.</p></div><label class="select-wrap"><span data-i18n="language">Langue</span><select id="language-select" aria-label="Explanation language"><option value="vi">Tiếng Việt</option><option value="zh-CN">简体中文</option><option value="zh-TW">繁體中文（台灣）</option><option value="ko">한국어</option><option value="es">Español</option><option value="it">Italiano</option><option value="ne">नेपाली</option><option value="my">မြန်မာ</option><option value="fr" selected>Français</option></select></label><button id="prepare-btn" class="primary-btn"><span data-i18n="prepare">Afficher la fiche de révision</span><span>↗</span></button></section>
-<div id="resume-banner" class="resume-banner hidden"><span data-i18n="savedProgress">Une session sauvegardée a été trouvée.</span><button id="resume-btn" class="text-btn" data-i18n="resume">Reprendre</button></div><footer class="home-footer"><span>01 / 08 — 08 / 08</span><span>Built for deliberate practice</span></footer></section>
-<section id="screen-review" class="screen"><div class="section-heading"><p class="eyebrow" data-i18n="step2">STEP 02</p><h1 data-i18n="reviewTitle">Révision grammaticale · chapitres 6 à 8</h1><p class="muted" data-i18n="reviewIntro">Relis les formes, leurs usages et leurs nuances avant de commencer.</p></div><div id="review-list" class="review-list"></div><div class="sticky-actions"><button id="back-home" class="secondary-btn" data-i18n="back">Retour</button><button id="start-btn" class="primary-btn"><span data-i18n="startQuiz">Commencer le quiz</span><span>→</span></button></div></section>
-<section id="screen-quiz" class="screen"><div class="quiz-top"><div><p class="eyebrow" data-i18n="practice">PRACTICE MODE</p><h2 id="question-count">QUESTION 01 / 100</h2></div><div class="quiz-tools"><button id="pause-btn" class="quiet-btn" data-i18n="pause">Pause</button><button id="restart-btn" class="quiet-btn" data-i18n="restart">Recommencer</button></div></div><div class="progress-track"><div id="progress-fill"></div></div><div class="quiz-layout"><article class="question-card"><div class="question-meta"><span id="question-kind">文法形式の判断</span><span>N2 GRAMMAR</span></div><p id="question-prompt" class="question-prompt"></p><div id="options" class="options"></div><div id="feedback" class="feedback hidden" aria-live="polite"></div><div class="question-actions"><div class="assist-actions"><button id="hint-btn" class="assist-btn">◉ <span data-i18n="hint">Indice</span></button><button id="fifty-btn" class="assist-btn">½ <span data-i18n="fifty">50/50</span></button></div><button id="next-btn" class="primary-btn hidden"><span data-i18n="next">Question suivante</span><span>→</span></button></div></article><aside class="side-card"><div class="mascot-small"><div class="pixel-mascot mini"><div class="px-hair"></div><div class="px-face"></div><div class="px-glasses"></div><div class="px-beard"></div><div class="px-hoodie"></div></div><p id="side-mascot">集中していきましょう！</p></div><div class="side-divider"></div><p class="eyebrow" data-i18n="quickReference">RÉFÉRENCE RAPIDE</p><p class="muted tiny" data-i18n="referenceNote">Chapitres 6 à 8 · formes présentes dans les propositions</p><div id="quick-refs" class="quick-refs"></div><div id="quick-detail" class="quick-detail hidden"></div></aside></div></section>
-<section id="screen-pause" class="screen centered-screen"><p class="eyebrow">PAUSE</p><h1 data-i18n="paused">Session en pause</h1><p class="muted" data-i18n="pauseText">Ta progression est sauvegardée sur cet appareil.</p><button id="continue-btn" class="primary-btn" data-i18n="continueQuiz">Reprendre le quiz</button><button id="pause-home-btn" class="text-btn" data-i18n="home">Accueil</button></section>
-<section id="screen-result" class="screen"><div class="result-heading"><p class="eyebrow" data-i18n="finished">SESSION COMPLETE</p><h1 data-i18n="resultTitle">Bilan de ta session</h1></div><div class="result-grid"><div class="score-card"><span data-i18n="score">Score</span><strong id="final-score">0/100</strong><small id="score-caption"></small></div><div class="stat-card"><span data-i18n="hintsUsed">Indices utilisés</span><strong id="hint-total">0</strong><small data-i18n="noPenalty">Sans pénalité</small></div><div class="stat-card"><span data-i18n="completed">Questions terminées</span><strong id="completed-total">100</strong><small data-i18n="outOf">sur 100</small></div></div><div class="result-columns"><section class="result-panel"><h2 data-i18n="chapterResults">Résultats par chapitre</h2><div id="chapter-stats"></div></section><section class="result-panel"><h2 data-i18n="reviewMistakes">Points à revoir</h2><div id="mistake-summary"></div></section></div><section class="result-panel missed-panel"><h2 data-i18n="missedQuestions">Questions ratées</h2><div id="missed-list"></div></section><div class="sticky-actions"><button id="result-home" class="secondary-btn" data-i18n="home">Accueil</button><button id="result-restart" class="primary-btn" data-i18n="retry">Recommencer les 100 questions</button></div></section>
-</main><script src="data.js"></script><script src="app.js"></script></body></html>
+<body>
+<div class="grain"></div>
+<main class="shell">
+<header class="topbar">
+  <a class="brand" href="./" aria-label="ホーム">
+    <span class="brand-mark">文</span>
+    <span><strong>期末テスト対策</strong><small>N631クラス · 2026年12月9日</small></span>
+  </a>
+  <span class="edition">健太 作成</span>
+</header>
+
+<section id="screen-home" class="screen active">
+  <div class="hero home-hero">
+    <div class="hero-copy">
+      <p class="eyebrow">2026年12月9日 · 期末テスト</p>
+      <h1>期末テスト<br><em>対策サイト</em></h1>
+      <p class="hero-lede">N631クラスのために、健太が作成した復習サイトです。</p>
+      <div class="hero-meta"><span>文法の復習</span><span>·</span><span>9言語の解説</span><span>·</span><span>自分のペースで学習</span></div>
+    </div>
+    <div class="home-stamp"><span class="stamp-kanji">学</span><strong>N631</strong><small>一緒に頑張ろう！</small></div>
+  </div>
+
+  <section class="language-panel">
+    <div>
+      <p class="eyebrow">ステップ 1</p>
+      <h2>解説の言語を選んでください</h2>
+      <p class="muted">問題文と選択肢は日本語です。</p>
+    </div>
+    <label class="select-wrap"><span>解説の言語</span>
+      <select id="language-select" aria-label="解説の言語">
+        <option value="vi">Tiếng Việt</option>
+        <option value="zh-CN">简体中文</option>
+        <option value="zh-TW">繁體中文（台灣）</option>
+        <option value="ko">한국어</option>
+        <option value="es">Español</option>
+        <option value="it">Italiano</option>
+        <option value="ne">नेपाली</option>
+        <option value="my">မြန်မာ</option>
+        <option value="fr" selected>Français</option>
+      </select>
+    </label>
+    <button id="prepare-btn" class="primary-btn"><span>次へ：科目を選ぶ</span><span>→</span></button>
+  </section>
+
+  <section class="saved-sessions-section">
+    <div class="saved-heading">
+      <div><p class="eyebrow">学習の記録</p><h2>保存した学習記録</h2></div>
+      <p class="muted">このブラウザに保存された学習履歴です。</p>
+    </div>
+    <div id="save-list" class="save-list"></div>
+  </section>
+  <footer class="home-footer"><span>N631 · 期末テスト対策</span><span>健太 作成 · 2026年</span></footer>
+</section>
+
+<section id="screen-subject" class="screen">
+  <div class="section-heading">
+    <p class="eyebrow">ステップ 2</p>
+    <h1>科目を選んでください</h1>
+    <p class="muted">復習したい科目を選択してください。</p>
+  </div>
+  <div class="subject-grid">
+    <button id="subject-grammar" class="subject-card">
+      <span class="subject-icon">文法<br><b>N2</b></span>
+      <span class="subject-copy"><strong>文法 N2</strong><small>新完全マスター · 第1課〜第8課</small></span>
+      <span class="subject-arrow">→</span>
+    </button>
+  </div>
+  <div class="subject-options">
+    <label class="furigana-option"><input type="checkbox" id="furigana-toggle-subject"><span data-i18n="furigana">ふりがなを表示する</span></label>
+    <p id="furigana-status" class="furigana-status" aria-live="polite"></p>
+  </div>
+  <div class="sticky-actions"><button id="subject-back" class="secondary-btn">戻る</button></div>
+</section>
+
+<section id="screen-review" class="screen">
+  <div class="section-heading">
+    <p class="eyebrow" data-i18n="step2">STEP 02</p>
+    <h1 data-i18n="reviewTitle">文法の復習 · 第1課〜第8課</h1>
+    <p class="muted" data-i18n="reviewIntro">各課の文法形式と使い方を確認してから、クイズを始めましょう。</p>
+  </div>
+  <div id="review-list" class="review-list"></div>
+  <div class="sticky-actions">
+    <button id="back-subject" class="secondary-btn" data-i18n="back">戻る</button>
+    <button id="start-btn" class="primary-btn"><span data-i18n="startQuiz">クイズを始める</span><span>→</span></button>
+  </div>
+</section>
+
+<section id="screen-quiz" class="screen">
+  <div class="quiz-top">
+    <div><p class="eyebrow" data-i18n="practice">PRACTICE MODE</p><h2 id="question-count">問題 01 / 100</h2></div>
+    <div class="quiz-tools">
+      <div class="jump-control"><label for="jump-input" data-i18n="jumpLabel">問題番号へ</label><input id="jump-input" type="number" min="1" max="100" inputmode="numeric" placeholder="62"><button id="jump-btn" class="quiet-btn" data-i18n="jump">移動</button></div>
+      <label class="quiz-furigana"><input type="checkbox" id="furigana-toggle-quiz"><span data-i18n="furigana">ふりがなを表示する</span></label>
+      <button id="pause-btn" class="quiet-btn" data-i18n="pause">Pause</button>
+      <button id="restart-btn" class="quiet-btn" data-i18n="restart">Restart</button>
+    </div>
+  </div>
+  <div class="progress-track"><div id="progress-fill"></div></div>
+  <div class="quiz-layout">
+    <article class="question-card">
+      <div id="mascot-stage" class="mascot-stage" data-mood="neutral" aria-live="polite">
+        <div id="mascot-bubble" class="mascot-bubble">準備はいいですか？</div>
+        <svg class="pixel-guide" viewBox="0 0 144 160" role="img" aria-label="問題を応援するドット絵のキャラクター" shape-rendering="crispEdges">
+          <rect x="49" y="8" width="46" height="8" fill="#503427"/>
+          <rect x="33" y="16" width="78" height="9" fill="#503427"/>
+          <rect x="25" y="25" width="94" height="13" fill="#503427"/>
+          <rect x="25" y="38" width="14" height="28" fill="#503427"/>
+          <rect x="105" y="38" width="14" height="28" fill="#503427"/>
+          <rect x="35" y="29" width="74" height="57" fill="#f0c49d"/>
+          <rect x="28" y="43" width="8" height="20" fill="#e6af83"/>
+          <rect x="108" y="43" width="8" height="20" fill="#e6af83"/>
+          <rect x="43" y="47" width="17" height="14" fill="#fff8e9"/>
+          <rect x="84" y="47" width="17" height="14" fill="#fff8e9"/>
+          <rect x="52" y="50" width="7" height="8" fill="#253b3b"/>
+          <rect x="87" y="50" width="7" height="8" fill="#253b3b"/>
+          <rect x="55" y="51" width="3" height="3" fill="#ffffff"/>
+          <rect x="90" y="51" width="3" height="3" fill="#ffffff"/>
+          <rect x="68" y="64" width="8" height="5" fill="#d58d78"/>
+          <g class="mouth-neutral"><rect x="64" y="75" width="17" height="4" fill="#75453d"/></g>
+          <g class="mouth-happy"><rect x="60" y="73" width="26" height="5" fill="#75453d"/><rect x="64" y="78" width="18" height="5" fill="#ffffff"/><rect x="67" y="83" width="12" height="3" fill="#d86e68"/></g>
+          <g class="mouth-sad"><rect x="63" y="79" width="5" height="4" fill="#75453d"/><rect x="68" y="76" width="10" height="4" fill="#75453d"/><rect x="78" y="79" width="5" height="4" fill="#75453d"/></g>
+          <rect x="36" y="85" width="72" height="9" fill="#263e3b"/>
+          <rect x="23" y="94" width="98" height="42" fill="#355650"/>
+          <rect x="31" y="89" width="82" height="9" fill="#263e3b"/>
+          <rect x="12" y="97" width="16" height="29" fill="#f0c49d"/>
+          <rect x="4" y="117" width="18" height="12" fill="#f0c49d"/>
+          <rect x="116" y="97" width="16" height="29" fill="#f0c49d"/>
+          <rect x="122" y="117" width="18" height="12" fill="#f0c49d"/>
+          <rect x="47" y="103" width="7" height="20" fill="#e4b28a"/>
+          <rect x="89" y="103" width="7" height="20" fill="#e4b28a"/>
+          <rect x="34" y="136" width="33" height="13" fill="#263e3b"/>
+          <rect x="77" y="136" width="33" height="13" fill="#263e3b"/>
+          <rect x="36" y="149" width="29" height="7" fill="#202e2c"/>
+          <rect x="79" y="149" width="29" height="7" fill="#202e2c"/>
+        </svg>
+        <span class="mascot-name">N631 の文法パートナー</span>
+      </div>
+      <div class="question-meta"><span id="question-kind">文法形式の判断</span><span>N2 GRAMMAR</span></div>
+      <p id="question-prompt" class="question-prompt"></p>
+      <div id="options" class="options"></div>
+      <div id="feedback" class="feedback hidden" aria-live="polite"></div>
+      <div class="question-actions">
+        <div class="assist-actions">
+          <button id="hint-btn" class="assist-btn">◉ <span data-i18n="hint">Indice</span></button>
+          <button id="fifty-btn" class="assist-btn">½ <span data-i18n="fifty">50/50</span></button>
+          <button id="dont-know-btn" class="assist-btn dont-know-btn" data-i18n="dontKnow">わからない</button>
+        </div>
+        <button id="next-btn" class="primary-btn hidden"><span data-i18n="next">次の問題</span><span>→</span></button>
+      </div>
+    </article>
+    <aside id="side-card" class="side-card">
+      <div id="quick-reference-panel">
+        <p class="eyebrow" data-i18n="quickReference">QUICK REFERENCE</p>
+        <p class="muted tiny" data-i18n="referenceNote">第6課〜第8課 · 選択肢にある文法形式</p>
+        <div id="quick-refs" class="quick-refs"></div>
+        <div id="quick-detail" class="quick-detail hidden"></div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<section id="screen-pause" class="screen centered-screen">
+  <p class="eyebrow">PAUSE</p><h1 data-i18n="paused">Session en pause</h1>
+  <p class="muted" data-i18n="pauseText">Ta progression est sauvegardée sur cet appareil.</p>
+  <button id="continue-btn" class="primary-btn" data-i18n="continueQuiz">Reprendre le quiz</button>
+  <button id="pause-home-btn" class="text-btn" data-i18n="home">Accueil</button>
+</section>
+
+<section id="screen-result" class="screen">
+  <div class="result-heading"><p class="eyebrow" data-i18n="finished">SESSION TERMINÉE</p><h1 data-i18n="resultTitle">Bilan de ta session</h1></div>
+  <div class="result-grid">
+    <div class="score-card"><span data-i18n="score">Score</span><strong id="final-score">0/100</strong><small id="score-caption"></small></div>
+    <div class="stat-card"><span data-i18n="hintsUsed">Indices utilisés</span><strong id="hint-total">0</strong><small data-i18n="noPenalty">Sans pénalité</small></div>
+    <div class="stat-card"><span data-i18n="completed">Questions terminées</span><strong id="completed-total">0</strong><small data-i18n="outOf">sur 100</small></div>
+    <div class="stat-card"><span data-i18n="unanswered">Non répondues</span><strong id="unanswered-total">0</strong><small data-i18n="notCounted">Non comptées comme des erreurs</small></div>
+  </div>
+  <div class="result-columns">
+    <section class="result-panel"><h2 data-i18n="chapterResults">Résultats par chapitre</h2><div id="chapter-stats"></div></section>
+    <section class="result-panel"><h2 data-i18n="reviewMistakes">Points à revoir</h2><div id="mistake-summary"></div></section>
+  </div>
+  <section class="result-panel missed-panel"><h2 data-i18n="missedQuestions">Questions ratées</h2><div id="missed-list"></div></section>
+  <div class="sticky-actions"><button id="result-home" class="secondary-btn" data-i18n="home">Accueil</button><button id="result-restart" class="primary-btn" data-i18n="retry">Recommencer les 100 questions</button></div>
+</section>
+</main>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
