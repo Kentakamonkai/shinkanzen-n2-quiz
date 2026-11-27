@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#23302d">
 <meta name="description" content="N631クラス向け・2026年12月9日期末テスト対策サイト。文法N2の復習ができます。">
 <title>N631 期末テスト対策 · 文法N2</title>
-<link rel="stylesheet" href="styles.css?v=20261127-2">
+<link rel="stylesheet" href="styles.css?v=20261127-3">
 </head>
 <body>
 <div class="grain"></div>
@@ -95,54 +95,66 @@
 
 <section id="screen-quiz" class="screen">
   <div class="quiz-top">
-    <div><p class="eyebrow" data-i18n="practice">PRACTICE MODE</p><h2 id="question-count">問題 01 / 100</h2></div>
+    <div><p class="eyebrow" data-i18n="subjectName">Grammaire N2</p><h2 id="question-count">問題 01 / 100</h2></div>
     <div class="quiz-tools">
-      <div class="jump-control"><label for="jump-input" data-i18n="jumpLabel">問題番号へ</label><input id="jump-input" type="number" min="1" max="100" inputmode="numeric" placeholder="62"><button id="jump-btn" class="quiet-btn" data-i18n="jump">移動</button></div>
-      <button id="pause-btn" class="quiet-btn" data-i18n="pause">Pause</button>
-      <button id="restart-btn" class="quiet-btn" data-i18n="restart">Restart</button>
+      <div class="jump-control"><label for="jump-input" data-i18n="jumpLabel">Aller à la question</label><input id="jump-input" type="number" min="1" max="100" inputmode="numeric" placeholder="01"><button id="jump-btn" class="quiet-btn" data-i18n="jump">Aller</button></div>
+      <button id="pause-btn" class="quiet-btn" data-i18n="saveProgress">Sauvegarder la progression</button>
+      <button id="restart-btn" class="quiet-btn" data-i18n="restart">Recommencer</button>
     </div>
   </div>
   <div class="progress-track"><div id="progress-fill"></div></div>
+  <div id="mascot-stage" class="mascot-stage" data-mood="neutral" aria-live="polite">
+    <div class="panda-avatar">
+      <svg class="pixel-panda" viewBox="0 0 96 96" role="img" aria-label="Panda pixel art" shape-rendering="crispEdges">
+        <rect x="17" y="10" width="20" height="20" fill="#26332f"/>
+        <rect x="59" y="10" width="20" height="20" fill="#26332f"/>
+        <rect x="13" y="26" width="70" height="50" fill="#26332f"/>
+        <rect x="19" y="24" width="58" height="54" fill="#fffdf7"/>
+        <rect x="25" y="19" width="46" height="8" fill="#fffdf7"/>
+        <rect x="22" y="31" width="52" height="35" fill="#fffdf7"/>
+        <g class="panda-eyes panda-eyes-open">
+          <rect x="27" y="34" width="17" height="19" rx="7" fill="#26332f"/>
+          <rect x="52" y="34" width="17" height="19" rx="7" fill="#26332f"/>
+          <rect x="34" y="41" width="5" height="5" fill="#fffdf7"/>
+          <rect x="59" y="41" width="5" height="5" fill="#fffdf7"/>
+        </g>
+        <g class="panda-eyes panda-eyes-happy">
+          <rect x="29" y="43" width="14" height="4" fill="#26332f"/>
+          <rect x="53" y="43" width="14" height="4" fill="#26332f"/>
+        </g>
+        <g class="panda-eyes panda-eyes-sad">
+          <rect x="29" y="40" width="14" height="4" fill="#26332f"/>
+          <rect x="53" y="40" width="14" height="4" fill="#26332f"/>
+          <rect x="35" y="45" width="4" height="8" fill="#77b8c5"/>
+          <rect x="59" y="45" width="4" height="8" fill="#77b8c5"/>
+        </g>
+        <rect x="45" y="54" width="7" height="5" fill="#26332f"/>
+        <g class="panda-mouth panda-mouth-neutral">
+          <rect x="45" y="63" width="7" height="3" fill="#26332f"/>
+        </g>
+        <g class="panda-mouth panda-mouth-happy">
+          <rect x="41" y="62" width="15" height="4" fill="#26332f"/>
+          <rect x="45" y="66" width="7" height="3" fill="#ed9d91"/>
+        </g>
+        <g class="panda-mouth panda-mouth-sad">
+          <rect x="42" y="65" width="5" height="3" fill="#26332f"/>
+          <rect x="47" y="62" width="7" height="3" fill="#26332f"/>
+          <rect x="54" y="65" width="5" height="3" fill="#26332f"/>
+        </g>
+        <rect x="28" y="57" width="9" height="5" fill="#f2a6a0" opacity=".75"/>
+        <rect x="60" y="57" width="9" height="5" fill="#f2a6a0" opacity=".75"/>
+        <rect x="23" y="77" width="50" height="9" fill="#26332f"/>
+        <rect x="31" y="85" width="34" height="7" fill="#d27a57"/>
+        <rect x="39" y="87" width="18" height="3" fill="#fff4dc"/>
+        <rect x="12" y="72" width="13" height="12" fill="#fffdf7"/>
+        <rect x="71" y="72" width="13" height="12" fill="#fffdf7"/>
+      </svg>
+    </div>
+    <div id="mascot-bubble" class="mascot-bubble">Prêt pour cette question ?</div>
+  </div>
   <div class="quiz-layout">
     <article class="question-card">
-      <div id="mascot-stage" class="mascot-stage" data-mood="neutral" aria-live="polite">
-        <div id="mascot-bubble" class="mascot-bubble">準備はいいですか？</div>
-        <svg class="pixel-guide" viewBox="0 0 144 160" role="img" aria-label="問題を応援するドット絵のキャラクター" shape-rendering="crispEdges">
-          <rect x="49" y="8" width="46" height="8" fill="#503427"/>
-          <rect x="33" y="16" width="78" height="9" fill="#503427"/>
-          <rect x="25" y="25" width="94" height="13" fill="#503427"/>
-          <rect x="25" y="38" width="14" height="28" fill="#503427"/>
-          <rect x="105" y="38" width="14" height="28" fill="#503427"/>
-          <rect x="35" y="29" width="74" height="57" fill="#f0c49d"/>
-          <rect x="28" y="43" width="8" height="20" fill="#e6af83"/>
-          <rect x="108" y="43" width="8" height="20" fill="#e6af83"/>
-          <rect x="43" y="47" width="17" height="14" fill="#fff8e9"/>
-          <rect x="84" y="47" width="17" height="14" fill="#fff8e9"/>
-          <rect x="52" y="50" width="7" height="8" fill="#253b3b"/>
-          <rect x="87" y="50" width="7" height="8" fill="#253b3b"/>
-          <rect x="55" y="51" width="3" height="3" fill="#ffffff"/>
-          <rect x="90" y="51" width="3" height="3" fill="#ffffff"/>
-          <rect x="68" y="64" width="8" height="5" fill="#d58d78"/>
-          <g class="mouth-neutral"><rect x="64" y="75" width="17" height="4" fill="#75453d"/></g>
-          <g class="mouth-happy"><rect x="60" y="73" width="26" height="5" fill="#75453d"/><rect x="64" y="78" width="18" height="5" fill="#ffffff"/><rect x="67" y="83" width="12" height="3" fill="#d86e68"/></g>
-          <g class="mouth-sad"><rect x="63" y="79" width="5" height="4" fill="#75453d"/><rect x="68" y="76" width="10" height="4" fill="#75453d"/><rect x="78" y="79" width="5" height="4" fill="#75453d"/></g>
-          <rect x="36" y="85" width="72" height="9" fill="#263e3b"/>
-          <rect x="23" y="94" width="98" height="42" fill="#355650"/>
-          <rect x="31" y="89" width="82" height="9" fill="#263e3b"/>
-          <rect x="12" y="97" width="16" height="29" fill="#f0c49d"/>
-          <rect x="4" y="117" width="18" height="12" fill="#f0c49d"/>
-          <rect x="116" y="97" width="16" height="29" fill="#f0c49d"/>
-          <rect x="122" y="117" width="18" height="12" fill="#f0c49d"/>
-          <rect x="47" y="103" width="7" height="20" fill="#e4b28a"/>
-          <rect x="89" y="103" width="7" height="20" fill="#e4b28a"/>
-          <rect x="34" y="136" width="33" height="13" fill="#263e3b"/>
-          <rect x="77" y="136" width="33" height="13" fill="#263e3b"/>
-          <rect x="36" y="149" width="29" height="7" fill="#202e2c"/>
-          <rect x="79" y="149" width="29" height="7" fill="#202e2c"/>
-        </svg>
-        <span class="mascot-name">N631 の文法パートナー</span>
-      </div>
-      <div class="question-meta"><span id="question-kind">文法形式の判断</span><span>N2 文法</span></div>
+      <div class="question-meta"><span id="question-kind">Choisis la bonne réponse</span><span data-i18n="subjectName">Grammaire N2</span></div>
       <p id="question-prompt" class="question-prompt"></p>
       <div id="options" class="options"></div>
       <div id="feedback" class="feedback hidden" aria-live="polite"></div>
@@ -150,19 +162,30 @@
         <div class="assist-actions">
           <button id="hint-btn" class="assist-btn">◉ <span data-i18n="hint">Indice</span></button>
           <button id="fifty-btn" class="assist-btn">½ <span data-i18n="fifty">50/50</span></button>
-          <button id="dont-know-btn" class="assist-btn dont-know-btn" data-i18n="dontKnow">わからない</button>
+          <button id="dont-know-btn" class="assist-btn dont-know-btn" data-i18n="dontKnow">Je ne sais pas</button>
         </div>
-        <button id="next-btn" class="primary-btn hidden"><span data-i18n="next">次の問題</span><span>→</span></button>
+        <button id="next-btn" class="primary-btn hidden"><span data-i18n="next">Question suivante</span><span>→</span></button>
       </div>
     </article>
     <aside id="side-card" class="side-card">
       <div id="quick-reference-panel">
-        <p class="eyebrow" data-i18n="quickReference">QUICK REFERENCE</p>
-        <p class="muted tiny" data-i18n="referenceNote">第6課〜第8課 · 選択肢にある文法形式</p>
+        <p class="eyebrow" data-i18n="quickReference">Aide spéciale pour les chapitres 6–7–8</p>
         <div id="quick-refs" class="quick-refs"></div>
         <div id="quick-detail" class="quick-detail hidden"></div>
       </div>
     </aside>
+  </div>
+  <div id="restart-dialog" class="dialog-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="restart-dialog-title">
+    <div class="dialog-card">
+      <p class="eyebrow" data-i18n="restartWarningTitle">Avant de recommencer</p>
+      <h2 id="restart-dialog-title" data-i18n="restartWarningHeading">Ta progression actuelle va être supprimée.</h2>
+      <p data-i18n="restartWarningText">Si tu recommences sans sauvegarder, ces réponses seront perdues et tu n’auras pas de bilan pour cette session.</p>
+      <div class="dialog-actions">
+        <button id="restart-save" class="primary-btn" data-i18n="restartSave">Sauvegarder et recommencer</button>
+        <button id="restart-discard" class="secondary-btn" data-i18n="restartDiscard">Recommencer sans sauvegarder</button>
+        <button id="restart-cancel" class="text-btn" data-i18n="restartCancel">Annuler</button>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -189,7 +212,7 @@
   <div class="sticky-actions"><button id="result-home" class="secondary-btn" data-i18n="home">Accueil</button><button id="result-restart" class="primary-btn" data-i18n="retry">Recommencer les 100 questions</button></div>
 </section>
 </main>
-<script src="data.js?v=20261127-2"></script>
-<script src="app.js?v=20261127-2"></script>
+<script src="data.js?v=20261127-3"></script>
+<script src="app.js?v=20261127-3"></script>
 </body>
 </html>
