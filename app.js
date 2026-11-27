@@ -423,7 +423,7 @@ function renderResult(result){
   $("completed-total").textContent=result.answered;
   $("unanswered-total").textContent=result.unanswered;
   $("score-caption").textContent=result.score+"%";
-  $("chapter-stats").innerHTML=result.chapters.map(row=>'<div class="chapter-row"><span>CHAPTER 0'+row.ch+'</span><div class="chapter-bar"><i style="width:'+(row.total?row.correct/row.total*100:0)+'%"></i></div><span class="chapter-score">'+row.correct+'/'+row.total+'</span></div>').join("");
+  $("chapter-stats").innerHTML=result.chapters.map(row=>'<div class="chapter-row"><span>第'+row.ch+'課</span><div class="chapter-bar"><i style="width:'+(row.total?row.correct/row.total*100:0)+'%"></i></div><span class="chapter-score">'+row.correct+'/'+row.total+'</span></div>').join("");
   $("mistake-summary").innerHTML=result.errors.length?result.errors.slice(0,8).map(row=>'<div class="mistake-row"><span>'+escapeHtml((getGrammar(row.id)||{}).name||row.id)+'</span><strong>'+row.count+'</strong></div>').join(""):'<p class="success-note">'+escapeHtml(t("noMistakes"))+'</p>';
   $("missed-list").innerHTML=result.missed.length?result.missed.map(item=>'<div class="missed-item"><strong>Q'+item.position+' · '+rubyHtml(item.prompt)+'</strong><p>'+escapeHtml(t("correctAnswer"))+'：'+rubyHtml(item.correct)+' · '+rubyHtml((getGrammar(item.grammar)||{}).name||item.grammar)+(item.skipped?' · '+escapeHtml(t("dontKnow")):"")+'</p></div>').join(""):'<p class="success-note">'+escapeHtml(t("noMisses"))+'</p>';
 }
