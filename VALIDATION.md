@@ -2,27 +2,32 @@
 
 Updated: 2026-11-27
 
+## Project identity
+
+- Target class: N631
+- Target exam date: 2026-12-09
+- Creator credit: 健太
+- Current subject: 文法 N2
+
 ## Grammar scope
 
-The chapter/grammar scope follows the publisher's official contents page for the book:
+The chapter/grammar scope follows the publisher's official contents page:
 https://www.3anet.co.jp/np/books/3602/
 
-The 41 grammar forms included in the first eight lessons are:
+The data file contains 41 grammar forms across lessons 1–8:
 
-1. **Lesson 1:** ～際（に）; ～に際して・～にあたって; ～たとたん（に）; ～（か）と思うと・～（か）と思ったら; ～か～ないかのうちに
-2. **Lesson 2:** ～最中だ; ～うちに; ～ばかりだ・～一方だ; ～（よ）うとしている; ～つつある; ～つつ
-3. **Lesson 3:** ～てはじめて; ～上（で）; ～次第; ～て以来・～てこのかた; ～てからでないと・～てからでなければ
-4. **Lesson 4:** ～をはじめ（として）; ～からして; ～にわたって; ～を通じて・～を通して; ～限り; ～だけ
-5. **Lesson 5:** ～に限り; ～限り（は）; ～限りでは; ～に限って
-6. **Lesson 6:** ～に限らず; ～のみならず; ～ばかりか; ～はもとより; ～上（に）
-7. **Lesson 7:** ～に関して; ～をめぐって; ～にかけては; ～に対して; ～にこたえて
-8. **Lesson 8:** ～をもとに（して）; ～に基づいて; ～に沿って; ～のもとで・～のもとに; ～向けだ
+1. Lesson 1: ～際（に）; ～に際して・～にあたって; ～たとたん（に）; ～（か）と思うと・～（か）と思ったら; ～か～ないかのうちに
+2. Lesson 2: ～最中だ; ～うちに; ～ばかりだ・～一方だ; ～（よ）うとしている; ～つつある; ～つつ
+3. Lesson 3: ～てはじめて; ～上（で）; ～次第; ～て以来・～てこのかた; ～てからでないと・～てからでなければ
+4. Lesson 4: ～をはじめ（として）; ～からして; ～にわたって; ～を通じて・～を通して; ～限り; ～だけ
+5. Lesson 5: ～に限り; ～限り（は）; ～限りでは; ～に限って
+6. Lesson 6: ～に限らず; ～のみならず; ～ばかりか; ～はもとより; ～上（に）
+7. Lesson 7: ～に関して; ～をめぐって; ～にかけては; ～に対して; ～にこたえて
+8. Lesson 8: ～をもとに（して）; ～に基づいて; ～に沿って; ～のもとで・～のもとに; ～向けだ
 
-All quiz sentences are newly written for practice and are not copied from the textbook.
+All quiz sentences and answer choices are newly written for practice and are not copied from the textbook.
 
-## Data integrity checks
-
-Static checks against the files reread from the committed `main` branch:
+## Data integrity
 
 - [x] Exactly 100 question records.
 - [x] Chapter split: 13 / 13 / 12 / 12 / 12 / 13 / 13 / 12.
@@ -31,32 +36,46 @@ Static checks against the files reread from the committed `main` branch:
 - [x] Every question references an existing grammar entry.
 - [x] All 100 question prompts are unique.
 - [x] No question contains duplicate answer-option strings.
-- [x] JavaScript source parses without a syntax error (compile-only check).
 - [x] All 41 grammar entries have a concise glossary in all nine selected languages.
-- [x] All 15 lesson 6–8 review examples have translations in all nine languages.
+- [x] The 15 chapter 6–8 review examples have translations in all nine languages.
+- [x] app.js parses successfully after the latest changes.
+- [x] Every static element ID referenced by app.js exists in index.html; no duplicate IDs were found.
 
-## Feature checklist
+## Feature implementation
 
-- [x] Language selection in the requested order: Vietnamese, Simplified Chinese, Traditional Chinese (Taiwan), Korean, Spanish, Italian, Nepali, Burmese, French.
-- [x] Japanese-only prompts and answer options.
-- [x] Mixed question order and no chapter label during the quiz.
-- [x] Review cards for all 15 grammar forms in lessons 6–8, with form, short meaning, Japanese example, and translated example.
-- [x] Contextual hint button and 50/50 elimination.
-- [x] Hints and 50/50 do not subtract points; hint usage is counted in the final summary.
-- [x] Immediate correction and locked answer after selection.
-- [x] Local progress save, resume, pause, restart.
-- [x] Final score, chapter statistics, wrong answers, recurring grammar errors.
-- [x] Responsive desktop/mobile styling.
-- [x] Temporary generic pixel-art guide built in CSS.
+- [x] Japanese-only first page with date, class N631, and creator credit 健太.
+- [x] Language selection followed by a subject-selection screen.
+- [x] Current subject card: 文法 N2.
+- [x] Review accordions for all eight chapters and all 41 grammar forms.
+- [x] Quick-reference section hidden when no chapter 6–8 grammar appears in the answer choices.
+- [x] Larger pixel-art mascot inside the question frame, speech bubble, and different moods.
+- [x] Direct navigation to any question from 1 to 100.
+- [x] 「わからない」 answer control.
+- [x] Optional furigana using Kuromoji browser-side morphological analysis.
+- [x] Context-specific French hints sourced from each question's hint field; localized grammar glosses shown in other languages.
+- [x] Answer feedback shows the completed Japanese sentence and the selected language's grammar gloss. French feedback also shows a nuance note and contextual clue.
+- [x] Varied encouraging feedback in all nine languages.
+- [x] Multiple automatic session saves, timestamped at session creation, with progress and completed-session charts / review points.
+- [x] Older single-session local progress can be migrated into the new save list.
+- [x] Hints and 50/50 do not reduce the score; hint usage is counted in the result.
+
+## Important limits
+
+- Saves are stored in localStorage on the current browser/device. There is no account or cloud synchronization.
+- Furigana readings are automatically estimated by Kuromoji; ambiguous readings and proper nouns may need correction. The first use requires downloading the library and dictionary from jsDelivr.
+- The review examples for lessons 1–5 currently appear in Japanese only. The examples for lessons 6–8 have translations in the nine interface languages.
+- Full translations of every completed quiz sentence into all nine languages have not yet been added. The result feedback is structured around the completed Japanese sentence and the translated grammar explanation.
+- Short translations and explanations are study aids, not certified translations.
 
 ## Still to verify manually
 
-- [ ] Full interaction test in a desktop browser.
-- [ ] Full interaction test on a mobile browser.
-- [ ] Confirm the localStorage resume flow across a browser restart.
-- [ ] Enable GitHub Pages and verify the public deployment URL.
-- [ ] Have the translations and fine distinctions in the distractors reviewed by a qualified Japanese-language teacher / native-language reviewers.
-
-## Translation and pedagogical note
-
-Translations are concise study aids, not certified translations. The quiz feedback gives a brief explanation and a localized gloss; finer grammatical distinctions may require the full textbook explanation. The question sentences are newly authored and should be reviewed by a Japanese-language instructor before classroom-wide use.
+- [ ] Open the public GitHub Pages URL and confirm the new version has deployed.
+- [ ] Test the complete path: language → subject → grammar review → quiz.
+- [ ] Open several chapter accordions and verify the 41 grammar cards are readable.
+- [ ] Test question-number navigation, including directly opening question 62.
+- [ ] Test 「わからない」, hints, and 50/50.
+- [ ] Enable furigana and verify the first-time library/dictionary loading on desktop and mobile.
+- [ ] Complete a session, return home, and confirm its timestamp, score, chapter graph, and review points appear in the save list.
+- [ ] Start a second session and confirm both sessions remain available.
+- [ ] Close and reopen the browser to confirm localStorage resume.
+- [ ] Have Japanese grammar distinctions, distractors, and localized texts reviewed by a Japanese-language teacher / native-language reviewers.
