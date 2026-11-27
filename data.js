@@ -99,7 +99,7 @@ window.GRAMMAR_QUIZ_DATA = (() => {
     q(5,"blank","本日（　　　）、先着百名様に記念品を差し上げます。",["限りは","に限って","に限り","限りでは"],2,"ni_kagiri","Offre réservée à aujourd’hui."),
     q(5,"blank","この町に住んでいる（　　　）、地域のルールを守るべきだ。",["限りでは","に限り","に限って","限りは"],3,"kagiri_wa","Condition valable aussi longtemps que l’on y habite."),
     q(5,"blank","公開された資料を読む（　　　）、計画に変更はないようだ。",["限りでは","に限って","に限り","限りは"],0,"kagiri_dewa","Conclusion tirée des documents consultés."),
-    q(5,"blank","普段は遅刻しない彼（　　　）、今日に限って寝坊した。",["限りは","限りでは","に限り","に限って"],3,"ni_kagitte","Une personne habituellement ponctuelle fait une exception."),
+    q(5,"blank","普段は遅刻しない彼（　　　）、今日は寝坊した。",["限りは","限りでは","に限り","に限って"],3,"ni_kagitte","Une personne habituellement ponctuelle fait une exception."),
     q(5,"continuation","安全が確認できない限りは、",["作業を再開した限りでは。","作業を再開するに限り。","作業を再開する限りではない。","作業を再開するべきではない。"],3,"kagiri_wa","La condition de sécurité n’étant pas remplie, il faut s’abstenir."),
     q(5,"blank","学生（　　　）、入館料を二割引きにします。",["に限って","限りは","限りでは","に限り"],3,"ni_kagiri","Réduction réservée à un groupe défini."),
     q(5,"blank","私が見た（　　　）、この地域に大きな被害はなかった。",["限りでは","限りは","に限り","に限って"],0,"kagiri_dewa","L’affirmation est limitée à l’observation personnelle."),
