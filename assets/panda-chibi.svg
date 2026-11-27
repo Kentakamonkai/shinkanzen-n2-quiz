@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Cute chibi panda">
+<defs>
+ <linearGradient id="fur" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fffefb"/><stop offset=".62" stop-color="#f5f0e9"/><stop offset="1" stop-color="#e7ded4"/></linearGradient>
+ <linearGradient id="dark" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#3a343d"/><stop offset="1" stop-color="#171b24"/></linearGradient>
+ <linearGradient id="pink" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#ffc6cc"/><stop offset="1" stop-color="#f18d9e"/></linearGradient>
+ <radialGradient id="eye"><stop stop-color="#71627d"/><stop offset=".55" stop-color="#26202d"/><stop offset="1" stop-color="#0f1119"/></radialGradient>
+ <filter id="shadow" x="-30%" y="-30%" width="160%" height="170%"><feDropShadow dx="0" dy="12" stdDeviation="12" flood-color="#665a53" flood-opacity=".18"/></filter>
+</defs>
+<g filter="url(#shadow)">
+ <ellipse cx="256" cy="445" rx="133" ry="25" fill="#8c8075" opacity=".13"/>
+ <!-- tiny feet and round belly -->
+ <ellipse cx="184" cy="411" rx="58" ry="64" fill="url(#dark)"/>
+ <ellipse cx="328" cy="411" rx="58" ry="64" fill="url(#dark)"/>
+ <ellipse cx="256" cy="365" rx="137" ry="122" fill="url(#fur)" stroke="#e6ded7" stroke-width="5"/>
+ <ellipse cx="256" cy="373" rx="80" ry="83" fill="#fffefa" opacity=".72"/>
+ <!-- ears -->
+ <circle cx="119" cy="124" r="67" fill="url(#dark)"/>
+ <circle cx="393" cy="124" r="67" fill="url(#dark)"/>
+ <circle cx="119" cy="126" r="35" fill="#a77d8a" opacity=".48"/>
+ <circle cx="393" cy="126" r="35" fill="#a77d8a" opacity=".48"/>
+ <!-- waving arms -->
+ <ellipse cx="102" cy="289" rx="54" ry="72" transform="rotate(-28 102 289)" fill="url(#dark)"/>
+ <ellipse cx="410" cy="284" rx="54" ry="72" transform="rotate(28 410 284)" fill="url(#dark)"/>
+ <ellipse cx="82" cy="239" rx="35" ry="42" transform="rotate(-25 82 239)" fill="url(#fur)" stroke="#e7dfd8" stroke-width="4"/>
+ <ellipse cx="430" cy="234" rx="35" ry="42" transform="rotate(25 430 234)" fill="url(#fur)" stroke="#e7dfd8" stroke-width="4"/>
+ <!-- head -->
+ <ellipse cx="256" cy="224" rx="184" ry="174" fill="url(#fur)" stroke="#e9e1da" stroke-width="5"/>
+ <ellipse cx="256" cy="240" rx="158" ry="139" fill="#fffefa" opacity=".45"/>
+ <!-- eye patches -->
+ <ellipse cx="184" cy="218" rx="53" ry="70" transform="rotate(20 184 218)" fill="url(#dark)"/>
+ <ellipse cx="328" cy="218" rx="53" ry="70" transform="rotate(-20 328 218)" fill="url(#dark)"/>
+ <!-- big sparkling eyes -->
+ <ellipse cx="184" cy="222" rx="25" ry="36" fill="url(#eye)"/><ellipse cx="328" cy="222" rx="25" ry="36" fill="url(#eye)"/>
+ <ellipse cx="176" cy="208" rx="11" ry="14" fill="#fff"/><ellipse cx="320" cy="208" rx="11" ry="14" fill="#fff"/>
+ <circle cx="197" cy="236" r="5" fill="#fff" opacity=".85"/><circle cx="341" cy="236" r="5" fill="#fff" opacity=".85"/>
+ <!-- cheeks -->
+ <ellipse cx="130" cy="290" rx="31" ry="17" fill="url(#pink)" opacity=".66"/>
+ <ellipse cx="382" cy="290" rx="31" ry="17" fill="url(#pink)" opacity=".66"/>
+ <path d="M117 285 l-5 12 M131 283 l-3 13 M145 285 l-2 11 M367 285 l2 11 M381 283 l3 13 M395 285 l5 12" stroke="#eb8b9d" stroke-width="4" stroke-linecap="round" opacity=".8"/>
+ <!-- nose and mouth -->
+ <ellipse cx="256" cy="271" rx="12" ry="8" fill="#28232e"/>
+ <path d="M256 278 Q250 296 232 297 Q221 297 220 308 Q222 334 256 340 Q290 334 292 308 Q291 297 280 297 Q262 296 256 278Z" fill="#4c2838"/>
+ <path d="M232 309 Q256 326 280 309 Q277 336 256 337 Q235 335 232 309Z" fill="#f1849b"/>
+ <path d="M239 306 Q256 315 273 306" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/>
+ <!-- tiny belly sparkle -->
+ <path d="M366 356 l7 18 18 7-18 7-7 18-7-18-18-7 18-7Z" fill="#f3b5bd" opacity=".8"/>
+</g>
+</svg>
