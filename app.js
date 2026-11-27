@@ -120,6 +120,22 @@ const FEATURE_UI={
 };
 Object.keys(FEATURE_UI).forEach(lang=>Object.assign(UI[lang],FEATURE_UI[lang]));
 
+const UI_MORE={
+  vi:{viewScore:"Xem kết quả hiện tại",fiftyUsed:"Số lần dùng 50/50",progressReviewEyebrow:"TỔNG KẾT TIẾN ĐỘ",progressReviewTitle:"Kết quả học tập hiện tại",returnQuiz:"Quay lại bài kiểm tra",paused:"Nghỉ một chút nhé?",pausedEyebrow:"ĐÃ LƯU TIẾN ĐỘ",answerUnavailable:"Không có dữ liệu câu trả lời"},
+  "zh-CN":{viewScore:"查看当前成绩",fiftyUsed:"50/50使用次数",progressReviewEyebrow:"学习进度总结",progressReviewTitle:"当前学习结果",returnQuiz:"返回测验",paused:"休息一下吧？",pausedEyebrow:"学习进度已保存",answerUnavailable:"暂无答案数据"},
+  "zh-TW":{viewScore:"查看目前成績",fiftyUsed:"50/50使用次數",progressReviewEyebrow:"學習進度總結",progressReviewTitle:"目前學習結果",returnQuiz:"返回測驗",paused:"休息一下吧？",pausedEyebrow:"學習進度已儲存",answerUnavailable:"目前沒有答案資料"},
+  ko:{viewScore:"현재 결과 보기",fiftyUsed:"50/50 사용 횟수",progressReviewEyebrow:"학습 진행 결과",progressReviewTitle:"현재 학습 결과",returnQuiz:"퀴즈로 돌아가기",paused:"잠깐 쉬어 갈까요?",pausedEyebrow:"진행 상황 저장 완료",answerUnavailable:"답변 데이터가 없습니다"},
+  es:{viewScore:"Ver el balance",fiftyUsed:"Usos de 50/50",progressReviewEyebrow:"RESUMEN DE PROGRESO",progressReviewTitle:"Resultados hasta ahora",returnQuiz:"Volver al cuestionario",paused:"¿Hacemos una pausa?",pausedEyebrow:"PROGRESO GUARDADO",answerUnavailable:"Respuesta no disponible"},
+  it:{viewScore:"Vedi il riepilogo",fiftyUsed:"Utilizzi di 50/50",progressReviewEyebrow:"RIEPILOGO DEI PROGRESSI",progressReviewTitle:"Risultati finora",returnQuiz:"Torna al quiz",paused:"Facciamo una pausa?",pausedEyebrow:"PROGRESSI SALVATI",answerUnavailable:"Risposta non disponibile"},
+  ne:{viewScore:"हालको नतिजा हेर्नुहोस्",fiftyUsed:"50/50 प्रयोग संख्या",progressReviewEyebrow:"प्रगति सारांश",progressReviewTitle:"अहिलेसम्मको नतिजा",returnQuiz:"क्विजमा फर्कनुहोस्",paused:"केही बेर आराम गरौँ?",pausedEyebrow:"प्रगति सुरक्षित गरिएको छ",answerUnavailable:"उत्तर उपलब्ध छैन"},
+  my:{viewScore:"လက်ရှိရလဒ်ကို ကြည့်ရန်",fiftyUsed:"50/50 အသုံးပြုသည့်အကြိမ်",progressReviewEyebrow:"တိုးတက်မှု အနှစ်ချုပ်",progressReviewTitle:"ယခုအချိန်အထိ ရလဒ်",returnQuiz:"မေးခွန်းသို့ ပြန်သွားရန်",paused:"ခဏနားကြမလား။",pausedEyebrow:"တိုးတက်မှုကို သိမ်းဆည်းပြီးပါပြီ",answerUnavailable:"အဖြေဒေတာ မရှိပါ"},
+  fr:{viewScore:"Voir le bilan",fiftyUsed:"Utilisations du 50/50",progressReviewEyebrow:"BILAN DE PROGRESSION",progressReviewTitle:"Résultats après tes réponses",returnQuiz:"Retour au quiz",paused:"Petite pause ?",pausedEyebrow:"PROGRESSION SAUVEGARDÉE",answerUnavailable:"Réponse indisponible"}
+};
+Object.keys(UI_MORE).forEach(lang=>Object.assign(UI[lang],UI_MORE[lang]));
+const SAVE_DETAILS_LABELS={ja:"詳細を見る",vi:"Xem chi tiết", "zh-CN":"查看详情","zh-TW":"查看詳情",ko:"자세히 보기",es:"Ver en detalle",it:"Vedi dettagli",ne:"विस्तृत रूपमा हेर्नुहोस्",my:"အသေးစိတ်ကြည့်ရန်",fr:"Voir en détails"};
+Object.keys(SAVE_UI).forEach(lang=>{SAVE_UI[lang].viewDetails=SAVE_DETAILS_LABELS[lang]||SAVE_DETAILS_LABELS.fr;});
+
+
 const RESULT_UI={
   vi:{chapterShort:"Bài",chapterAnswered:"Đã trả lời",scoreHeadline:"Tổng kết của bạn",scoreSubline:"Kết quả chi tiết theo từng bài.",paused:"Đã lưu tiến độ",pauseText:"Tiến độ của bạn đã được lưu trên thiết bị này.",continueQuiz:"Tiếp tục làm bài"},
   "zh-CN":{chapterShort:"第",chapterAnswered:"已回答",scoreHeadline:"本次学习总结",scoreSubline:"查看每一课的详细表现。",paused:"进度已保存",pauseText:"你的学习进度已保存在这台设备上。",continueQuiz:"继续测验"},
@@ -710,4 +726,5 @@ migrateLegacySave();
 
 renderReview();
 renderSaves();
+updateHomePandaLine();
 console.info("N631 N2 grammar practice ready",DATA.questions.length,"questions");
