@@ -184,6 +184,7 @@ function syncFuriganaControls(){
   });
 }
 function dateLabel(value){
+  if(!value)return "旧バージョンからの保存 · 日時不明";
   const date=new Date(value);
   if(Number.isNaN(date.getTime()))return "保存日時不明";
   return date.toLocaleString(undefined,{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"});
@@ -204,6 +205,24 @@ function saveSession(){
     renderSaves();
   }catch(error){console.warn("Could not save the session",error);}
 }
+
+function migrateLegacySave(){
+  const raw=localStorage.getItem(STORE_KEY);
+  if(!raw||loadSessions().length)return;
+  try{
+    const legacy=JSON.parse(raw);
+    if(legacy&&Array.isArray(legacy.order)&&legacy.order.length===100){
+      legacy.sessionId="legacy-"+Date.now();
+      legacy.createdAt=null;
+      legacy.updatedAt=new Date().toISOString();
+      legacy.completed=false;
+      const sessions=loadSessions();sessions.unshift(legacy);
+      localStorage.setItem(SESSIONS_KEY,JSON.stringify(sessions));
+      localStorage.removeItem(STORE_KEY);
+    }
+  }catch(error){console.warn("Could not migrate an old save",error);}
+}
+
 function renderSaves(){
   const host=$("save-list");if(!host)return;
   const sessions=loadSessions();
@@ -233,7 +252,7 @@ function renderReview(){
       const translation=(EXAMPLES[g.id]||[])[LANGS.indexOf(state.lang)]||"";
       return '<article class="grammar-card"><h3>'+rubyHtml(g.name)+'</h3><div class="grammar-form">'+rubyHtml(g.form)+'</div><p class="grammar-meaning">'+escapeHtml(gloss)+'</p>'+extra+'<div class="grammar-example"><p>'+rubyHtml(g.example)+'</p>'+(translation?'<small>'+escapeHtml(translation)+'</small>':"")+'</div></article>';
     }).join("");
-    return '<details class="chapter-accordion" '+(ch===1?"open":"")+'><summary><span>第'+ch+'課</span><small>'+entries.length+' forms</small></summary><div class="grammar-grid">'+cards+'</div></details>';
+    return '<details class="chapter-accordion" '+(ch===1?"open":"")+'><summary><span>第'+ch+'課</span><small>'+entries.length+' 文法項目</small></summary><div class="grammar-grid">'+cards+'</div></details>';
   }).join("");
 }
 function startSession(){
@@ -287,7 +306,7 @@ function renderQuestion(){
 }
 function completedSentence(question){
   const answer=question.choices[question.answer];
-  return question.kind==="blank"?question.prompt.replace(/（[　\\s]*）/,answer):question.prompt+answer;
+  return question.kind==="blank"?question.prompt.replace(/（[　\s]*）/,answer):question.prompt+answer;
 }
 function answer(choice){
   if(Object.prototype.hasOwnProperty.call(state.answers,state.index))return;
@@ -476,6 +495,7 @@ $("save-list").addEventListener("click",event=>{
 });
 
 translateUi();
+migrateLegacySave();
 syncFuriganaControls();
 renderReview();
 renderSaves();
