@@ -394,13 +394,54 @@ function answer(choice){
   if(Object.prototype.hasOwnProperty.call(state.answers,state.index))return;
   state.answers[state.index]=choice;saveSession();showAnswer(choice,false);
 }
-function pickLocalizedPanda(mood){const bank=PANDA_LINES[state.lang]||PANDA_LINES.fr;const list=bank[mood]||bank.neutral;return list[Math.floor(Math.random()*list.length)];}
+
+const PANDA_EXTRA={
+  vi:["Bạn cứ dành thời gian suy nghĩ nhé.","Biểu thức nào nối hai ý này?","Ngữ cảnh thường cho ta câu trả lời.","Hãy chú ý điều gì thay đổi trong câu.","Mẫu này có sắc thái rất cụ thể.","Hãy xem từng phương án một."],
+  "zh-CN":["不用着急，慢慢思考。","哪个表达连接了这两个意思？","语境往往会告诉你答案。","留意句子中发生了什么变化。","这个语法形式有很明确的语气。","我们逐个看看选项吧。"],
+  "zh-TW":["不用著急，慢慢思考。","哪個表達連接了這兩個意思？","語境往往會告訴你答案。","留意句子中發生了什麼變化。","這個文法形式有很明確的語氣。","我們逐個看看選項吧。"],
+  ko:["서두르지 말고 천천히 생각해요.","어떤 표현이 두 내용을 연결할까요?","문맥에 답이 있는 경우가 많아요.","문장에서 무엇이 달라지는지 살펴보세요.","이 문형에는 분명한 뉘앙스가 있어요.","선택지를 하나씩 살펴봐요."],
+  es:["Tómate tu tiempo para pensar.","¿Qué expresión conecta estas dos ideas?","El contexto suele darte la respuesta.","Fíjate en lo que cambia en la frase.","Esta forma tiene un matiz muy concreto.","Vamos a revisar las opciones una por una."],
+  it:["Prenditi il tempo per riflettere.","Quale espressione collega queste due idee?","Spesso il contesto suggerisce la risposta.","Nota che cosa cambia nella frase.","Questa forma ha una sfumatura precisa.","Esaminiamo le opzioni una alla volta."],
+  ne:["हतार नगरी सोच्न समय लिनुहोस्।","कुन अभिव्यक्तिले यी दुई विचार जोड्छ?","सन्दर्भले प्रायः उत्तर दिन्छ।","वाक्यमा के परिवर्तन हुन्छ ध्यान दिनुहोस्।","यो रूपको विशेष अर्थछटा छ।","विकल्पहरू एक-एक गरेर हेरौँ।"],
+  my:["အလျင်မလိုဘဲ စဉ်းစားဖို့ အချိန်ယူပါ။","ဘယ်အသုံးအနှုန်းက အယူအဆနှစ်ခုကို ဆက်စပ်ပေးသလဲ။","စာကြောင်းအခြေအနေက အဖြေကို မကြာခဏ ပြောပြပေးတတ်တယ်။","ဝါကျထဲမှာ ဘာတွေပြောင်းလဲသလဲ သတိထားပါ။","ဒီပုံစံမှာ သီးခြားအဓိပ္ပာယ်နုချက် ရှိတယ်။","ရွေးချယ်စရာတွေကို တစ်ခုချင်းစီ ကြည့်ရအောင်။"],
+  fr:["Prends le temps de réfléchir, rien ne presse.","Quelle expression relie ces deux idées ?","Le contexte donne souvent la réponse.","Repère ce qui change dans la phrase.","Cette forme a une nuance bien précise.","On regarde les propositions une par une."]
+};
+Object.keys(PANDA_LINES).forEach(lang=>{
+  const bank=PANDA_LINES[lang];
+  bank.neutral=[...bank.neutral,...bank.thinking,...bank.focus,...PANDA_EXTRA[lang]];
+});
+const HOME_PANDA_LINES={
+  vi:"Cùng ôn tập nhé! Mình cổ vũ bạn!",
+  "zh-CN":"一起复习吧！我会为你加油！",
+  "zh-TW":"一起複習吧！我會幫你加油！",
+  ko:"함께 복습해요! 제가 응원할게요!",
+  es:"¡Vamos a repasar! ¡Estoy de tu lado!",
+  it:"Ripassiamo insieme! Faccio il tifo per te!",
+  ne:"सँगै दोहोर्‍याएर पढौँ! म तपाईंलाई हौसला दिन्छु!",
+  my:"အတူတူ ပြန်လေ့လာကြရအောင်။ အားပေးနေမယ်။",
+  fr:"Allez, on révise ensemble ! Je t'encourage !"
+};
+function updateHomePandaLine(){
+  const el=$("home-panda-message");
+  if(el)el.textContent=HOME_PANDA_LINES[state.lang]||HOME_PANDA_LINES.fr;
+}
+function pandaLine(mood){
+  const bank=PANDA_LINES[state.lang]||PANDA_LINES.fr;
+  const list=bank[mood]||bank.neutral;
+  state.pandaBags=state.pandaBags||{};
+  let bag=state.pandaBags[mood]||[];
+  if(!bag.length)bag=shuffle(list.map((_,i)=>i));
+  const index=bag.pop();
+  state.pandaBags[mood]=bag;
+  return list[index];
+}
+function pickLocalizedPanda(mood){return pandaLine(mood);}
 function setMascot(mood){
   const stage=$("mascot-stage");if(!stage)return;
   stage.dataset.mood=mood;
-  const bank=PANDA_LINES[state.lang]||PANDA_LINES.fr;
-  const list=bank[mood]||bank.neutral;
-  $("mascot-bubble").textContent=list[Math.floor(Math.random()*list.length)];
+  const image=$("panda-image");
+  if(image)image.src=mood==="happy"?"assets/panda-chibi-happy.svg":mood==="sad"?"assets/panda-chibi-worried.svg":"assets/panda-chibi.svg";
+  $("mascot-bubble").textContent=pandaLine(mood);
 }
 const WHY_FR={
   sai:"Le départ, le retour ou l'utilisation sont présentés comme le moment auquel s'applique une consigne : 際に sert précisément à situer une procédure à cette occasion.",
