@@ -345,7 +345,7 @@ function renderSaves(){
       ?labels.completed+' · '+(result?result.answered:answered)+'/100 '+labels.questions+' · '+labels.score+' '+(result?result.score:0)+'/100'
       :labels.inProgress+' · '+answered+'/100 '+labels.questions;
     const details=completed
-      ?'<div class="save-completed-score"><strong>'+(result?result.score:0)+'/100</strong><span>50/50 · '+fifties+'</span></div>'+graph+errors
+      ?'<div class="save-completed-score'+(result&&Number(result.score)===100?' perfect-score':'')+'"><strong>'+(result?result.score:0)+'/100</strong><span>50/50 · '+fifties+'</span></div>'+graph+errors
       :'<div class="save-progress"><div><span>'+escapeHtml(labels.answerCount)+'</span><b>'+answered+'/100</b></div><i><b style="width:'+progress+'%"></b></i><small>50/50 · '+fifties+'</small></div>';
     const view='<button data-action="view-details" data-id="'+escapeHtml(session.sessionId)+'">'+escapeHtml(labels.viewDetails||labels.viewResults)+'</button>';
     const resume=completed?"":'<button data-action="resume" data-id="'+escapeHtml(session.sessionId)+'">'+escapeHtml(labels.resume)+'</button>';
