@@ -129,6 +129,7 @@ function escapeHtml(value){
   return String(value==null?"":value).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
 }
 function rubyHtml(value){return escapeHtml(value);}
+function shuffle(items){const copy=items.slice();for(let i=copy.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[copy[i],copy[j]]=[copy[j],copy[i]];}return copy;}
 function getGrammar(id){return DATA.grammar.find(g=>g.id===id);}
 function localizedGloss(id){
   const values=GLOSS[id];
