@@ -36,7 +36,7 @@
 .save-progress>div span{color:var(--muted)}
 .save-progress>i,.mini-chart-row i{height:7px;display:block;background:#e5e1d6;overflow:hidden;flex:1}
 .save-progress>i b,.mini-chart-row i b{display:block;height:100%;background:var(--green)}
-.save-mini-chart{display:grid;gap:5px;margin:10px 0}
+.save-mini-cha
 .mini-chart-row{display:grid;grid-template-columns:45px minmax(70px,1fr) 36px;align-items:center;gap:9px;font-size:10px}
 .mini-chart-row small{text-align:right;color:var(--muted)}
 .save-review-note{font-size:11px;color:var(--muted);line-height:1.5;margin:10px 0}
@@ -54,9 +54,9 @@
 .subject-copy small{font-size:11px;color:var(--muted)}
 .subject-arrow{margin-left:auto;color:var(--orange);font-size:24px}
 .subject-options{margin-top:24px;padding:16px 18px;background:rgba(255,253,246,.68);border:1px solid var(--line)}
-.furigana-option,.quiz-furigana{display:flex;align-items:center;gap:9px;font-size:12px;color:var(--ink);cursor:pointer}
-.furigana-option input,.quiz-furigana input{accent-color:var(--orange);width:16px;height:16px}
-.furigana-status{font-size:11px;color:var(--muted);margin:7px 0 0 25px;min-height:1em}
+
+
+
 .review-list{display:grid;grid-template-columns:1fr;gap:12px}
 .chapter-accordion{background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow)}
 .chapter-accordion>summary{list-style:none;cursor:pointer;padding:19px 22px;display:flex;align-items:center;justify-content:space-between;gap:14px;font-weight:700;font-size:18px}
@@ -103,10 +103,10 @@
 .dont-know-btn{border-color:#cfcabc;color:var(--orange-dark)}
 .side-card{align-self:start}
 .quick-example{margin-top:8px;font-size:12px;line-height:1.7}
-ruby{ruby-position:over}
-rt{font-size:.52em;line-height:1;color:var(--orange-dark);font-weight:500;letter-spacing:0}
-.question-prompt rt,.option-btn rt,.feedback-japanese rt{font-size:.52em}
-.option-btn ruby{white-space:nowrap}
+
+
+.question-prompt rt,.option-btn rt,.feedback-japanese 
+.option-btn 
 @media(max-width:850px){
   .home-hero{grid-template-columns:1fr 130px}
   .home-stamp{width:116px;height:116px}
