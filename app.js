@@ -79,7 +79,6 @@ mukeda:["Tài liệu học tập này được biên soạn dành cho người h
 
 const $ = id => document.getElementById(id);
 const SESSIONS_KEY = "shinkanzen-n2-quiz-sessions-v2";
-const FURIGANA_KEY = "shinkanzen-n2-furigana";
 const PRAISE = {
   vi:{ok:["Giỏi lắm!","Tuyệt vời!","Chính xác rồi!"],ng:["Suýt đúng rồi!","Cố lên nhé!","Làm tốt vì bạn đã thử!"],skip:["Không sao, cùng xem lời giải nhé!"]},
   "zh-CN":{ok:["做得好！","太棒了！","答对了！"],ng:["差一点！","再接再厉！","勇敢尝试就很好！"],skip:["没关系，我们一起看看解析吧！"]},
@@ -108,61 +107,13 @@ Object.keys(STEP_THREE).forEach(lang=>{UI[lang].step2=STEP_THREE[lang];});
 
 
 let state = {lang:"fr",order:[],index:0,answers:{},hints:0,usedFifty:{},hinted:{},paused:false};
-let furiganaOn = localStorage.getItem(FURIGANA_KEY)==="1";
-let tokenizer = null, tokenizerPromise = null;
+let savesUseJapanese = true;
 
 function t(key){return (UI[state.lang]&&UI[state.lang][key])||UI.fr[key]||key;}
 function escapeHtml(value){
   return String(value==null?"":value).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
 }
-function toHiragana(value){
-  return String(value||"").replace(/[ァ-ヶ]/g,ch=>String.fromCharCode(ch.charCodeAt(0)-0x60));
-}
-function ensureTokenizer(){
-  if(tokenizer)return Promise.resolve(tokenizer);
-  if(tokenizerPromise)return tokenizerPromise;
-  tokenizerPromise = new Promise((resolve,reject)=>{
-    const build = ()=>{
-      if(!window.kuromoji){reject(new Error("Kuromoji is unavailable"));return;}
-      window.kuromoji.builder({dicPath:"https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/"}).build((err,value)=>{
-        if(err){reject(err);return;}
-        tokenizer=value;resolve(value);
-      });
-    };
-    if(window.kuromoji){build();return;}
-    const script=document.createElement("script");
-    script.src="https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/build/kuromoji.js";
-    script.async=true;
-    script.onload=build;
-    script.onerror=()=>reject(new Error("Could not load the Japanese reading library"));
-    document.head.appendChild(script);
-  });
-  return tokenizerPromise;
-}
-function rubyHtml(value){
-  const text=String(value==null?"":value);
-  if(!furiganaOn||!tokenizer)return escapeHtml(text);
-  try{
-    const tokens=tokenizer.tokenize(text);
-    let cursor=0,html="";
-    tokens.forEach(token=>{
-      const surface=String(token.surface_form||"");
-      if(!surface)return;
-      let start=text.indexOf(surface,cursor);
-      if(start<0)start=Math.max(cursor,Number(token.word_position||1)-1);
-      if(start>text.length)return;
-      html+=escapeHtml(text.slice(cursor,start));
-      const actual=text.slice(start,start+surface.length)||surface;
-      const reading=String(token.reading||"");
-      if(/[一-龯々]/.test(actual)&&reading&&reading!=="*"){
-        html+="<ruby>"+escapeHtml(actual)+"<rt>"+escapeHtml(toHiragana(reading))+"</rt></ruby>";
-      }else html+=escapeHtml(actual);
-      cursor=start+actual.length;
-    });
-    html+=escapeHtml(text.slice(cursor));
-    return html;
-  }catch(error){return escapeHtml(text);}
-}
+function rubyHtml(value){return escapeHtml(value);}
 function getGrammar(id){return DATA.grammar.find(g=>g.id===id);}
 function localizedGloss(id){
   const values=GLOSS[id];
@@ -178,12 +129,6 @@ function translateUi(){
   document.querySelectorAll("[data-i18n]").forEach(el=>{
     const key=el.dataset.i18n;
     if(t(key))el.textContent=t(key);
-  });
-  syncFuriganaControls();
-}
-function syncFuriganaControls(){
-  ["furigana-toggle-subject","furigana-toggle-quiz"].forEach(id=>{
-    const el=$(id);if(el)el.checked=furiganaOn;
   });
 }
 function dateLabel(value){
@@ -438,31 +383,11 @@ function finish(){
 function resumeSession(id){
   const session=loadSessions().find(item=>item.sessionId===id);
   if(!session)return;
-  state=session;furiganaOn=localStorage.getItem(FURIGANA_KEY)==="1";
-  $("language-select").value=state.lang;translateUi();syncFuriganaControls();
+  state=session;savesUseJapanese=false;
+  $("language-select").value=state.lang;translateUi();renderSaves();
   if(state.completed){renderResult(state.result||calculateResults());screen("result");return;}
   renderQuestion();screen(state.paused?"pause":"quiz");
 }
-async function setFurigana(enabled){
-  furiganaOn=!!enabled;
-  localStorage.setItem(FURIGANA_KEY,furiganaOn?"1":"0");
-  syncFuriganaControls();
-  const status=$("furigana-status");
-  if(furiganaOn){
-    if(status)status.textContent=t("furiganaLoading");
-    try{
-      await ensureTokenizer();
-      if(status)status.textContent="";
-    }catch(error){
-      furiganaOn=false;localStorage.setItem(FURIGANA_KEY,"0");syncFuriganaControls();
-      if(status)status.textContent=t("furiganaFailed");
-    }
-  }else if(status)status.textContent="";
-  renderReview();
-  if($("screen-quiz").classList.contains("active"))renderQuestion();
-  if($("screen-result").classList.contains("active")&&state.result)renderResult(state.result);
-}
-
 $("prepare-btn").addEventListener("click",()=>{
   state.lang=$("language-select").value;translateUi();screen("subject");
 });
@@ -482,9 +407,7 @@ $("restart-btn").addEventListener("click",()=>{if(confirm(t("restartConfirm")))s
 $("pause-home-btn").addEventListener("click",()=>screen("home"));
 $("result-home").addEventListener("click",()=>screen("home"));
 $("result-restart").addEventListener("click",startSession);
-$("furigana-toggle-subject").addEventListener("change",event=>setFurigana(event.target.checked));
-$("furigana-toggle-quiz").addEventListener("change",event=>setFurigana(event.target.checked));
-$("language-select").addEventListener("change",event=>{state.lang=event.target.value;});
+$("language-select").addEventListener("change",event=>{state.lang=event.target.value;savesUseJapanese=false;renderSaves();});
 $("save-list").addEventListener("click",event=>{
   const button=event.target.closest("button[data-action]");
   if(!button)return;
@@ -499,12 +422,7 @@ $("save-list").addEventListener("click",event=>{
 
 translateUi();
 migrateLegacySave();
-syncFuriganaControls();
+
 renderReview();
 renderSaves();
-if(furiganaOn){
-  ensureTokenizer().then(()=>{renderReview();if($("screen-quiz").classList.contains("active"))renderQuestion();}).catch(()=>{
-    furiganaOn=false;localStorage.setItem(FURIGANA_KEY,"0");syncFuriganaControls();
-  });
-}
 console.info("N631 N2 grammar practice ready",DATA.questions.length,"questions");
