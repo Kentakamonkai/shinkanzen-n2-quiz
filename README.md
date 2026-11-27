@@ -39,7 +39,7 @@ https://www.3anet.co.jp/np/books/3602/
 - index.html — ページと画面構成
 - styles.css — デザインとレスポンシブ表示
 - data.js — 41項目の文法データと100問
-- app.js — 多言語表示、クイズ、ふりがな、保存、成績
+- app.js — 多言語表示、クイズ、保存、成績
 - VALIDATION.md — 範囲・データ確認・手動テスト項目
 
 ## 注意事項
