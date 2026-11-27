@@ -309,19 +309,22 @@ function renderSaves(){
     const completed=!!session.completed;
     const result=session.result||null;
     const progress=Math.round(answered/100*100);
+    const fifties=Number.isFinite(session.fifties)?session.fifties:Object.keys(session.usedFifty||{}).filter(key=>session.usedFifty[key]).length;
     const chapterName=number=>labels.chapterPrefix+number+labels.chapterSuffix;
-    const graph=result&&Array.isArray(result.chapters)?'<div class="save-mini-chart">'+result.chapters.map(row=>'<div class="mini-chart-row"><span>'+escapeHtml(chapterName(row.ch))+'</span><i><b style="width:'+(row.total?row.correct/row.total*100:0)+'%"></b></i><small>'+row.correct+'/'+row.total+'</small></div>').join("")+'</div>':"";
+    const graph=result&&Array.isArray(result.chapters)?'<div class="save-mini-chart">'+result.chapters.map(row=>{
+      const pct=row.answered?row.correct/row.answered*100:0;
+      return '<div class="mini-chart-row"><span>'+escapeHtml(chapterName(row.ch))+'</span><i><b style="width:'+pct+'%"></b></i><small>'+row.correct+'/'+row.answered+'</small></div>';
+    }).join("")+'</div>':"";
     const errors=result&&Array.isArray(result.errors)&&result.errors.length?'<p class="save-review-note">'+escapeHtml(labels.review)+'：'+result.errors.slice(0,4).map(row=>escapeHtml((getGrammar(row.id)||{}).name||row.id)).join("・")+'</p>':"";
     const summary=completed
       ?labels.completed+' · '+(result?result.answered:answered)+'/100 '+labels.questions+' · '+labels.score+' '+(result?result.score:0)+'/100'
       :labels.inProgress+' · '+answered+'/100 '+labels.questions;
     const details=completed
-      ?'<div class="save-completed-score"><strong>'+(result?result.score:0)+'/100</strong><span>'+escapeHtml(labels.hints)+' '+(result?result.hints:session.hints||0)+' '+escapeHtml(labels.hintUnit)+'</span></div>'+graph+errors
-      :'<div class="save-progress"><div><span>'+escapeHtml(labels.answerCount)+'</span><b>'+answered+'/100</b></div><i><b style="width:'+progress+'%"></b></i></div>';
-    const action=completed
-      ?'<button data-action="view" data-id="'+escapeHtml(session.sessionId)+'">'+escapeHtml(labels.viewResults)+'</button>'
-      :'<button data-action="resume" data-id="'+escapeHtml(session.sessionId)+'">'+escapeHtml(labels.resume)+'</button>';
-    return '<details class="saved-session" data-save="'+escapeHtml(session.sessionId)+'"><summary><div class="save-summary-main"><strong>'+escapeHtml(dateLabel(session.createdAt))+'</strong><small>'+escapeHtml(summary)+'</small></div><span class="save-summary-arrow">＋</span></summary><div class="save-session-body">'+details+'<div class="save-actions">'+action+'<button class="delete-save" data-action="delete" data-id="'+escapeHtml(session.sessionId)+'">'+escapeHtml(labels.delete)+'</button></div></div></details>';
+      ?'<div class="save-completed-score"><strong>'+(result?result.score:0)+'/100</strong><span>50/50 · '+fifties+'</span></div>'+graph+errors
+      :'<div class="save-progress"><div><span>'+escapeHtml(labels.answerCount)+'</span><b>'+answered+'/100</b></div><i><b style="width:'+progress+'%"></b></i><small>50/50 · '+fifties+'</small></div>';
+    const view='<button data-action="view-details" data-id="'+escapeHtml(session.sessionId)+'">'+escapeHtml(labels.viewDetails||labels.viewResults)+'</button>';
+    const resume=completed?"":'<button data-action="resume" data-id="'+escapeHtml(session.sessionId)+'">'+escapeHtml(labels.resume)+'</button>';
+    return '<details class="saved-session" data-save="'+escapeHtml(session.sessionId)+'"><summary><div class="save-summary-main"><strong>'+escapeHtml(dateLabel(session.createdAt))+'</strong><small>'+escapeHtml(summary)+'</small></div><span class="save-summary-arrow">＋</span></summary><div class="save-session-body">'+details+'<div class="save-actions">'+view+resume+'<button class="delete-save" data-action="delete" data-id="'+escapeHtml(session.sessionId)+'">'+escapeHtml(labels.delete)+'</button></div></div></details>';
   }).join("");
 }
 function renderReview(){
@@ -693,7 +696,8 @@ $("save-list").addEventListener("click",event=>{
   const button=event.target.closest("button[data-action]");
   if(!button)return;
   const id=button.dataset.id,action=button.dataset.action;
-  if(action==="resume"||action==="view"){resumeSession(id);return;}
+  if(action==="resume"){resumeSession(id);return;}
+  if(action==="view"||action==="view-details"){viewSessionResults(id);return;}
   if(action==="delete"){
     if(!confirm(saveText().deleteConfirm))return;
     const sessions=loadSessions().filter(item=>item.sessionId!==id);
