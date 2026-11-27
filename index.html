@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#23302d">
 <meta name="description" content="N631クラス向け・2026年12月9日期末テスト対策サイト。文法N2の復習ができます。">
 <title>N631 期末テスト対策 · 文法N2</title>
-<link rel="stylesheet" href="styles.css?v=20261127-3">
+<link rel="stylesheet" href="styles.css?v=20261127-4">
 </head>
 <body>
 <div class="grain"></div>
@@ -199,10 +199,13 @@
 <section id="screen-result" class="screen">
   <div class="result-heading"><p class="eyebrow" data-i18n="finished">SESSION TERMINÉE</p><h1 data-i18n="resultTitle">Bilan de ta session</h1></div>
   <div class="result-grid">
-    <div class="score-card"><span data-i18n="score">Score</span><strong id="final-score">0/100</strong><small id="score-caption"></small></div>
+    <div class="score-card score-card-main">
+      <div id="score-ring" class="score-ring"><div class="score-ring-inner"><strong id="final-score">0/100</strong><small id="score-caption">0%</small></div></div>
+      <div class="score-summary"><span data-i18n="score">Score</span><h2 data-i18n="scoreHeadline">Bilan de la session</h2><p data-i18n="scoreSubline">Tes résultats, chapitre par chapitre.</p></div>
+    </div>
     <div class="stat-card"><span data-i18n="hintsUsed">Indices utilisés</span><strong id="hint-total">0</strong><small data-i18n="noPenalty">Sans pénalité</small></div>
     <div class="stat-card"><span data-i18n="completed">Questions terminées</span><strong id="completed-total">0</strong><small data-i18n="outOf">sur 100</small></div>
-    <div class="stat-card"><span data-i18n="unanswered">Non répondues</span><strong id="unanswered-total">0</strong><small data-i18n="notCounted">Non comptées comme des erreurs</small></div>
+    <div class="stat-card"><span data-i18n="unanswered">Non répondues</span><strong id="unanswered-total">0</strong><small data-i18n="notCounted">Ne comptent pas comme des erreurs</small></div>
   </div>
   <div class="result-columns">
     <section class="result-panel"><h2 data-i18n="chapterResults">Résultats par chapitre</h2><div id="chapter-stats"></div></section>
@@ -212,7 +215,7 @@
   <div class="sticky-actions"><button id="result-home" class="secondary-btn" data-i18n="home">Accueil</button><button id="result-restart" class="primary-btn" data-i18n="retry">Recommencer les 100 questions</button></div>
 </section>
 </main>
-<script src="data.js?v=20261127-3"></script>
-<script src="app.js?v=20261127-3"></script>
+<script src="data.js?v=20261127-4"></script>
+<script src="app.js?v=20261127-4"></script>
 </body>
 </html>
