@@ -109,6 +109,21 @@ Object.keys(STEP_THREE).forEach(lang=>{UI[lang].step2=STEP_THREE[lang];});
 let state = {lang:"fr",order:[],index:0,answers:{},hints:0,usedFifty:{},hinted:{},paused:false};
 let savesUseJapanese = true;
 
+const SAVE_UI={
+  ja:{locale:"ja-JP",title:"保存した学習記録",description:"このブラウザに保存された学習履歴です。",empty:"まだ学習記録はありません。クイズを始めると、ここに自動で保存されます。",legacyDate:"以前のバージョンからの保存 · 日時不明",unknownDate:"保存日時不明",completed:"完了",inProgress:"学習中",questions:"問",answerCount:"回答済み",score:"得点",hints:"ヒント",hintUnit:"回",review:"復習ポイント",chapterPrefix:"第",chapterSuffix:"課",viewResults:"結果を見る",resume:"学習を再開",delete:"削除",deleteConfirm:"この学習記録を削除しますか？"},
+  vi:{locale:"vi-VN",title:"Lịch sử học tập đã lưu",description:"Các lần học được lưu trên trình duyệt này.",empty:"Chưa có lịch sử học tập. Bắt đầu làm bài, kết quả sẽ tự động được lưu tại đây.",legacyDate:"Bản lưu từ phiên bản cũ · Không rõ ngày giờ",unknownDate:"Không rõ ngày giờ lưu",completed:"Đã hoàn thành",inProgress:"Đang học",questions:"câu",answerCount:"Đã trả lời",score:"Điểm",hints:"Gợi ý",hintUnit:"lần",review:"Nội dung cần ôn lại",chapterPrefix:"Bài ",chapterSuffix:"",viewResults:"Xem kết quả",resume:"Tiếp tục làm bài",delete:"Xóa",deleteConfirm:"Bạn có muốn xóa lần học này không?"},
+  "zh-CN":{locale:"zh-CN",title:"已保存的学习记录",description:"保存在这台设备浏览器中的学习记录。",empty:"还没有学习记录。开始答题后，记录会自动保存在这里。",legacyDate:"旧版本的保存记录 · 日期和时间未知",unknownDate:"保存时间未知",completed:"已完成",inProgress:"进行中",questions:"题",answerCount:"已回答",score:"得分",hints:"提示",hintUnit:"次",review:"需要复习的内容",chapterPrefix:"第",chapterSuffix:"课",viewResults:"查看结果",resume:"继续答题",delete:"删除",deleteConfirm:"确定要删除这条学习记录吗？"},
+  "zh-TW":{locale:"zh-TW",title:"已儲存的學習紀錄",description:"儲存在這個瀏覽器中的學習紀錄。",empty:"目前還沒有學習紀錄。開始作答後，紀錄會自動儲存在這裡。",legacyDate:"舊版本的儲存紀錄 · 日期與時間不明",unknownDate:"儲存時間不明",completed:"已完成",inProgress:"進行中",questions:"題",answerCount:"已作答",score:"得分",hints:"提示",hintUnit:"次",review:"需要複習的內容",chapterPrefix:"第",chapterSuffix:"課",viewResults:"查看結果",resume:"繼續作答",delete:"刪除",deleteConfirm:"確定要刪除這筆學習紀錄嗎？"},
+  ko:{locale:"ko-KR",title:"저장된 학습 기록",description:"이 브라우저에 저장된 학습 기록입니다.",empty:"아직 학습 기록이 없습니다. 퀴즈를 시작하면 여기에 자동으로 저장됩니다.",legacyDate:"이전 버전에서 가져온 기록 · 날짜 및 시간 알 수 없음",unknownDate:"저장 시간 알 수 없음",completed:"완료",inProgress:"학습 중",questions:"문항",answerCount:"답변 완료",score:"점수",hints:"힌트",hintUnit:"회",review:"복습할 내용",chapterPrefix:"",chapterSuffix:"과",viewResults:"결과 보기",resume:"이어서 풀기",delete:"삭제",deleteConfirm:"이 학습 기록을 삭제할까요?"},
+  es:{locale:"es-ES",title:"Sesiones guardadas",description:"Historial de estudio guardado en este navegador.",empty:"Todavía no hay sesiones guardadas. Al empezar el cuestionario, tu progreso se guardará aquí automáticamente.",legacyDate:"Sesión guardada en una versión anterior · Fecha y hora desconocidas",unknownDate:"Fecha de guardado desconocida",completed:"Completada",inProgress:"En curso",questions:"preguntas",answerCount:"Respondidas",score:"Puntuación",hints:"Pistas",hintUnit:"usadas",review:"Temas que conviene repasar",chapterPrefix:"Cap. ",chapterSuffix:"",viewResults:"Ver resultados",resume:"Reanudar cuestionario",delete:"Eliminar",deleteConfirm:"¿Quieres eliminar esta sesión?"},
+  it:{locale:"it-IT",title:"Sessioni salvate",description:"Cronologia dello studio salvata in questo browser.",empty:"Non ci sono ancora sessioni salvate. Quando inizi il quiz, i progressi verranno salvati qui automaticamente.",legacyDate:"Sessione salvata in una versione precedente · Data e ora non disponibili",unknownDate:"Data di salvataggio non disponibile",completed:"Completata",inProgress:"In corso",questions:"domande",answerCount:"Risposte date",score:"Punteggio",hints:"Suggerimenti",hintUnit:"usati",review:"Argomenti da ripassare",chapterPrefix:"Cap. ",chapterSuffix:"",viewResults:"Vedi i risultati",resume:"Riprendi il quiz",delete:"Elimina",deleteConfirm:"Vuoi eliminare questa sessione?"},
+  ne:{locale:"ne-NP",title:"सुरक्षित अध्ययन विवरण",description:"यस ब्राउजरमा सुरक्षित गरिएका अध्ययन विवरणहरू।",empty:"अहिलेसम्म कुनै अध्ययन विवरण छैन। क्विज सुरु गरेपछि प्रगति यहाँ स्वतः सुरक्षित हुनेछ।",legacyDate:"पुरानो संस्करणबाट सुरक्षित गरिएको · मिति र समय थाहा छैन",unknownDate:"सुरक्षित गरेको समय थाहा छैन",completed:"पूरा भयो",inProgress:"अभ्यास जारी छ",questions:"प्रश्न",answerCount:"उत्तर दिइएका",score:"अङ्क",hints:"संकेत",hintUnit:"पटक",review:"पुनरावृत्ति गर्नुपर्ने विषय",chapterPrefix:"पाठ ",chapterSuffix:"",viewResults:"नतिजा हेर्नुहोस्",resume:"अभ्यास जारी राख्नुहोस्",delete:"मेटाउनुहोस्",deleteConfirm:"यो अध्ययन विवरण मेटाउन चाहनुहुन्छ?"},
+  my:{locale:"my-MM",title:"သိမ်းဆည်းထားသော လေ့လာမှုမှတ်တမ်းများ",description:"ဤဘရောက်ဇာတွင် သိမ်းဆည်းထားသော လေ့လာမှုမှတ်တမ်းများဖြစ်သည်။",empty:"လေ့လာမှုမှတ်တမ်း မရှိသေးပါ။ မေးခွန်းစတင်ဖြေဆိုပါက ဤနေရာတွင် အလိုအလျောက် သိမ်းဆည်းမည်။",legacyDate:"ယခင်ဗားရှင်းမှ မှတ်တမ်း · ရက်စွဲနှင့်အချိန် မသိရပါ",unknownDate:"သိမ်းဆည်းချိန် မသိရပါ",completed:"ပြီးဆုံးပါပြီ",inProgress:"လေ့လာနေဆဲ",questions:"မေးခွန်း",answerCount:"ဖြေဆိုပြီး",score:"ရမှတ်",hints:"အရိပ်အမြွက်",hintUnit:"ကြိမ်",review:"ပြန်လည်လေ့လာရန်",chapterPrefix:"အခန်း ",chapterSuffix:"",viewResults:"ရလဒ်ကြည့်ရန်",resume:"ဆက်လက်ဖြေဆိုရန်",delete:"ဖျက်ရန်",deleteConfirm:"ဤလေ့လာမှုမှတ်တမ်းကို ဖျက်လိုပါသလား？"},
+  fr:{locale:"fr-FR",title:"Sessions enregistrées",description:"Historique des sessions conservées dans ce navigateur.",empty:"Aucune session pour le moment. Dès que tu commenceras le quiz, ta progression sera automatiquement enregistrée ici.",legacyDate:"Sauvegarde d'une ancienne version · Date et heure inconnues",unknownDate:"Date d'enregistrement inconnue",completed:"Terminée",inProgress:"En cours",questions:"questions",answerCount:"Répondues",score:"Score",hints:"Indices",hintUnit:"utilisés",review:"Points à revoir",chapterPrefix:"Chap. ",chapterSuffix:"",viewResults:"Voir les résultats",resume:"Reprendre le quiz",delete:"Supprimer",deleteConfirm:"Veux-tu supprimer cette session ?"}
+};
+function saveText(){return savesUseJapanese?SAVE_UI.ja:(SAVE_UI[state.lang]||SAVE_UI.ja);}
+
+
 function t(key){return (UI[state.lang]&&UI[state.lang][key])||UI.fr[key]||key;}
 function escapeHtml(value){
   return String(value==null?"":value).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
@@ -132,10 +147,11 @@ function translateUi(){
   });
 }
 function dateLabel(value){
-  if(!value)return "旧バージョンからの保存 · 日時不明";
+  const labels=saveText();
+  if(!value)return labels.legacyDate;
   const date=new Date(value);
-  if(Number.isNaN(date.getTime()))return "保存日時不明";
-  return date.toLocaleString(undefined,{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"});
+  if(Number.isNaN(date.getTime()))return labels.unknownDate;
+  return date.toLocaleString(labels.locale,{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"});
 }
 function loadSessions(){
   try{const value=JSON.parse(localStorage.getItem(SESSIONS_KEY)||"[]");return Array.isArray(value)?value:[];}catch(error){return [];}
@@ -173,9 +189,13 @@ function migrateLegacySave(){
 
 function renderSaves(){
   const host=$("save-list");if(!host)return;
+  const labels=saveText();
+  const heading=$("save-section-title"),description=$("save-section-intro");
+  if(heading)heading.textContent=labels.title;
+  if(description)description.textContent=labels.description;
   const sessions=loadSessions();
   if(!sessions.length){
-    host.innerHTML='<p class="no-saves">まだ学習記録はありません。クイズを始めると、ここに自動で保存されます。</p>';
+    host.innerHTML='<p class="no-saves">'+escapeHtml(labels.empty)+'</p>';
     return;
   }
   host.innerHTML=sessions.map(session=>{
@@ -183,11 +203,19 @@ function renderSaves(){
     const completed=!!session.completed;
     const result=session.result||null;
     const progress=Math.round(answered/100*100);
-    const graph=result&&Array.isArray(result.chapters)?'<div class="save-mini-chart">'+result.chapters.map(row=>'<div class="mini-chart-row"><span>第'+row.ch+'課</span><i><b style="width:'+(row.total?row.correct/row.total*100:0)+'%"></b></i><small>'+row.correct+'/'+row.total+'</small></div>').join("")+'</div>':"";
-    const errors=result&&Array.isArray(result.errors)&&result.errors.length?'<p class="save-review-note">復習ポイント：'+result.errors.slice(0,4).map(row=>escapeHtml((getGrammar(row.id)||{}).name||row.id)).join("・")+'</p>':"";
-    return '<details class="saved-session" data-save="'+escapeHtml(session.sessionId)+'"><summary><div class="save-summary-main"><strong>'+dateLabel(session.createdAt)+'</strong><small>'+(completed?'完了 · '+(result?result.answered:answered)+'/100問に回答 · 得点 '+(result?result.score:0)+'/100':'学習中 · '+answered+'/100問に回答')+'</small></div><span class="save-summary-arrow">＋</span></summary><div class="save-session-body">'+
-      (completed?'<div class="save-completed-score"><strong>'+(result?result.score:0)+'/100</strong><span>ヒント '+(result?result.hints:session.hints||0)+' 回</span></div>'+graph+errors:'<div class="save-progress"><div><span>回答済み</span><b>'+answered+'/100</b></div><i><b style="width:'+progress+'%"></b></i></div>')+
-      '<div class="save-actions">'+(completed?'<button data-action="view" data-id="'+escapeHtml(session.sessionId)+'">結果を見る</button>':'<button data-action="resume" data-id="'+escapeHtml(session.sessionId)+'">学習を再開</button>')+'<button class="delete-save" data-action="delete" data-id="'+escapeHtml(session.sessionId)+'">削除</button></div></div></details>';
+    const chapterName=number=>labels.chapterPrefix+number+labels.chapterSuffix;
+    const graph=result&&Array.isArray(result.chapters)?'<div class="save-mini-chart">'+result.chapters.map(row=>'<div class="mini-chart-row"><span>'+escapeHtml(chapterName(row.ch))+'</span><i><b style="width:'+(row.total?row.correct/row.total*100:0)+'%"></b></i><small>'+row.correct+'/'+row.total+'</small></div>').join("")+'</div>':"";
+    const errors=result&&Array.isArray(result.errors)&&result.errors.length?'<p class="save-review-note">'+escapeHtml(labels.review)+'：'+result.errors.slice(0,4).map(row=>escapeHtml((getGrammar(row.id)||{}).name||row.id)).join("・")+'</p>':"";
+    const summary=completed
+      ?labels.completed+' · '+(result?result.answered:answered)+'/100 '+labels.questions+' · '+labels.score+' '+(result?result.score:0)+'/100'
+      :labels.inProgress+' · '+answered+'/100 '+labels.questions;
+    const details=completed
+      ?'<div class="save-completed-score"><strong>'+(result?result.score:0)+'/100</strong><span>'+escapeHtml(labels.hints)+' '+(result?result.hints:session.hints||0)+' '+escapeHtml(labels.hintUnit)+'</span></div>'+graph+errors
+      :'<div class="save-progress"><div><span>'+escapeHtml(labels.answerCount)+'</span><b>'+answered+'/100</b></div><i><b style="width:'+progress+'%"></b></i></div>';
+    const action=completed
+      ?'<button data-action="view" data-id="'+escapeHtml(session.sessionId)+'">'+escapeHtml(labels.viewResults)+'</button>'
+      :'<button data-action="resume" data-id="'+escapeHtml(session.sessionId)+'">'+escapeHtml(labels.resume)+'</button>';
+    return '<details class="saved-session" data-save="'+escapeHtml(session.sessionId)+'"><summary><div class="save-summary-main"><strong>'+escapeHtml(dateLabel(session.createdAt))+'</strong><small>'+escapeHtml(summary)+'</small></div><span class="save-summary-arrow">＋</span></summary><div class="save-session-body">'+details+'<div class="save-actions">'+action+'<button class="delete-save" data-action="delete" data-id="'+escapeHtml(session.sessionId)+'">'+escapeHtml(labels.delete)+'</button></div></div></details>';
   }).join("");
 }
 function renderReview(){
@@ -414,7 +442,7 @@ $("save-list").addEventListener("click",event=>{
   const id=button.dataset.id,action=button.dataset.action;
   if(action==="resume"||action==="view"){resumeSession(id);return;}
   if(action==="delete"){
-    if(!confirm("この学習記録を削除しますか？"))return;
+    if(!confirm(saveText().deleteConfirm))return;
     const sessions=loadSessions().filter(item=>item.sessionId!==id);
     localStorage.setItem(SESSIONS_KEY,JSON.stringify(sessions));renderSaves();
   }
