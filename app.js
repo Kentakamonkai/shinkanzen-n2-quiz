@@ -133,7 +133,7 @@ const UI_MORE={
 };
 Object.keys(UI_MORE).forEach(lang=>Object.assign(UI[lang],UI_MORE[lang]));
 const SAVE_DETAILS_LABELS={ja:"詳細を見る",vi:"Xem chi tiết", "zh-CN":"查看详情","zh-TW":"查看詳情",ko:"자세히 보기",es:"Ver en detalle",it:"Vedi dettagli",ne:"विस्तृत रूपमा हेर्नुहोस्",my:"အသေးစိတ်ကြည့်ရန်",fr:"Voir en détails"};
-Object.keys(SAVE_UI).forEach(lang=>{SAVE_UI[lang].viewDetails=SAVE_DETAILS_LABELS[lang]||SAVE_DETAILS_LABELS.fr;});
+
 
 
 const RESULT_UI={
@@ -241,6 +241,7 @@ const SAVE_UI={
   my:{locale:"my-MM",eyebrow:"လေ့လာမှုမှတ်တမ်း",title:"သိမ်းဆည်းထားသော လေ့လာမှုမှတ်တမ်းများ",description:"ဤဘရောက်ဇာတွင် သိမ်းဆည်းထားသော လေ့လာမှုမှတ်တမ်းများဖြစ်သည်။",empty:"လေ့လာမှုမှတ်တမ်း မရှိသေးပါ။ မေးခွန်းစတင်ဖြေဆိုပါက ဤနေရာတွင် အလိုအလျောက် သိမ်းဆည်းမည်။",legacyDate:"ယခင်ဗားရှင်းမှ မှတ်တမ်း · ရက်စွဲနှင့်အချိန် မသိရပါ",unknownDate:"သိမ်းဆည်းချိန် မသိရပါ",completed:"ပြီးဆုံးပါပြီ",inProgress:"လေ့လာနေဆဲ",questions:"မေးခွန်း",answerCount:"ဖြေဆိုပြီး",score:"ရမှတ်",hints:"အရိပ်အမြွက်",hintUnit:"ကြိမ်",review:"ပြန်လည်လေ့လာရန်",chapterPrefix:"အခန်း ",chapterSuffix:"",viewResults:"ရလဒ်ကြည့်ရန်",resume:"ဆက်လက်ဖြေဆိုရန်",delete:"ဖျက်ရန်",deleteConfirm:"ဤလေ့လာမှုမှတ်တမ်းကို ဖျက်လိုပါသလား？"},
   fr:{locale:"fr-FR",eyebrow:"Historique des sessions",title:"Sessions enregistrées",description:"Historique des sessions conservées dans ce navigateur.",empty:"Aucune session pour le moment. Dès que tu commenceras le quiz, ta progression sera automatiquement enregistrée ici.",legacyDate:"Sauvegarde d'une ancienne version · Date et heure inconnues",unknownDate:"Date d'enregistrement inconnue",completed:"Terminée",inProgress:"En cours",questions:"questions",answerCount:"Répondues",score:"Score",hints:"Indices",hintUnit:"utilisés",review:"Points à revoir",chapterPrefix:"Chap. ",chapterSuffix:"",viewResults:"Voir les résultats",resume:"Reprendre le quiz",delete:"Supprimer",deleteConfirm:"Veux-tu supprimer cette session ?"}
 };
+Object.keys(SAVE_UI).forEach(lang=>{SAVE_UI[lang].viewDetails=SAVE_DETAILS_LABELS[lang]||SAVE_DETAILS_LABELS.fr;});
 function saveText(){return savesUseJapanese?SAVE_UI.ja:(SAVE_UI[state.lang]||SAVE_UI.ja);}
 
 
