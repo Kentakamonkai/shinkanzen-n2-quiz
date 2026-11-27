@@ -353,7 +353,8 @@ function matchGrammar(option){
   return null;
 }
 function renderQuick(question){
-  const ids=[...new Set(question.choices.map(choice=>matchGrammar(choice)).filter(Boolean).map(grammar=>grammar.id))];
+  const sources=[question.prompt,...question.choices];
+  const ids=[...new Set(sources.map(source=>matchGrammar(source)).filter(Boolean).map(grammar=>grammar.id))];
   $("quick-reference-panel").classList.toggle("hidden",ids.length===0);
   $("side-card").classList.toggle("hidden",ids.length===0);
   if(!ids.length){$("quick-refs").innerHTML="";$("quick-detail").innerHTML="";return;}
@@ -366,6 +367,11 @@ function renderQuick(question){
     $("quick-detail").classList.remove("hidden");
   }));
 }
+function renderScoreAccess(){
+  const count=Object.keys(state.answers||{}).length;
+  const button=$("progress-score-btn");
+  if(button)button.classList.toggle("hidden",count<10||!!state.completed);
+}
 function renderQuestion(){
   if(!state.order.length)return;
   const question=current(),answered=Object.prototype.hasOwnProperty.call(state.answers,state.index);
@@ -377,14 +383,13 @@ function renderQuestion(){
   document.querySelectorAll(".option-btn").forEach(button=>button.addEventListener("click",()=>answer(Number(button.dataset.choice))));
   $("feedback").className="feedback hidden";$("feedback").innerHTML="";
   $("next-btn").classList.toggle("hidden",!answered);
-  $("hint-btn").disabled=!!state.hinted[state.index]||answered;
   $("fifty-btn").disabled=!!state.usedFifty[state.index]||answered;
   $("dont-know-btn").disabled=answered;
   $("jump-input").value="";
   if(state.usedFifty[state.index])applyFifty();
   if(answered)showAnswer(state.answers[state.index],true);
   else setMascot("neutral");
-  renderQuick(question);saveSession();
+  renderQuick(question);renderScoreAccess();saveSession();
 }
 function completedSentence(question){
   const answer=question.choices[question.answer];
@@ -503,22 +508,27 @@ function showAnswer(choice,restoring){
   const question=current(),correct=choice===question.answer,didSkip=choice===-1;
   document.querySelectorAll(".option-btn").forEach((button,index)=>{
     button.disabled=true;
-    if(index===question.answer)button.classList.add("correct");
-    else if(index===choice)button.classList.add("incorrect");
+    if(index===question.answer)button.classList.add(didSkip?"revealed-answer":"correct");
+    else if(index===choice&&!didSkip)button.classList.add("incorrect");
   });
   const grammar=getGrammar(question.grammar);
   const selected=didSkip?t("notAnswered"):question.choices[choice];
   const right=question.choices[question.answer];
-  const message=didSkip?PANDA_LINES[state.lang].skip[Math.floor(Math.random()*PANDA_LINES[state.lang].skip.length)]:(correct?pickLocalizedPanda("happy"):pickLocalizedPanda("sad"));
+  const message=didSkip?pickLocalizedPanda("skip"):(correct?pickLocalizedPanda("happy"):pickLocalizedPanda("sad"));
   const detailParts=[];
   detailParts.push('<strong class="feedback-emotion">'+escapeHtml(message)+'</strong>');
-  detailParts.push('<div class="answer-compare"><div class="answer-chip answer-chip-correct"><small>'+escapeHtml(t("correctAnswer"))+'</small><strong>'+rubyHtml(right)+'</strong></div><div class="answer-chip answer-chip-user"><small>'+escapeHtml(t("yourAnswer"))+'</small><strong>'+rubyHtml(selected)+'</strong></div></div>');
+  if(correct||didSkip){
+    detailParts.push('<div class="answer-compare answer-compare-single"><div class="answer-chip answer-chip-correct"><small>'+escapeHtml(t("correctAnswer"))+'</small><strong>'+rubyHtml(right)+'</strong></div></div>');
+  }else{
+    detailParts.push('<div class="answer-compare"><div class="answer-chip answer-chip-correct"><small>'+escapeHtml(t("correctAnswer"))+'</small><strong>'+rubyHtml(right)+'</strong></div><div class="answer-chip answer-chip-user"><small>'+escapeHtml(t("yourAnswer"))+'</small><strong>'+rubyHtml(selected)+'</strong></div></div>');
+  }
   detailParts.push('<section class="feedback-explanation"><b>'+escapeHtml(t("translation"))+'</b><p class="feedback-translation">'+escapeHtml(localizedTranslation(question))+'</p><b>'+escapeHtml(t("whyTitle"))+'</b><p>'+escapeHtml(questionExplanation(question))+'</p><small class="feedback-grammar">'+escapeHtml(grammar?grammar.name:"")+'</small></section>');
-  $("feedback").className="feedback"+(correct?"":" wrong");
+  $("feedback").className="feedback"+(!correct&&!didSkip?" wrong":"");
   $("feedback").innerHTML=detailParts.join("");
   $("next-btn").classList.remove("hidden");
-  $("hint-btn").disabled=true;$("fifty-btn").disabled=true;$("dont-know-btn").disabled=true;
+  $("fifty-btn").disabled=true;$("dont-know-btn").disabled=true;
   setMascot(didSkip?"thinking":(correct?"happy":"sad"));
+  renderScoreAccess();
   if(!restoring)saveSession();
 }
 function applyFifty(){
@@ -527,19 +537,9 @@ function applyFifty(){
     if(index!==question.answer&&index!==((question.answer+1)%4))button.classList.add("eliminated");
   });
 }
-function useHint(){
-  if(state.hinted[state.index]||Object.prototype.hasOwnProperty.call(state.answers,state.index))return;
-  state.hinted[state.index]=true;state.hints++;saveSession();
-  $("hint-btn").disabled=true;
-  const question=current();
-  const hint=state.lang==="fr"&&question.hint?question.hint+" "+questionExplanation(question):questionExplanation(question);
-  $("feedback").className="feedback hint-feedback";
-  $("feedback").innerHTML="<strong>"+escapeHtml(t("hint"))+"</strong><p>"+escapeHtml(hint)+"</p>";
-  setMascot("thinking");
-}
 function useFifty(){
   if(state.usedFifty[state.index]||Object.prototype.hasOwnProperty.call(state.answers,state.index))return;
-  state.usedFifty[state.index]=true;saveSession();applyFifty();
+  state.usedFifty[state.index]=true;state.fifties=(state.fifties||0)+1;saveSession();applyFifty();
   $("fifty-btn").disabled=true;
   $("feedback").className="feedback hint-feedback";
   $("feedback").innerHTML="<strong>50/50</strong><p>"+escapeHtml(t("fiftyDone"))+"</p>";
@@ -557,7 +557,7 @@ function jumpToQuestion(){
     $("jump-input").reportValidity();return;
   }
   $("jump-input").setCustomValidity("");
-  state.index=value-1;saveSession();renderQuestion();
+  state.index=value-1;saveSession();renderQuestion();renderScoreAccess();
 }
 function calculateResults(){
   const answered=Object.keys(state.answers).length;
