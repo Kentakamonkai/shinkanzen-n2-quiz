@@ -528,8 +528,11 @@ function getBrowserPandaLanguage(){
   return "en";
 }
 function updateHomePandaLine(){
-  const el=$("home-panda-message");
-  if(el)el.textContent=HOME_PANDA_LINES[getBrowserPandaLanguage()]||HOME_PANDA_LINES.en;
+  const language=getBrowserPandaLanguage();
+  const line=HOME_PANDA_LINES[language]||HOME_PANDA_LINES.en;
+  const el=$("home-panda-message"),caption=$(".home-panda-caption");
+  if(el)el.textContent=line;
+  if(caption)caption.textContent=line;
 }
 function pandaLine(mood){
   const bank=PANDA_LINES[state.lang]||PANDA_LINES.fr;
