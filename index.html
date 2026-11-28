@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#23302d">
 <meta name="description" content="N631クラス向け・2026年12月9日期末テスト対策サイト。文法N2の復習ができます。">
 <title>N631 期末テスト対策 · 文法N2</title>
-<link rel="stylesheet" href="styles.css?v=20261128-4">
+<link rel="stylesheet" href="styles.css?v=20261128-5">
 </head>
 <body>
 <div class="grain"></div>
@@ -14,29 +14,29 @@
 <header class="topbar">
   <a class="brand" href="./" aria-label="ホーム">
     <span class="brand-mark">文</span>
-    <span><strong>期末テスト対策</strong><small>N631クラス · 2026年12月9日</small></span>
+    <span><strong data-i18n="brandTitle">期末テスト対策</strong><small>N631クラス · 2026年12月9日</small></span>
   </a>
-  <button id="global-home-btn" class="home-nav-btn" type="button" aria-label="Return to homepage"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.8 12 3l9 7.8M5.5 9.5V21h13V9.5M9.5 21v-7h5v7"/></svg><span>Home</span></button>
+  <button id="global-home-btn" class="home-nav-btn" type="button" aria-label="Return to homepage"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.8 12 3l9 7.8M5.5 9.5V21h13V9.5M9.5 21v-7h5v7"/></svg><span data-i18n="home">Home</span></button>
 </header>
 
 <section id="screen-home" class="screen active">
   <div class="hero home-hero">
     <div class="hero-copy">
-      <p class="eyebrow">2026年12月9日 · 期末テスト</p>
-      <h1>日本語を、<br><em>自分の力に。</em></h1>
-      <p class="hero-lede">学んで、試して、少しずつ前へ。</p>
-      <div class="hero-meta"><span>文法の復習</span><span>·</span><span>11言語の解説</span><span>·</span><span>学習の記録</span></div>
+      <p class="eyebrow" data-i18n="homeEyebrow">2026年12月9日 · 期末テスト</p>
+      <h1><span data-i18n="homeTitleA">日本語を、</span><br><em data-i18n="homeTitleB">自分の力に。</em></h1>
+      <p class="hero-lede" data-i18n="homeLede">学んで、試して、少しずつ前へ。</p>
+      <div class="hero-meta"><span data-i18n="metaGrammar">文法の復習</span><span>·</span><span data-i18n="metaLanguages">11言語の解説</span><span>·</span><span data-i18n="metaHistory">学習の記録</span></div>
     </div>
-    <div class="home-panda-wrap"><img id="home-panda-image" class="home-panda" src="assets/panda-chibi.svg" alt="Petit panda chibi qui accueille les élèves"><div id="home-panda-message" class="home-panda-bubble">一緒に頑張ろう！</div><small class="home-panda-caption">いっしょに頑張ろう！</small></div>
+    <div class="home-panda-wrap"><img id="home-panda-image" class="home-panda" src="assets/panda-chibi.svg" alt="Petit panda chibi qui accueille les élèves"><div id="home-panda-message" class="home-panda-bubble">一緒に頑張ろう！</div><small class="home-panda-caption" data-i18n="homePandaCaption">いっしょに頑張ろう！</small></div>
   </div>
 
   <section class="language-panel">
     <div>
-      <p class="eyebrow">ステップ 1</p>
-      <h2>解説の言語を選んでください</h2>
-      <p class="muted">問題文と選択肢は日本語です。</p>
+      <p class="eyebrow" data-i18n="stepOne">ステップ 1</p>
+      <h2 data-i18n="languageHeading">解説の言語を選んでください</h2>
+      <p class="muted" data-i18n="languagePrompt">問題文と選択肢は日本語です。</p>
     </div>
-    <label class="select-wrap"><span>解説の言語</span>
+    <label class="select-wrap"><span data-i18n="languageLabel">解説の言語</span>
       <select id="language-select" aria-label="解説の言語">
         <option value="vi">ベトナム語</option>
         <option value="zh-CN">中国語（簡体字）</option>
@@ -51,35 +51,35 @@
         <option value="fr" selected>フランス語</option>
       </select>
     </label>
-    <button id="prepare-btn" class="primary-btn"><span>次へ：科目を選ぶ</span><span>→</span></button>
+    <button id="prepare-btn" class="primary-btn"><span data-i18n="prepareHome">次へ：科目を選ぶ</span><span>→</span></button>
   </section>
 
   <section class="saved-sessions-section">
     <div class="saved-heading">
-      <div><p class="eyebrow" id="save-section-eyebrow">学習の記録</p><h2 id="save-section-title">保存した学習記録</h2></div>
-      <p class="muted" id="save-section-intro">このブラウザに保存された学習履歴です。</p>
+      <div><p class="eyebrow" id="save-section-eyebrow">学習の記録</p><h2 id="save-section-title" data-i18n="savedHeading">保存した学習記録</h2></div>
+      <p class="muted" id="save-section-intro" data-i18n="savedIntro">このブラウザに保存された学習履歴です。</p>
     </div>
     <div id="save-list" class="save-list"></div>
   </section>
-  <footer class="home-footer"><span>N631 · 期末テスト対策</span><span>作成：健太</span></footer>
+  <footer class="home-footer"><span data-i18n="footerCourse">N631 · 期末テスト対策</span><span data-i18n="creatorCredit">作成：健太</span></footer>
 </section>
 
 <section id="screen-subject" class="screen">
   <div class="section-heading">
-    <p class="eyebrow">ステップ 2</p>
-    <h1>科目を選んでください</h1>
-    <p class="muted">復習したい科目を選択してください。</p>
+    <p class="eyebrow" data-i18n="subjectStep">ステップ 2</p>
+    <h1 data-i18n="subjectHeading">科目を選んでください</h1>
+    <p class="muted" data-i18n="subjectIntro">復習したい科目を選択してください。</p>
   </div>
   <div class="subject-grid">
     <button id="subject-grammar" class="subject-card">
-      <span class="subject-icon">文法<br><b>N2</b></span>
-      <span class="subject-copy"><strong>文法 N2</strong><small>新完全マスター · 第1課〜第8課</small></span>
+      <span class="subject-icon"><span data-i18n="subjectGrammar">文法</span><br><b>N2</b></span>
+      <span class="subject-copy"><strong data-i18n="subjectName">文法 N2</strong><small data-i18n="subjectDescription">新完全マスター · 第1課〜第8課</small></span>
       <span class="subject-arrow">→</span>
     </button>
   </div>
   <div class="subject-options">
   </div>
-  <div class="sticky-actions"><button id="subject-back" class="secondary-btn">戻る</button></div>
+  <div class="sticky-actions"><button id="subject-back" class="secondary-btn" data-i18n="back">戻る</button></div>
 </section>
 
 <section id="screen-review" class="screen">
@@ -127,7 +127,7 @@
     </article>
     <aside id="side-card" class="side-card">
       <div id="quick-reference-panel">
-        <p class="eyebrow">Rappel</p>
+        <p class="eyebrow" data-i18n="reminder">Rappel</p>
         <div id="quick-refs" class="quick-refs"></div>
         <div id="quick-detail" class="quick-detail hidden"></div>
       </div>
@@ -190,9 +190,9 @@
   <div class="sticky-actions"><button id="result-continue" class="secondary-btn hidden" data-i18n="returnQuiz">Retour au quiz</button><button id="result-restart" class="primary-btn" data-i18n="retry">Recommencer les 100 questions</button></div>
 </section>
 </main>
-<script src="data.js?v=20261128-4"></script>
-<script src="question-translations.js?v=20261128-4"></script>
-<script src="question-explanations.js?v=20261128-4"></script>
-<script src="app.js?v=20261128-4"></script>
+<script src="data.js?v=20261128-5"></script>
+<script src="question-translations.js?v=20261128-5"></script>
+<script src="question-explanations.js?v=20261128-5"></script>
+<script src="app.js?v=20261128-5"></script>
 </body>
 </html>
