@@ -365,7 +365,8 @@ function renderSaves(){
         :'<div class="save-progress"><div><span>'+escapeHtml(labels.answerCount)+'</span><b>'+answered+'/100</b></div><i><b style="width:'+progress+'%"></b></i><small>'+progress+'% · 50/50 · '+fifties+'</small></div>';
       const view='<button data-action="view-details" data-id="'+escapeHtml(session.sessionId)+'">'+escapeHtml(labels.viewDetails||labels.viewResults)+'</button>';
       const resume=completed?"":'<button data-action="resume" data-id="'+escapeHtml(session.sessionId)+'">'+escapeHtml(labels.resume)+'</button>';
-      return '<details class="saved-session" data-save="'+escapeHtml(session.sessionId)+'"><summary><div class="save-summary-main"><strong>'+escapeHtml(dateLabel(session.createdAt))+'</strong><small>'+escapeHtml(summary)+'</small></div><span class="save-summary-arrow">＋</span></summary><div class="save-session-body">'+details+'<div class="save-actions">'+view+resume+'<button class="delete-save" data-action="delete" data-id="'+escapeHtml(session.sessionId)+'">'+escapeHtml(labels.delete)+'</button></div></div></details>';
+      const scoreBadge=completed?'<span class="save-summary-score">'+(result?result.score:0)+'/100</span>':'';
+      return '<details class="saved-session" data-save="'+escapeHtml(session.sessionId)+'"><summary><div class="save-summary-main"><strong>'+escapeHtml(dateLabel(session.createdAt))+'</strong><small>'+escapeHtml(summary)+'</small></div>'+scoreBadge+'<span class="save-summary-arrow">＋</span></summary><div class="save-session-body">'+details+'<div class="save-actions">'+view+resume+'<button class="delete-save" data-action="delete" data-id="'+escapeHtml(session.sessionId)+'">'+escapeHtml(labels.delete)+'</button></div></div></details>';
     }).join("");
     const stats='<div class="save-subject-stats"><span>'+items.length+' '+escapeHtml(groupLabels.sessions)+'</span>'+
       (best===null?'':'<span>'+escapeHtml(groupLabels.best)+' <strong>'+best+'/100</strong></span>')+
