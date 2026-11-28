@@ -303,7 +303,7 @@ function screen(name){
   document.querySelectorAll(".screen").forEach(el=>el.classList.remove("active"));
   $("screen-"+name).classList.add("active");
   window.scrollTo({top:0,behavior:"smooth"});
-  document.body.classList.toggle("show-mascot-prank",["subject","review","result"].includes(name));
+  document.body.classList.toggle("show-mascot-prank",name!=="home");
   if(name==="home")renderSaves();
   if(name==="pause")renderPauseSummary();
 }
