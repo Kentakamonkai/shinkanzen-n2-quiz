@@ -6,7 +6,16 @@
 <meta name="theme-color" content="#23302d">
 <meta name="description" content="N631クラス向け・2026年12月9日期末テスト対策サイト。文法N2の復習ができます。">
 <title>12月9日の期末テストの練習</title>
-<link rel="stylesheet" href="styles.css?v=20261129-19">
+<!-- Google Analytics 4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-EW2FWT9JTF"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-EW2FWT9JTF');
+</script>
+
+<link rel="stylesheet" href="styles.css?v=20261129-20">
 </head>
 <body>
 <div class="grain"></div>
@@ -16,6 +25,7 @@
     <span class="brand-mark">文</span>
     <span><strong data-i18n="brandTitle">期末テスト対策</strong><small data-i18n="brandSubtitle">N631クラス · 2026年12月9日</small></span>
   </a>
+  <button id="feedback-nav-btn" class="home-nav-btn" type="button" data-feedback-i18n="link">Avis</button>
   <button id="global-home-btn" class="home-nav-btn" type="button" aria-label="Accueil"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.8 12 3l9 7.8M5.5 9.5V21h13V9.5M9.5 21v-7h5v7"/></svg><span data-i18n="home">Home</span></button>
 </header>
 
@@ -62,6 +72,30 @@
     <div id="save-list" class="save-list"></div>
   </section>
   <footer class="home-footer"><span data-i18n="footerCourse">N631 · 期末テスト対策</span><span data-i18n="creatorCredit">作成：健太</span></footer>
+</section>
+
+
+<section id="screen-feedback" class="screen feedback-screen">
+  <div class="section-heading">
+    <p class="eyebrow" data-feedback-i18n="eyebrow">VOTRE AVIS</p>
+    <h1 data-feedback-i18n="title">Avis et suggestions</h1>
+    <p class="muted" data-feedback-i18n="intro">Une erreur dans une question ? Une idée pour améliorer le site ? Vous pouvez me le signaler ici.</p>
+  </div>
+  <div class="feedback-form-card">
+    <iframe
+      title="Formulaire d’avis et de suggestions"
+      src="https://docs.google.com/forms/d/e/1FAIpQLSfS-4ObZ1SUjEytiJVGJdCp8PRtnJfkU8rn3FEqvkAHOM_7uw/viewform?embedded=true"
+      loading="lazy"
+      width="100%"
+      height="760"
+      frameborder="0"
+      marginheight="0"
+      marginwidth="0">Chargement…</iframe>
+  </div>
+  <p class="feedback-privacy" data-feedback-i18n="privacy">Le site utilise Google Analytics pour mesurer les visites et la langue choisie. Google peut utiliser des identifiants de navigateur pour établir les statistiques de fréquentation.</p>
+  <div class="sticky-actions">
+    <button id="feedback-back-btn" class="secondary-btn" data-feedback-i18n="back">Retour au site</button>
+  </div>
 </section>
 
 <section id="screen-subject" class="screen">
@@ -191,9 +225,9 @@
 </section>
   <button id="mascot-prank-button" class="mascot-prank-button" type="button" aria-label="パンダをタップして遊ぶ" title="Tap the panda for a surprise"><img src="assets/panda-chibi.svg" alt=""></button>
 </main>
-<script src="data.js?v=20261129-19"></script>
-<script src="question-translations.js?v=20261129-19"></script>
-<script src="question-explanations.js?v=20261129-19"></script>
-<script src="app.js?v=20261129-19"></script>
+<script src="data.js?v=20261129-20"></script>
+<script src="question-translations.js?v=20261129-20"></script>
+<script src="question-explanations.js?v=20261129-20"></script>
+<script src="app.js?v=20261129-20"></script>
 </body>
 </html>
