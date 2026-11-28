@@ -535,3 +535,11 @@ body.show-mascot-prank .mascot-prank-button{display:grid;place-items:center}
 @keyframes prank-flop{0%,100%{transform:rotate(0) translateY(0)}35%{transform:rotate(85deg) translateY(5px)}65%{transform:rotate(-18deg) translateY(-8px)}}
 @keyframes prank-sparkle{0%{opacity:0;transform:scale(.3) rotate(-30deg)}35%{opacity:1;transform:scale(1.5) rotate(35deg)}100%{opacity:0;transform:scale(.4) rotate(80deg)}}
 @media(max-width:580px){.mascot-prank-button{right:8px;bottom:8px;width:62px;height:62px}}
+
+
+/* Feedback page and embedded Google Form */
+.feedback-screen{max-width:900px;margin-left:auto;margin-right:auto}
+.feedback-form-card{width:100%;overflow:hidden;border:1px solid var(--line);border-radius:15px;background:#fffdf8;box-shadow:0 8px 24px rgba(32,44,42,.06)}
+.feedback-form-card iframe{display:block;width:100%;min-height:760px;border:0;background:#fff}
+.feedback-privacy{max-width:760px;margin:16px auto 4px;color:var(--muted);font-size:11px;line-height:1.65;text-align:center}
+@media(max-width:580px){.feedback-form-card{border-radius:10px}.feedback-form-card iframe{min-height:820px}}
