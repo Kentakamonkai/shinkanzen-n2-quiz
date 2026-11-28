@@ -303,6 +303,7 @@ function screen(name){
   document.querySelectorAll(".screen").forEach(el=>el.classList.remove("active"));
   $("screen-"+name).classList.add("active");
   window.scrollTo({top:0,behavior:"smooth"});
+  document.body.classList.toggle("show-mascot-prank",["subject","review","result"].includes(name));
   if(name==="home")renderSaves();
   if(name==="pause")renderPauseSummary();
 }
@@ -892,3 +893,40 @@ renderReview();
 renderSaves();
 updateHomePandaLine();
 console.info("N631 N2 grammar practice ready",DATA.questions.length,"questions");
+
+
+// The quiz panda makes one brief movement every 15 seconds, not continuously.
+(function(){
+  const stage=$("mascot-stage");
+  if(!stage)return;
+  const reduced=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if(reduced)return;
+  stage.addEventListener("animationend",event=>{
+    if(event.target===stage)stage.classList.remove("panda-tick");
+  });
+  window.setInterval(()=>{
+    if(!$("screen-quiz").classList.contains("active"))return;
+    stage.classList.remove("panda-tick");
+    void stage.offsetWidth;
+    stage.classList.add("panda-tick");
+  },15000);
+})();
+
+// Tap the small corner panda for a random, playful reaction.
+(function(){
+  const button=$("mascot-prank-button");
+  if(!button)return;
+  const moves=["hop","spin","dance","wiggle","flop"];
+  let previous="";
+  button.addEventListener("click",()=>{
+    const choices=moves.filter(move=>move!==previous);
+    const move=choices[Math.floor(Math.random()*choices.length)];
+    previous=move;
+    button.classList.remove(...moves.map(name=>"panda-prank-"+name));
+    void button.offsetWidth;
+    button.classList.add("panda-prank-"+move);
+  });
+  button.addEventListener("animationend",event=>{
+    if(event.target===button.querySelector("img"))button.classList.remove(...moves.map(name=>"panda-prank-"+name));
+  });
+})();
