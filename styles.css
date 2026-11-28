@@ -397,3 +397,33 @@
   font-size:12px;
   overflow-wrap:anywhere;
 }
+
+/* Persistent, prominent Home navigation */
+.home-nav-btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:42px;padding:0 17px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);font:700 13px/1 inherit;cursor:pointer;box-shadow:0 3px 9px rgba(32,44,42,.06);transition:background .2s ease,transform .2s ease,border-color .2s ease}
+.home-nav-btn:hover{background:#f0eee5;border-color:#c9c4b5;transform:translateY(-1px)}
+.home-nav-btn svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.topbar{gap:14px}
+.save-list{display:grid;gap:18px}
+.save-subject-group{padding:17px 18px 14px;border:1px solid var(--line);border-radius:15px;background:rgba(255,255,255,.48)}
+.save-subject-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;padding:0 2px 13px;border-bottom:1px solid var(--line)}
+.save-subject-heading h3{margin:2px 0 0;font-family:Georgia,serif;font-size:22px;font-weight:600;color:var(--ink)}
+.save-subject-stats{display:flex;justify-content:flex-end;gap:8px 13px;flex-wrap:wrap;color:var(--muted);font-size:10px;text-align:right}
+.save-subject-stats strong{color:var(--ink);font-size:12px;font-variant-numeric:tabular-nums}
+.save-subject-sessions{display:grid;gap:9px;padding-top:12px}
+.save-subject-sessions .saved-session{margin:0}
+.save-completed-score{display:flex;align-items:center;gap:13px;min-height:74px;padding:10px 15px;margin:8px 0 14px;background:#eef2e8;border:1px solid #dce4d5;border-radius:12px}
+.save-completed-score>span{font-size:11px;color:var(--muted);font-weight:700}
+.save-completed-score>strong{font-family:Georgia,serif;font-size:42px;line-height:1;color:#3e6249;font-weight:700;font-variant-numeric:tabular-nums}
+.save-completed-score>strong small{font-family:inherit;font-size:17px;color:#71816e}
+.save-completed-score>em{margin-left:auto;font-size:10px;font-style:normal;color:var(--muted)}
+.save-completed-score.perfect-score>strong{font-size:46px}
+@media(max-width:580px){
+ .home-nav-btn{min-height:39px;padding:0 12px;font-size:12px}
+ .save-subject-group{padding:13px 11px 11px}
+ .save-subject-heading{flex-direction:column;gap:8px}
+ .save-subject-heading h3{font-size:20px}
+ .save-subject-stats{justify-content:flex-start;text-align:left}
+ .save-completed-score{gap:8px;padding:9px 11px}
+ .save-completed-score>strong{font-size:36px}
+ .save-completed-score>em{font-size:9px}
+}
