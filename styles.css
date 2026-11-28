@@ -512,6 +512,7 @@
 body.show-mascot-prank .mascot-prank-button{display:grid;place-items:center}
 .mascot-prank-button img{width:100%;height:100%;object-fit:contain;pointer-events:none}
 .mascot-prank-button:focus-visible{outline:3px solid var(--orange);outline-offset:3px}
+.mascot-prank-button:active{transform:scale(.94)}
 .mascot-prank-button:after{
   content:"✦";position:absolute;right:1px;top:0;color:#c46b45;font-size:19px;
   opacity:0;transform:scale(.3) rotate(-30deg);pointer-events:none
@@ -530,6 +531,3 @@ body.show-mascot-prank .mascot-prank-button{display:grid;place-items:center}
 @keyframes prank-flop{0%,100%{transform:rotate(0) translateY(0)}35%{transform:rotate(85deg) translateY(5px)}65%{transform:rotate(-18deg) translateY(-8px)}}
 @keyframes prank-sparkle{0%{opacity:0;transform:scale(.3) rotate(-30deg)}35%{opacity:1;transform:scale(1.5) rotate(35deg)}100%{opacity:0;transform:scale(.4) rotate(80deg)}}
 @media(max-width:580px){.mascot-prank-button{right:8px;bottom:8px;width:62px;height:62px}}
-@media(prefers-reduced-motion:reduce){
-  .mascot-prank-button img,.mascot-prank-button:after{animation:none!important}
-}
