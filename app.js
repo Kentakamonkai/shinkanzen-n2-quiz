@@ -306,7 +306,7 @@ function screen(name){
 function translateUi(){
   document.documentElement.lang=state.lang==="zh-CN"?"zh-CN":state.lang==="zh-TW"?"zh-TW":state.lang;
   if(UI[state.lang]&&UI[state.lang].pageTitle)document.title=t("pageTitle");
-  document.querySelectorAll("[data-i18n]").forEach(el=>{const key=el.dataset.i18n;if(t(key))el.textContent=t(key);});
+  document.querySelectorAll("[data-i18n]").forEach(el=>{if(el.closest(".brand,.hero-copy,.language-panel"))return;const key=el.dataset.i18n;if(t(key))el.textContent=t(key);});
   const names=LANGUAGE_NAMES_NATIVE;
   if(names)Array.from($("language-select").options).forEach(option=>{option.textContent=names[option.value]||option.textContent;});
   const languageSelect=$("language-select");if(languageSelect)languageSelect.setAttribute("aria-label",t("languageLabel"));
@@ -515,10 +515,21 @@ const HOME_PANDA_LINES={
   fr:"Allez, on révise ensemble ! Je t'encourage !"
 };
 HOME_PANDA_LINES.en="Let’s study together! I’m cheering you on!";
+HOME_PANDA_LINES.ja="一緒に頑張ろう！";
 HOME_PANDA_LINES.be="Давай вучыцца разам! Я цябе падтрымліваю!";
+function getBrowserPandaLanguage(){
+  const preferences=[...(navigator.languages||[]),navigator.language||""];
+  for(const preference of preferences){
+    const tag=String(preference).toLowerCase();
+    if(tag.startsWith("zh"))return /tw|hk|mo|hant/.test(tag)?"zh-TW":"zh-CN";
+    const base=tag.split("-")[0];
+    if(HOME_PANDA_LINES[base])return base;
+  }
+  return "en";
+}
 function updateHomePandaLine(){
   const el=$("home-panda-message");
-  if(el)el.textContent=HOME_PANDA_LINES[state.lang]||HOME_PANDA_LINES.fr;
+  if(el)el.textContent=HOME_PANDA_LINES[getBrowserPandaLanguage()]||HOME_PANDA_LINES.en;
 }
 function pandaLine(mood){
   const bank=PANDA_LINES[state.lang]||PANDA_LINES.fr;
