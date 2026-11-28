@@ -401,7 +401,7 @@ function renderSaves(){
     const stats='<div class="save-subject-stats"><span>'+items.length+' '+escapeHtml(groupLabels.sessions)+'</span>'+
       (best===null?'':'<span>'+escapeHtml(groupLabels.best)+' <strong>'+best+'/100</strong></span>')+
       (average===null?'':'<span>'+escapeHtml(groupLabels.average)+' <strong>'+average+'/100</strong></span>')+'</div>';
-    return '<section class="save-subject-group"><div class="save-subject-heading"><h3>'+escapeHtml(subjectName)+'</h3>'+stats+'</div><div class="save-subject-sessions">'+cards+'</div></section>';
+    return '<details class="save-subject-group"><summary class="save-subject-heading"><h3>'+escapeHtml(subjectName)+'</h3>'+stats+'<span class="save-subject-toggle" aria-hidden="true">⌄</span></summary><div class="save-subject-sessions">'+cards+'</div></details>';
   }).join("");
 }
 function renderReview(){
