@@ -241,7 +241,22 @@ const SAVE_UI={
   my:{locale:"my-MM",eyebrow:"လေ့လာမှုမှတ်တမ်း",title:"သိမ်းဆည်းထားသော လေ့လာမှုမှတ်တမ်းများ",description:"ဤဘရောက်ဇာတွင် သိမ်းဆည်းထားသော လေ့လာမှုမှတ်တမ်းများဖြစ်သည်။",empty:"လေ့လာမှုမှတ်တမ်း မရှိသေးပါ။ မေးခွန်းစတင်ဖြေဆိုပါက ဤနေရာတွင် အလိုအလျောက် သိမ်းဆည်းမည်။",legacyDate:"ယခင်ဗားရှင်းမှ မှတ်တမ်း · ရက်စွဲနှင့်အချိန် မသိရပါ",unknownDate:"သိမ်းဆည်းချိန် မသိရပါ",completed:"ပြီးဆုံးပါပြီ",inProgress:"လေ့လာနေဆဲ",questions:"မေးခွန်း",answerCount:"ဖြေဆိုပြီး",score:"ရမှတ်",review:"ပြန်လည်လေ့လာရန်",chapterPrefix:"အခန်း ",chapterSuffix:"",viewResults:"ရလဒ်ကြည့်ရန်",resume:"ဆက်လက်ဖြေဆိုရန်",delete:"ဖျက်ရန်",deleteConfirm:"ဤလေ့လာမှုမှတ်တမ်းကို ဖျက်လိုပါသလား？"},
   fr:{locale:"fr-FR",eyebrow:"Historique des sessions",title:"Sessions enregistrées",description:"Historique des sessions conservées dans ce navigateur.",empty:"Aucune session pour le moment. Dès que tu commenceras le quiz, ta progression sera automatiquement enregistrée ici.",legacyDate:"Sauvegarde d'une ancienne version · Date et heure inconnues",unknownDate:"Date d'enregistrement inconnue",completed:"Terminée",inProgress:"En cours",questions:"questions",answerCount:"Répondues",score:"Score",review:"Points à revoir",chapterPrefix:"Chap. ",chapterSuffix:"",viewResults:"Voir les résultats",resume:"Reprendre le quiz",delete:"Supprimer",deleteConfirm:"Veux-tu supprimer cette session ?"}
 };
-Object.keys(SAVE_UI).forEach(lang=>{SAVE_UI[lang].viewDetails=SAVE_DETAILS_LABELS[lang]||SAVE_DETAILS_LABELS.fr;});
+const SAVE_GROUP_LABELS={
+ ja:{sessions:"セッション",best:"最高得点",average:"平均点",subjectFallback:"その他"},
+ vi:{sessions:"phiên",best:"Điểm cao nhất",average:"Điểm trung bình",subjectFallback:"Môn học khác"},
+ "zh-CN":{sessions:"次学习",best:"最高分",average:"平均分",subjectFallback:"其他科目"},
+ "zh-TW":{sessions:"次學習",best:"最高分",average:"平均分",subjectFallback:"其他科目"},
+ ko:{sessions:"회",best:"최고 점수",average:"평균 점수",subjectFallback:"기타 과목"},
+ es:{sessions:"sesiones",best:"Mejor puntuación",average:"Promedio",subjectFallback:"Otras materias"},
+ it:{sessions:"sessioni",best:"Punteggio migliore",average:"Media",subjectFallback:"Altre materie"},
+ ne:{sessions:"सत्र",best:"उच्चतम अङ्क",average:"औसत अङ्क",subjectFallback:"अन्य विषय"},
+ my:{sessions:"ကြိမ်",best:"အမြင့်ဆုံးရမှတ်",average:"ပျမ်းမျှရမှတ်",subjectFallback:"အခြားဘာသာရပ်"},
+ fr:{sessions:"sessions",best:"Meilleur score",average:"Moyenne",subjectFallback:"Autres matières"}
+};
+Object.keys(SAVE_UI).forEach(lang=>{
+  SAVE_UI[lang].viewDetails=SAVE_DETAILS_LABELS[lang]||SAVE_DETAILS_LABELS.fr;
+  SAVE_UI[lang].group=SAVE_GROUP_LABELS[lang]||SAVE_GROUP_LABELS.fr;
+});
 function saveText(){return savesUseJapanese?SAVE_UI.ja:(SAVE_UI[state.lang]||SAVE_UI.ja);}
 
 
@@ -306,7 +321,7 @@ function migrateLegacySave(){
   try{
     const legacy=JSON.parse(raw);
     if(legacy&&Array.isArray(legacy.order)&&legacy.order.length===100){
-      legacy.sessionId="legacy-"+Date.now();
+      legacy.sessionId="legacy-"+Date.now();legacy.subjectId=legacy.subjectId||"grammar-n2";legacy.subjectLabel=legacy.subjectLabel||"文法 N2";
       legacy.createdAt=null;
       legacy.updatedAt=new Date().toISOString();
       legacy.completed=false;
@@ -319,37 +334,43 @@ function migrateLegacySave(){
 
 function renderSaves(){
   const host=$("save-list");if(!host)return;
-  const labels=saveText();
+  const labels=saveText(),groupLabels=labels.group||SAVE_GROUP_LABELS.fr;
   const eyebrow=$("save-section-eyebrow"),heading=$("save-section-title"),description=$("save-section-intro");
   if(eyebrow)eyebrow.textContent=labels.eyebrow||SAVE_UI.ja.eyebrow;
   if(heading)heading.textContent=labels.title;
   if(description)description.textContent=labels.description;
   const sessions=loadSessions();
-  if(!sessions.length){
-    host.innerHTML='<p class="no-saves">'+escapeHtml(labels.empty)+'</p>';
-    return;
-  }
-  host.innerHTML=sessions.map(session=>{
-    const answered=Object.keys(session.answers||{}).length;
-    const completed=!!session.completed;
-    const result=session.result||null;
-    const progress=Math.round(answered/100*100);
-    const fifties=Number.isFinite(session.fifties)?session.fifties:Object.keys(session.usedFifty||{}).filter(key=>session.usedFifty[key]).length;
-    const chapterName=number=>labels.chapterPrefix+number+labels.chapterSuffix;
-    const graph=result&&Array.isArray(result.chapters)?'<div class="save-mini-chart">'+result.chapters.map(row=>{
-      const pct=row.answered?row.correct/row.answered*100:0;
-      return '<div class="mini-chart-row"><span>'+escapeHtml(chapterName(row.ch))+'</span><i><b style="width:'+pct+'%"></b></i><small>'+row.correct+'/'+row.answered+'</small></div>';
-    }).join("")+'</div>':"";
-    const errors=result&&Array.isArray(result.errors)&&result.errors.length?'<p class="save-review-note">'+escapeHtml(labels.review)+'：'+result.errors.slice(0,4).map(row=>escapeHtml((getGrammar(row.id)||{}).name||row.id)).join("・")+'</p>':"";
-    const summary=completed
-      ?labels.completed+' · '+(result?result.answered:answered)+'/100 '+labels.questions+' · '+labels.score+' '+(result?result.score:0)+'/100'
-      :labels.inProgress+' · '+answered+'/100 '+labels.questions;
-    const details=completed
-      ?'<div class="save-completed-score'+(result&&Number(result.score)===100?' perfect-score':'')+'"><strong>'+(result?result.score:0)+'/100</strong><span>50/50 · '+fifties+'</span></div>'+graph+errors
-      :'<div class="save-progress"><div><span>'+escapeHtml(labels.answerCount)+'</span><b>'+answered+'/100</b></div><i><b style="width:'+progress+'%"></b></i><small>50/50 · '+fifties+'</small></div>';
-    const view='<button data-action="view-details" data-id="'+escapeHtml(session.sessionId)+'">'+escapeHtml(labels.viewDetails||labels.viewResults)+'</button>';
-    const resume=completed?"":'<button data-action="resume" data-id="'+escapeHtml(session.sessionId)+'">'+escapeHtml(labels.resume)+'</button>';
-    return '<details class="saved-session" data-save="'+escapeHtml(session.sessionId)+'"><summary><div class="save-summary-main"><strong>'+escapeHtml(dateLabel(session.createdAt))+'</strong><small>'+escapeHtml(summary)+'</small></div><span class="save-summary-arrow">＋</span></summary><div class="save-session-body">'+details+'<div class="save-actions">'+view+resume+'<button class="delete-save" data-action="delete" data-id="'+escapeHtml(session.sessionId)+'">'+escapeHtml(labels.delete)+'</button></div></div></details>';
+  if(!sessions.length){host.innerHTML='<p class="no-saves">'+escapeHtml(labels.empty)+'</p>';return;}
+  const groups=new Map();
+  sessions.forEach(session=>{const key=session.subjectId||"grammar-n2";if(!groups.has(key))groups.set(key,[]);groups.get(key).push(session);});
+  const chapterName=number=>labels.chapterPrefix+number+labels.chapterSuffix;
+  host.innerHTML=[...groups.entries()].map(([subjectId,items])=>{
+    const completedItems=items.filter(session=>session.completed&&session.result&&Number.isFinite(Number(session.result.score)));
+    const scores=completedItems.map(session=>Number(session.result.score));
+    const best=scores.length?Math.max(...scores):null;
+    const average=scores.length?Math.round(scores.reduce((sum,value)=>sum+value,0)/scores.length):null;
+    const subjectName=items.find(session=>session.subjectLabel)?.subjectLabel||(subjectId==="grammar-n2"?"文法 N2":groupLabels.subjectFallback+" · "+subjectId);
+    const cards=items.map(session=>{
+      const answered=Object.keys(session.answers||{}).length,completed=!!session.completed,result=session.result||null;
+      const progress=Math.round(answered/100*100);
+      const fifties=Number.isFinite(session.fifties)?session.fifties:Object.keys(session.usedFifty||{}).filter(key=>session.usedFifty[key]).length;
+      const graph=result&&Array.isArray(result.chapters)?'<div class="save-mini-chart">'+result.chapters.map(row=>{
+        const pct=row.answered?row.correct/row.answered*100:0;
+        return '<div class="mini-chart-row"><span>'+escapeHtml(chapterName(row.ch))+'</span><i><b style="width:'+pct+'%"></b></i><small>'+row.correct+'/'+row.answered+'</small></div>';
+      }).join("")+'</div>':"";
+      const errors=result&&Array.isArray(result.errors)&&result.errors.length?'<p class="save-review-note">'+escapeHtml(labels.review)+'：'+result.errors.slice(0,4).map(row=>escapeHtml((getGrammar(row.id)||{}).name||row.id)).join("・")+'</p>':"";
+      const summary=completed?labels.completed+' · '+(result?result.answered:answered)+'/100 '+labels.questions:labels.inProgress+' · '+answered+'/100 '+labels.questions;
+      const details=completed
+        ?'<div class="save-completed-score'+(result&&Number(result.score)===100?' perfect-score':'')+'"><span>'+escapeHtml(labels.score)+'</span><strong>'+(result?result.score:0)+'<small>/100</small></strong><em>50/50 · '+fifties+'</em></div>'+graph+errors
+        :'<div class="save-progress"><div><span>'+escapeHtml(labels.answerCount)+'</span><b>'+answered+'/100</b></div><i><b style="width:'+progress+'%"></b></i><small>'+progress+'% · 50/50 · '+fifties+'</small></div>';
+      const view='<button data-action="view-details" data-id="'+escapeHtml(session.sessionId)+'">'+escapeHtml(labels.viewDetails||labels.viewResults)+'</button>';
+      const resume=completed?"":'<button data-action="resume" data-id="'+escapeHtml(session.sessionId)+'">'+escapeHtml(labels.resume)+'</button>';
+      return '<details class="saved-session" data-save="'+escapeHtml(session.sessionId)+'"><summary><div class="save-summary-main"><strong>'+escapeHtml(dateLabel(session.createdAt))+'</strong><small>'+escapeHtml(summary)+'</small></div><span class="save-summary-arrow">＋</span></summary><div class="save-session-body">'+details+'<div class="save-actions">'+view+resume+'<button class="delete-save" data-action="delete" data-id="'+escapeHtml(session.sessionId)+'">'+escapeHtml(labels.delete)+'</button></div></div></details>';
+    }).join("");
+    const stats='<div class="save-subject-stats"><span>'+items.length+' '+escapeHtml(groupLabels.sessions)+'</span>'+
+      (best===null?'':'<span>'+escapeHtml(groupLabels.best)+' <strong>'+best+'/100</strong></span>')+
+      (average===null?'':'<span>'+escapeHtml(groupLabels.average)+' <strong>'+average+'/100</strong></span>')+'</div>';
+    return '<section class="save-subject-group"><div class="save-subject-heading"><h3>'+escapeHtml(subjectName)+'</h3>'+stats+'</div><div class="save-subject-sessions">'+cards+'</div></section>';
   }).join("");
 }
 function renderReview(){
@@ -368,14 +389,14 @@ function renderReview(){
 function startSession(){
   if(DATA.questions.length!==100){alert("Question bank error: expected 100 questions.");return;}
   const lang=state.lang;
-  state={lang:lang,order:shuffle(DATA.questions.map((item,index)=>index)),index:0,answers:{},fifties:0,usedFifty:{},pandaBags:{},paused:false,completed:false,sessionId:"session-"+Date.now()+"-"+Math.random().toString(36).slice(2,7),createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};
+  state={lang:lang,subjectId:"grammar-n2",subjectLabel:"文法 N2",order:shuffle(DATA.questions.map((item,index)=>index)),index:0,answers:{},fifties:0,usedFifty:{},pandaBags:{},paused:false,completed:false,sessionId:"session-"+Date.now()+"-"+Math.random().toString(36).slice(2,7),createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};
   saveSession();renderQuestion();screen("quiz");setMascot("neutral");
 }
 function current(){return DATA.questions[state.order[state.index]];}
 function matchGrammars(source){
   const normalized=String(source||"").replace(/[～〜]/g,"").replace(/[（）()]/g,"");
   return DATA.grammar.filter(grammar=>{
-    if(grammar.ch<6)return false;
+    
     const variants=grammar.name.replace(/[～〜]/g,"").split(/[・／]/).map(variant=>variant.replace(/[（）()]/g,""));
     return variants.some(variant=>variant.length>=2&&normalized.includes(variant));
   });
@@ -751,8 +772,8 @@ $("jump-btn").addEventListener("click",jumpToQuestion);
 $("jump-input").addEventListener("keydown",event=>{if(event.key==="Enter")jumpToQuestion();});
 $("pause-btn").addEventListener("click",()=>{state.paused=true;saveSession();screen("pause");});
 $("continue-btn").addEventListener("click",returnToQuiz);
-$("quiz-home-btn").addEventListener("click",()=>{state.paused=false;saveSession();screen("home");});
 $("progress-score-btn").addEventListener("click",showProgressResults);
+$("global-home-btn").addEventListener("click",()=>{if(state.sessionId)saveSession();screen("home");});
 function openRestartDialog(){$("restart-dialog").classList.remove("hidden");}
 function closeRestartDialog(){$("restart-dialog").classList.add("hidden");}
 function removeCurrentSession(){
@@ -772,8 +793,6 @@ $("restart-discard").addEventListener("click",()=>{
 $("restart-cancel").addEventListener("click",closeRestartDialog);
 $("restart-dialog").addEventListener("click",event=>{if(event.target===$("restart-dialog"))closeRestartDialog();});
 document.addEventListener("keydown",event=>{if(event.key==="Escape"&&!$("restart-dialog").classList.contains("hidden"))closeRestartDialog();});
-$("pause-home-btn").addEventListener("click",()=>{state.paused=true;saveSession();screen("home");});
-$("result-home").addEventListener("click",()=>{saveSession();screen("home");});
 $("result-continue").addEventListener("click",returnToQuiz);
 $("result-restart").addEventListener("click",startSession);
 $("language-select").addEventListener("change",event=>{state.lang=event.target.value;savesUseJapanese=false;updateHomePandaLine();renderSaves();});
