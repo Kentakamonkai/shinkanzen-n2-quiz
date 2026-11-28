@@ -281,6 +281,8 @@ Object.keys(SAVE_UI).forEach(lang=>{
 function saveText(){return savesUseJapanese?SAVE_UI.ja:(SAVE_UI[state.lang]||SAVE_UI.ja);}
 
 
+const FEEDBACK_I18N={"fr":{"link":"Avis","eyebrow":"VOTRE AVIS","title":"Avis et suggestions","intro":"Une erreur dans une question ? Une idée pour améliorer le site ? Vous pouvez me le signaler ici.","privacy":"Le site utilise Google Analytics pour mesurer les visites et la langue choisie. Google peut utiliser des identifiants de navigateur pour établir les statistiques de fréquentation.","back":"Retour au site"},"en":{"link":"Feedback","eyebrow":"YOUR FEEDBACK","title":"Feedback and suggestions","intro":"Found an error in a question or have an idea to improve the site? Let me know here.","privacy":"This site uses Google Analytics to measure visits and selected languages. Google may use browser identifiers to compile visitor statistics.","back":"Back to the site"},"vi":{"link":"Góp ý","eyebrow":"Ý KIẾN CỦA BẠN","title":"Góp ý và đề xuất","intro":"Bạn phát hiện lỗi trong câu hỏi hoặc có ý tưởng cải thiện trang web? Hãy gửi cho tôi tại đây.","privacy":"Trang web sử dụng Google Analytics để thống kê lượt truy cập và ngôn ngữ được chọn. Google có thể sử dụng mã định danh trình duyệt để lập thống kê.","back":"Quay lại trang web"},"zh-CN":{"link":"反馈","eyebrow":"您的反馈","title":"意见与建议","intro":"发现题目有错误，或有改进网站的想法？欢迎在这里告诉我。","privacy":"本网站使用 Google Analytics 统计访问量和所选语言。Google 可能会使用浏览器标识符来生成访问统计。","back":"返回网站"},"zh-TW":{"link":"意見回饋","eyebrow":"您的意見","title":"意見與建議","intro":"發現題目有錯誤，或有改善網站的想法嗎？歡迎在這裡告訴我。","privacy":"本網站使用 Google Analytics 統計造訪次數及所選語言。Google 可能會使用瀏覽器識別碼來產生造訪統計。","back":"返回網站"},"ko":{"link":"의견","eyebrow":"여러분의 의견","title":"의견 및 제안","intro":"문제에 오류가 있거나 사이트를 개선할 아이디어가 있나요? 여기에서 알려 주세요.","privacy":"이 사이트는 방문 횟수와 선택한 언어를 측정하기 위해 Google Analytics를 사용합니다. Google은 방문 통계를 위해 브라우저 식별자를 사용할 수 있습니다.","back":"사이트로 돌아가기"},"es":{"link":"Opiniones","eyebrow":"TU OPINIÓN","title":"Opiniones y sugerencias","intro":"¿Has encontrado un error en una pregunta o tienes una idea para mejorar la web? Cuéntamelo aquí.","privacy":"Este sitio utiliza Google Analytics para medir las visitas y los idiomas seleccionados. Google puede utilizar identificadores del navegador para elaborar estadísticas de visitas.","back":"Volver al sitio"},"it":{"link":"Feedback","eyebrow":"LA TUA OPINIONE","title":"Opinioni e suggerimenti","intro":"Hai trovato un errore in una domanda o hai un'idea per migliorare il sito? Segnalamelo qui.","privacy":"Questo sito utilizza Google Analytics per misurare le visite e le lingue selezionate. Google può utilizzare identificatori del browser per elaborare statistiche sulle visite.","back":"Torna al sito"},"ne":{"link":"सुझाव","eyebrow":"तपाईंको प्रतिक्रिया","title":"प्रतिक्रिया र सुझाव","intro":"प्रश्नमा त्रुटि भेट्नुभयो वा वेबसाइट सुधार गर्ने कुनै विचार छ? यहाँ जानकारी दिनुहोस्।","privacy":"यो वेबसाइटले भ्रमण र चयन गरिएको भाषा मापन गर्न Google Analytics प्रयोग गर्छ। Google ले भ्रमणसम्बन्धी तथ्याङ्क बनाउन ब्राउजर पहिचानकर्ता प्रयोग गर्न सक्छ।","back":"वेबसाइटमा फर्कनुहोस्"},"my":{"link":"အကြံပြုချက်","eyebrow":"သင့်အမြင်","title":"အကြံပြုချက်များ","intro":"မေးခွန်းတစ်ခုမှာ အမှားတွေ့ပါသလား၊ ဝဘ်ဆိုက်ကို ပိုကောင်းအောင်လုပ်ဖို့ အကြံရှိပါသလား။ ဒီမှာ ပြောပြနိုင်ပါတယ်။","privacy":"ဤဝဘ်ဆိုက်သည် လာရောက်ကြည့်ရှုမှုနှင့် ရွေးချယ်ထားသော ဘာသာစကားကို တိုင်းတာရန် Google Analytics ကို အသုံးပြုသည်။ Google သည် စာရင်းအင်းပြုလုပ်ရန် ဘရောက်ဇာအမှတ်အသားများကို အသုံးပြုနိုင်သည်။","back":"ဝဘ်ဆိုက်သို့ ပြန်သွားရန်"},"be":{"link":"Водгук","eyebrow":"ВАШ ВОДГУК","title":"Водгукі і прапановы","intro":"Знайшлі памылку ў пытанні або маеце ідэю, як палепшыць сайт? Напішыце тут.","privacy":"Сайт выкарыстоўвае Google Analytics для падліку наведванняў і выбраных моў. Google можа выкарыстоўваць ідэнтыфікатары браўзера для стварэння статыстыкі наведванняў.","back":"Вярнуцца на сайт"}};
+function trackAnalytics(eventName,parameters){if(typeof window.gtag==="function")window.gtag("event",eventName,parameters||{});}
 function t(key){const value=(UI[state.lang]&&UI[state.lang][key])||UI.fr[key]||UI.en[key];if(value)return value;console.warn("Missing interface translation",state.lang,key);return "";}
 function escapeHtml(value){
   return String(value==null?"":value).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
@@ -308,6 +310,7 @@ function screen(name){
   if(name==="pause")renderPauseSummary();
 }
 function translateUi(){
+  document.querySelectorAll("[data-feedback-i18n]").forEach(el=>{const key=el.dataset.feedbackI18n;const dict=FEEDBACK_I18N[state.lang]||FEEDBACK_I18N.fr;if(dict&&dict[key])el.textContent=dict[key];});
   document.documentElement.lang=state.lang==="zh-CN"?"zh-CN":state.lang==="zh-TW"?"zh-TW":state.lang;
   if(UI[state.lang]&&UI[state.lang].pageTitle)document.title=t("pageTitle");
   document.querySelectorAll("[data-i18n]").forEach(el=>{if(el.closest(".brand,.hero-copy,.language-panel"))return;const key=el.dataset.i18n;if(t(key))el.textContent=t(key);});
@@ -817,8 +820,14 @@ function resumeSession(id){
   renderQuestion();screen(state.paused?"pause":"quiz");
 }
 $("prepare-btn").addEventListener("click",()=>{
-  state.lang=$("language-select").value;translateUi();savesUseJapanese=false;renderSaves();screen("subject");
+  state.lang=$("language-select").value;trackAnalytics("language_select",{language:state.lang});translateUi();savesUseJapanese=false;renderSaves();screen("subject");
 });
+$("feedback-nav-btn").addEventListener("click",()=>{
+  if(state.sessionId)saveSession();
+  trackAnalytics("feedback_open",{language:state.lang||$("language-select").value||"fr"});
+  screen("feedback");
+});
+$("feedback-back-btn").addEventListener("click",()=>screen("home"));
 $("subject-grammar").addEventListener("click",()=>{renderReview();screen("review");});
 $("subject-back").addEventListener("click",()=>screen("home"));
 $("back-subject").addEventListener("click",()=>screen("subject"));
