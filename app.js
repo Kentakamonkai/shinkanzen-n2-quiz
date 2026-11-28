@@ -922,11 +922,11 @@ console.info("N631 N2 grammar practice ready",DATA.questions.length,"questions")
     const choices=moves.filter(move=>move!==previous);
     const move=choices[Math.floor(Math.random()*choices.length)];
     previous=move;
-    button.classList.remove(...moves.map(name=>"panda-prank-"+name));
+    button.classList.remove(...moves.map(name=>"mascot-prank-"+name));
     void button.offsetWidth;
-    button.classList.add("panda-prank-"+move);
+    button.classList.add("mascot-prank-"+move);
   });
   button.addEventListener("animationend",event=>{
-    if(event.target===button.querySelector("img"))button.classList.remove(...moves.map(name=>"panda-prank-"+name));
+    if(event.target===button.querySelector("img"))button.classList.remove(...moves.map(name=>"mascot-prank-"+name));
   });
 })();
