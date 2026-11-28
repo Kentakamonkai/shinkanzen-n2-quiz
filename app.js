@@ -241,7 +241,10 @@ const PANDA_LINES={
 };
 Object.keys(PANDA_LINES).forEach(lang=>Object.values(PANDA_LINES[lang]).forEach(lines=>lines.forEach(line=>{})));
 
-let state = {lang:"fr",order:[],index:0,answers:{},usedFifty:{},paused:false};
+const LANGUAGE_PREF_KEY="shinkanzenN2Language";
+let savedLanguagePreference="fr";
+try{const storedLanguage=localStorage.getItem(LANGUAGE_PREF_KEY);if(LANGS.includes(storedLanguage))savedLanguagePreference=storedLanguage;}catch(error){}
+let state = {lang:savedLanguagePreference,order:[],index:0,answers:{},usedFifty:{},paused:false};
 let savesUseJapanese = true;
 
 const SAVE_UI={
@@ -796,7 +799,8 @@ function returnToQuiz(){
 function viewSessionResults(id){
   const session=loadSessions().find(item=>item.sessionId===id);
   if(!session)return;
-  state=session;savesUseJapanese=false;
+  const selectedLanguage=$("language-select").value||state.lang||"fr";
+  state={...session,lang:selectedLanguage};savesUseJapanese=false;
   $("language-select").value=state.lang;translateUi();updateHomePandaLine();renderSaves();
   const result=calculateResults();state.result=result;
   saveSession();
@@ -805,7 +809,8 @@ function viewSessionResults(id){
 function resumeSession(id){
   const session=loadSessions().find(item=>item.sessionId===id);
   if(!session)return;
-  state=session;savesUseJapanese=false;
+  const selectedLanguage=$("language-select").value||state.lang||"fr";
+  state={...session,lang:selectedLanguage};savesUseJapanese=false;
   $("language-select").value=state.lang;translateUi();updateHomePandaLine();renderSaves();
   if(state.completed){const result=calculateResults();state.result=result;saveSession();renderResult(result);screen("result");return;}
   renderQuestion();screen(state.paused?"pause":"quiz");
@@ -847,7 +852,7 @@ $("restart-dialog").addEventListener("click",event=>{if(event.target===$("restar
 document.addEventListener("keydown",event=>{if(event.key==="Escape"&&!$("restart-dialog").classList.contains("hidden"))closeRestartDialog();});
 $("result-continue").addEventListener("click",returnToQuiz);
 $("result-restart").addEventListener("click",startSession);
-$("language-select").addEventListener("change",event=>{state.lang=event.target.value;savesUseJapanese=false;translateUi();updateHomePandaLine();renderSaves();});
+$("language-select").addEventListener("change",event=>{state.lang=event.target.value;try{localStorage.setItem(LANGUAGE_PREF_KEY,state.lang);}catch(error){}savesUseJapanese=false;translateUi();updateHomePandaLine();renderSaves();});
 $("save-list").addEventListener("click",event=>{
   const button=event.target.closest("button[data-action]");
   if(!button)return;
