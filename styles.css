@@ -431,3 +431,65 @@
 .save-summary-score{flex:0 0 auto;align-self:center;padding:7px 10px;border-radius:9px;background:#eaf0e5;color:#3e6249;font-size:17px;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
 .save-summary-score:after{content:"";}
 @media(max-width:580px){.save-summary-score{font-size:15px;padding:6px 8px}}
+
+
+/* Refined N2 grammar subject mark */
+.subject-icon{
+  position:relative;
+  overflow:hidden;
+  width:76px;height:76px;flex:0 0 76px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:1px;border-radius:15px;
+  color:#fff8e9;
+  background:linear-gradient(145deg,#243b42 0%,#172b33 72%,#a94f3d 72%,#c96a4c 100%);
+  box-shadow:0 7px 16px rgba(27,45,48,.2),inset 0 1px 0 rgba(255,255,255,.18);
+  font-family:"Noto Sans JP",sans-serif;
+}
+.subject-icon:before{
+  content:"";position:absolute;width:44px;height:44px;right:-18px;top:-18px;
+  border:1px solid rgba(255,248,233,.22);border-radius:50%;
+}
+.subject-icon b{
+  position:relative;margin:0;font-family:Inter,system-ui,sans-serif;
+  font-size:27px;line-height:1;font-weight:850;letter-spacing:-.06em;
+}
+.subject-icon span{
+  position:relative;font-size:13px;font-weight:750;letter-spacing:.2em;
+  line-height:1.2;margin-left:.2em;color:#f3d7b4;
+}
+.subject-card{border-radius:15px}
+.subject-card:hover .subject-icon{transform:translateY(-2px) rotate(-2deg);transition:transform .2s ease}
+
+/* A small, continuous panda greeting on every section */
+#screen-quiz .mascot-stage{animation:panda-greet 4.6s ease-in-out infinite}
+#screen-pause .pause-art img{animation:panda-float 4.2s ease-in-out infinite}
+#screen-subject.active:after,
+#screen-review.active:after,
+#screen-result.active:after{
+  content:"";position:fixed;right:18px;bottom:12px;z-index:4;
+  width:76px;height:76px;pointer-events:none;
+  background:url("assets/panda-chibi.svg") center/contain no-repeat;
+  filter:drop-shadow(0 5px 8px rgba(45,34,40,.13));
+  transform-origin:50% 85%;
+  animation:panda-greet 4.8s ease-in-out infinite;
+}
+@keyframes panda-greet{
+  0%,72%,100%{transform:translateY(0) rotate(0)}
+  78%{transform:translateY(-4px) rotate(-7deg)}
+  84%{transform:translateY(-2px) rotate(7deg)}
+  90%{transform:translateY(-3px) rotate(-5deg)}
+  96%{transform:translateY(0) rotate(0)}
+}
+@media(max-width:580px){
+  .subject-icon{width:68px;height:68px;flex-basis:68px;border-radius:13px}
+  .subject-icon b{font-size:24px}
+  .subject-icon span{font-size:12px}
+  #screen-subject.active:after,#screen-review.active:after,#screen-result.active:after{
+    right:8px;bottom:8px;width:56px;height:56px;opacity:.9
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  #screen-quiz .mascot-stage,#screen-pause .pause-art img,
+  #screen-subject.active:after,#screen-review.active:after,#screen-result.active:after,
+  .home-panda{animation:none!important}
+}
