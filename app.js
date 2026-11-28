@@ -503,6 +503,8 @@ const HOME_PANDA_LINES={
   my:"အတူတူ ပြန်လေ့လာကြရအောင်။ အားပေးနေမယ်။",
   fr:"Allez, on révise ensemble ! Je t'encourage !"
 };
+HOME_PANDA_LINES.en="Let’s study together! I’m cheering you on!";
+HOME_PANDA_LINES.be="Давай вучыцца разам! Я цябе падтрымліваю!";
 function updateHomePandaLine(){
   const el=$("home-panda-message");
   if(el)el.textContent=HOME_PANDA_LINES[state.lang]||HOME_PANDA_LINES.fr;
